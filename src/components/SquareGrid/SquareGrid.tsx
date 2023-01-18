@@ -8,7 +8,7 @@ type SquareGridProps = {
     fillGaps?: boolean;
 }
 
-const SquareGrid = ({children, width='500px', size=80, fillGaps=true}: SquareGridProps) => {
+const SquareGrid = ({children, width='100%', size=100, fillGaps=true}: SquareGridProps) => {
     return (
         <StyledSquareGrid width={width} size={size} fillGaps={fillGaps}>
             { children }

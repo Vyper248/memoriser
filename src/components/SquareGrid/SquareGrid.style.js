@@ -10,7 +10,7 @@ const StyledSquareGrid = styled.div`
 
     & > div {
         padding: 5px;
-        border: 1px solid black;
+        /* border: 1px solid black; */
         min-width: ${props => props.size}px;
         min-height: ${props => props.size}px;
     }

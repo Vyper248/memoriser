@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import StyledFlipCard from './FlipCard.style';
 
 import type { Card } from '../../types';
@@ -11,23 +11,37 @@ type FlipCardProps = {
     height?: string;
     startInEditMode?: boolean;
     card: Card;
-    onCorrect: (id:string)=>void;
-    onFail: (id:string)=>void;
-    onEdit: (id:string)=>void;
-    onDelete: (id:string)=>void;
+    onCorrect: (card:Card)=>void;
+    onFail: (card:Card)=>void;
+    onEdit: (card:Card)=>void;
+    onDelete: (card:Card)=>void;
 }
 
 type EditMenuProps = {
     card: Card;
+    onSave: (card: Card)=>void;
+    onCancel: ()=>void;
+    onDelete: ()=>void;
 }
 
-const EditMenu = ({ card }: EditMenuProps) => {
+const EditMenu = ({ card, onSave, onCancel, onDelete }: EditMenuProps) => {
+    const [newCard, setNewCard] = useState({...card});
+
+    const onSaveCard = () => {
+        onSave(newCard);
+    }
+
+    const onChangeValue = (e: React.FormEvent<HTMLInputElement>) => {
+        setNewCard({...newCard, [e.currentTarget.name]: e.currentTarget.value});
+    }
+
     return (
         <div>
-            <div>Question: <input value={card.question}/></div>
-            <div>Answer: <input value={card.answer}/></div>
-            <Button value='Save' onClick={()=>{}}/>
-            <Button value='Cancel' onClick={()=>{}}/>
+            <div>Question: <input value={newCard.question} onChange={onChangeValue} name='question'/></div>
+            <div>Answer: <input value={newCard.answer} onChange={onChangeValue} name='answer'/></div>
+            <Button value='Save' onClick={onSaveCard}/>
+            <Button value='Cancel' onClick={onCancel}/>
+            <Button value='Delete' onClick={onDelete}/>
         </div>
     );
 }
@@ -37,28 +51,51 @@ const FlipCard = ({ speed=0.5, width='250px', height='250px', startInEditMode=fa
     const [editMode, setEditMode] = useState(startInEditMode);
 
     const onClick = () => {
-        setFlipped(flipped => !flipped);
+        // setFlipped(flipped => !flipped);
+        setFlipped(true);
     }
 
     const onClickCorrect = () => {
-        onCorrect(card.id);
+        onCorrect(card);
+        setFlipped(false);
     }
 
     const onClickIncorrect = () => {
-        onFail(card.id);
+        onFail(card);
+        setFlipped(false);
+    }
+
+    const onSaveCard = (card: Card) => {
+        onEdit(card);
+        setEditMode(false);
+        setFlipped(false);
+    }
+
+    const onCancelEdit = () => {
+        setEditMode(false);
+        setFlipped(false);
+    }
+
+    const onDeleteCard = () => {
+        onDelete(card);
+    }
+
+    const onClickEdit = () => {
+        setEditMode(true);
     }
 
     return (
-        <StyledFlipCard onClick={onClick} flipped={editMode ? true : flipped} speed={speed} width={width} height={height}>
-            <div className='visible'>{card.question}</div>
+        <StyledFlipCard flipped={editMode ? true : flipped} speed={speed} width={width} height={height} points={card.points}>
+            <div className='visible' onClick={onClick}>{card.question}</div>
             <div className='hidden'>
                 { editMode 
-                    ? <EditMenu card={card}/> 
+                    ? <EditMenu card={card} onSave={onSaveCard} onCancel={onCancelEdit} onDelete={onDeleteCard}/> 
                     : ( <div>
                             <div>{card.answer}</div>
                             <div>
                                 <Button value='Correct' onClick={onClickCorrect}/>&nbsp;
-                                <Button value='Incorrect' onClick={onClickIncorrect}/>
+                                <Button value='Incorrect' onClick={onClickIncorrect}/>&nbsp;
+                                <Button value='Edit' onClick={onClickEdit}/>
                             </div> 
                         </div> ) }
             </div>

@@ -5,9 +5,8 @@ const StyledFlipCard = styled.div`
     width: ${props => props.width};
     height: ${props => props.height};
     perspective: 1000px;
-    cursor: pointer;
 
-    & > div::after {
+    & > div.visible::after {
         content: 'Click Me!';
         position: absolute;
         bottom: 10px;
@@ -18,7 +17,9 @@ const StyledFlipCard = styled.div`
     }
 
     & > div {
-        border: 1px solid black;
+        border: 1px solid red;
+        ${props => props.points > 3 ? 'border: 1px solid orange;' : ''}
+        ${props => props.points > 10 ? 'border: 1px solid green;' : ''}
         border-radius: 10px;
         background-color: white;
         width: 100%;
@@ -32,6 +33,7 @@ const StyledFlipCard = styled.div`
     }
 
     & > div.visible {
+        cursor: pointer;
         transform: rotateY(0deg);
         ${props => props.flipped === true ? `animation: hide ${props.speed}s linear;` : ''}
         ${props => props.flipped === false ? `animation: show ${props.speed}s linear;` : ''}

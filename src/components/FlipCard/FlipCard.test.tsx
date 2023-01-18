@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import FlipCard from './FlipCard'
 
 test('Loads card and displays question, answer and buttons', () => {
-    render(<FlipCard card={{id: '1', question: 'Hello?', answer: 'World'}} 
+    render(<FlipCard card={{id: '1', groupId: '1', question: 'Hello?', answer: 'World', points: 0}} 
                                 onCorrect={()=>{}} onFail={()=>{}}
                                 onEdit={()=>{}} onDelete={()=>{}}/>);
 

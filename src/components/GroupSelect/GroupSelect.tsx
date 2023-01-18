@@ -36,8 +36,7 @@ const GroupSelect = ({ groups, currentGroup, onChange, onAdd }: GroupSelectProps
 
         let newGroup: Group = {
             id: `${id}`,
-            name: newGroupName,
-            cards: []
+            name: newGroupName
         }
 
         setModalOpen(false);
