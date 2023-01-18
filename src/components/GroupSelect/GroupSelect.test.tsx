@@ -16,7 +16,7 @@ const mockGroups = [
 ];
 
 test('Loads element without crashing and selects correct starting value', () => {
-    render(<GroupSelect groups={mockGroups} currentGroup='1' onChange={()=>{}} onAdd={()=>{}}/>);
+    render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={()=>{}}/>);
 
     let element = screen.getByRole('select') as HTMLSelectElement;
     expect(element).toBeInTheDocument();
@@ -24,7 +24,7 @@ test('Loads element without crashing and selects correct starting value', () => 
 });
 
 test('Includes new group button', () => {
-    render(<GroupSelect groups={mockGroups} currentGroup='1' onChange={()=>{}} onAdd={()=>{}}/>);
+    render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={()=>{}}/>);
 
     let button = screen.getByText('New Group');
     expect(button).toBeInTheDocument();

@@ -4,10 +4,11 @@ import StyledGroupSelect from './GroupSelect.style';
 import type { Group } from '../../types';
 
 import Modal from '../Modal/Modal';
+import Button from '../Button/Button';
 
 type GroupSelectProps = {
     groups: Group[],
-    currentGroup: string,
+    currentGroup: Group | undefined,
     onChange: (id:string)=>void,
     onAdd: (group: Group)=>void,
 }
@@ -51,19 +52,19 @@ const GroupSelect = ({ groups, currentGroup, onChange, onAdd }: GroupSelectProps
 
     return (
         <StyledGroupSelect>
-            <select role="select" onChange={onChangeGroup} value={currentGroup}>
+            <select role="select" onChange={onChangeGroup} value={currentGroup?.id}>
                 {
                     groups.map((group, i) => <option key={`groupName-${group.name}-${i}`} value={group.id}>{group.name}</option>)
                 }
             </select>
-            <button onClick={onClickAddGroup}>New Group</button>
+            <Button value='New Group' onClick={onClickAddGroup}/>
             <Modal open={modalOpen}>
                 <h2>Add New Group</h2>
                 <input value={newGroupName} onChange={onChangeNewGroupName}/>
                 <br/>
                 <br/>
-                <button onClick={onCancelNewGroup}>Cancel</button>&nbsp;
-                <button onClick={onAddNewGroup}>Add</button>
+                <Button value='Cancel' onClick={onCancelNewGroup}/>&nbsp;
+                <Button value='Add' onClick={onAddNewGroup}/>
             </Modal>
         </StyledGroupSelect>
     );

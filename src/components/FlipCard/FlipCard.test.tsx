@@ -3,7 +3,9 @@ import '@testing-library/jest-dom'
 import FlipCard from './FlipCard'
 
 test('Loads card and displays question, answer and buttons', () => {
-    render(<FlipCard card={{id: '1', question: 'Hello?', answer: 'World'}} onCorrect={()=>{}} onFail={()=>{}}/>);
+    render(<FlipCard card={{id: '1', question: 'Hello?', answer: 'World'}} 
+                                onCorrect={()=>{}} onFail={()=>{}}
+                                onEdit={()=>{}} onDelete={()=>{}}/>);
 
     let questionDiv = screen.getByText('Hello?');
     expect(questionDiv).toBeInTheDocument();
