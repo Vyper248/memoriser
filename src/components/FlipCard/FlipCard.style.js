@@ -18,8 +18,8 @@ const StyledFlipCard = styled.div`
 
     & > div {
         border: 1px solid red;
-        ${props => props.points > 3 ? 'border: 1px solid orange;' : ''}
-        ${props => props.points > 10 ? 'border: 1px solid green;' : ''}
+        ${props => props.points > 0 ? 'border: 1px solid orange;' : ''}
+        ${props => props.points > 4 ? 'border: 1px solid green;' : ''}
         border-radius: 10px;
         background-color: white;
         width: 100%;
