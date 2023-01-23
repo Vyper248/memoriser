@@ -1,3 +1,5 @@
+import { timeSinceLastChecked } from './date.utils';
+
 interface Obj {
     id: string;
     groupId?: string;
@@ -31,7 +33,21 @@ export const sortArray = <T extends Obj>(arr: T[]): T[] => {
         let pointsA: number = a.points || 0;
         let pointsB: number = b.points || 0;
 
-        let currentTime = new Date().getTime();
+        //0 points and never looked at goes first
+        if (pointsA === 0 && a.lastChecked === undefined) return -1;
+        if (pointsB === 0 && b.lastChecked === undefined) return 1;
+
+        // //0 points but have been looked at - this keeps those cards at front because they can't always earn points immediately, so disabled for now
+        // if (pointsA === 0 && pointsB === 0 && a.lastChecked && b.lastChecked) return a.lastChecked - b.lastChecked;
+        // if (pointsA === 0) return -1;
+        // if (pointsB === 0) return 1;
+
+        //cards with more than 0 points but due to be looked at again
+        if (timeSinceLastChecked(a.lastChecked, a.lastCheckingPeriod)) return -1;
+        if (timeSinceLastChecked(b.lastChecked, b.lastCheckingPeriod)) return 1;
+
+        //otherwise sort by last checked
+        if (a.lastChecked && b.lastChecked) return a.lastChecked - b.lastChecked;
 
         return pointsA - pointsB;
     });
