@@ -1,13 +1,13 @@
-export const timeSinceLastChecked = (time: number | undefined, lastChecked: string | undefined) => {
-    if (time === undefined) return true;
-    if (lastChecked === undefined) return true;
+export const timeSinceLastChecked = (lastChecked: number | undefined, lastCheckingPeriod: string | undefined) => {
+    if (lastChecked === undefined) return false;
+    if (lastCheckingPeriod === undefined) return false;
 
     let currentTime = new Date().getTime();
-    let difference = currentTime - time;
+    let difference = currentTime - lastChecked;
 
     const hour = 3600000;
 
-    switch(lastChecked) {
+    switch(lastCheckingPeriod) {
         case '1 Hour': return difference >= hour;
         case '2 Hours': return difference >= hour*2;
         case '4 Hours': return difference >= hour*4;
@@ -20,5 +20,17 @@ export const timeSinceLastChecked = (time: number | undefined, lastChecked: stri
         case '4 Weeks': return difference >= hour*672;
     }
 
-    return true;
+    return false;
+}
+
+export const hourPassed = (lastChecked: number | undefined) => {
+    if (lastChecked === undefined) return false;
+    
+    let currentTime = new Date().getTime();
+    let difference = currentTime - lastChecked;
+
+    const hour = 3600000;
+
+    if (difference >= hour) return true;
+    return false;
 }
