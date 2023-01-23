@@ -2,7 +2,7 @@ import {render, screen} from '@testing-library/react'
 import '@testing-library/jest-dom'
 import Modal from './Modal'
 
-test('Loads element without crashing', () => {
+it('Loads element without crashing', () => {
     render(<Modal open={true}>
         <h1>Heading</h1>
     </Modal>);
