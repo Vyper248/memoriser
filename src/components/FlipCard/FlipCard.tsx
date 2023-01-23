@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import StyledFlipCard from './FlipCard.style';
 
 import type { Card } from '../../types';
 
 import Button from '../Button/Button';
+import { useEnterListener } from '../../utils/customHooks';
 
 type FlipCardProps = {
     speed?: number;
@@ -11,10 +12,12 @@ type FlipCardProps = {
     height?: string;
     startInEditMode?: boolean;
     card: Card;
+    size?: string;
     onCorrect: (card:Card)=>void;
     onFail: (card:Card)=>void;
     onEdit: (card:Card)=>void;
     onDelete: (card:Card)=>void;
+    onSelect: (card:Card)=>void;
 }
 
 type EditMenuProps = {
@@ -26,10 +29,13 @@ type EditMenuProps = {
 
 const EditMenu = ({ card, onSave, onCancel, onDelete }: EditMenuProps) => {
     const [newCard, setNewCard] = useState({...card});
-
-    const onSaveCard = () => {
+    
+    const onSaveCard = useCallback(() => {
         onSave(newCard);
-    }
+    }, [newCard, onSave]);
+
+    useEnterListener('editCardQuestion', onSaveCard);
+    useEnterListener('editCardAnswer', onSaveCard);
 
     const onChangeValue = (e: React.FormEvent<HTMLInputElement>) => {
         setNewCard({...newCard, [e.currentTarget.name]: e.currentTarget.value});
@@ -37,8 +43,8 @@ const EditMenu = ({ card, onSave, onCancel, onDelete }: EditMenuProps) => {
 
     return (
         <div>
-            <div>Question: <input value={newCard.question} onChange={onChangeValue} name='question'/></div>
-            <div>Answer: <input value={newCard.answer} onChange={onChangeValue} name='answer'/></div>
+            <div>Question: <input id='editCardQuestion' value={newCard.question} onChange={onChangeValue} name='question'/></div>
+            <div>Answer: <input id='editCardAnswer' value={newCard.answer} onChange={onChangeValue} name='answer'/></div>
             <Button value='Save' onClick={onSaveCard}/>
             <Button value='Cancel' onClick={onCancel}/>
             <Button value='Delete' onClick={onDelete}/>
@@ -46,12 +52,16 @@ const EditMenu = ({ card, onSave, onCancel, onDelete }: EditMenuProps) => {
     );
 }
 
-const FlipCard = ({ speed=0.5, width='250px', height='250px', startInEditMode=false, card, onCorrect, onFail, onEdit, onDelete }: FlipCardProps) => {
+const FlipCard = ({ speed=0.5, width='100%', height='100%', startInEditMode=false, card, size='large', onCorrect, onFail, onEdit, onDelete, onSelect }: FlipCardProps) => {
     const [flipped, setFlipped] = useState<boolean | undefined>(undefined);
     const [editMode, setEditMode] = useState(startInEditMode);
 
     const onClick = () => {
-        // setFlipped(flipped => !flipped);
+        //if not a large card, move to top instead
+        if (size === 'small' || size === 'medium') {
+            onSelect(card); //can do something else here later
+            return;
+        }
         setFlipped(true);
     }
 
@@ -85,7 +95,7 @@ const FlipCard = ({ speed=0.5, width='250px', height='250px', startInEditMode=fa
     }
 
     return (
-        <StyledFlipCard flipped={editMode ? true : flipped} speed={speed} width={width} height={height} points={card.points}>
+        <StyledFlipCard flipped={editMode ? true : flipped} speed={speed} width={width} height={height} points={card.points} size={size}>
             <div className='visible' onClick={onClick}>{card.question}</div>
             <div className='hidden'>
                 { editMode 

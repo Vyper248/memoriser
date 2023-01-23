@@ -7,7 +7,7 @@ const StyledFlipCard = styled.div`
     perspective: 1000px;
 
     & > div.visible::after {
-        content: 'Click Me!';
+        content: ${props => props.size !== 'large' ? '' : '\'Click Me!\''};
         position: absolute;
         bottom: 10px;
         left: 0px;
@@ -20,6 +20,8 @@ const StyledFlipCard = styled.div`
         border: 1px solid red;
         ${props => props.points > 0 ? 'border: 1px solid orange;' : ''}
         ${props => props.points > 4 ? 'border: 1px solid green;' : ''}
+        ${props => props.size === 'medium' ? 'font-size: 0.66em;' : ''}
+        ${props => props.size === 'small' ? 'font-size: 0.33em;' : ''}
         border-radius: 10px;
         background-color: white;
         width: 100%;

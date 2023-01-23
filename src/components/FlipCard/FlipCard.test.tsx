@@ -2,10 +2,10 @@ import {render, screen} from '@testing-library/react'
 import '@testing-library/jest-dom'
 import FlipCard from './FlipCard'
 
-test('Loads card and displays question, answer and buttons', () => {
+it('Loads card and displays question, answer and buttons', () => {
     render(<FlipCard card={{id: '1', groupId: '1', question: 'Hello?', answer: 'World', points: 0}} 
                                 onCorrect={()=>{}} onFail={()=>{}}
-                                onEdit={()=>{}} onDelete={()=>{}}/>);
+                                onEdit={()=>{}} onDelete={()=>{}} onSelect={()=>{}}/>);
 
     let questionDiv = screen.getByText('Hello?');
     expect(questionDiv).toBeInTheDocument();

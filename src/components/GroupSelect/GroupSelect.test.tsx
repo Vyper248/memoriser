@@ -15,17 +15,28 @@ const mockGroups = [
     }
 ];
 
-test('Loads element without crashing and selects correct starting value', () => {
-    render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={()=>{}}/>);
+it('Loads element without crashing and selects correct starting value', () => {
+    render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={()=>{}}/>);
 
-    let element = screen.getByRole('select') as HTMLSelectElement;
+    let element = screen.getByRole('option', {name: 'Group1'}) as HTMLSelectElement;
     expect(element).toBeInTheDocument();
     expect(element.value).toBe('1');
 });
 
-test('Includes new group button', () => {
-    render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={()=>{}}/>);
+it('Displays the correct number of options in the input', () => {
+    render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={()=>{}}/>);
+    expect(screen.getAllByRole('option').length).toBe(2);
+});
+
+it('Includes new/edit/delete buttons', () => {
+    render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={()=>{}}/>);
 
     let button = screen.getByText('New Group');
     expect(button).toBeInTheDocument();
+
+    let button2 = screen.getByText('Edit Group');
+    expect(button2).toBeInTheDocument();
+
+    let button3 = screen.getByText('Delete Group');
+    expect(button3).toBeInTheDocument();
 });

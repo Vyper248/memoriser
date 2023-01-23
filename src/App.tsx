@@ -3,8 +3,8 @@ import './App.css';
 
 import type { Card, Group } from './types';
 
-import { addToArray, removeFromArray, editInArray, filterArrayByGroupId, sortArray, getNextValue } from './utils/array.utils';
-import { timeSinceLastChecked } from './utils/date.utils';
+import { addToArray, removeFromArray, editInArray, filterArrayByGroupId, sortArray } from './utils/array.utils';
+import { getSize, correctCardAdjustment, createNewCard } from './utils/general.utils';
 
 import Button from './components/Button/Button';
 import FlipCard from './components/FlipCard/FlipCard';
@@ -17,23 +17,22 @@ const initialGroup: Group = {
 	name: 'Group 1',
 }
 
-const secondGroup: Group = {
-	id: '2',
-	name: 'Group 2',
-}
-
-const checkingPeriods = [
-	'1 Hour', '2 Hours', '4 Hours', '8 Hours',
-	'1 Day', '2 Days', '4 Days',
-	'1 Week', '2 Weeks',
-	'1 Month'
+const initialCards: Card[] = [
+	{
+		id: '1',
+		groupId: '1',
+		question: 'Hello',
+		answer: 'World',
+		points: 1,
+	},
 ];
 
 function App() {
-	const [groups, setGroups] = useState<Group[]>([initialGroup, secondGroup]);
-	const [cards, setCards] = useState<Card[]>([]);
+	const [groups, setGroups] = useState<Group[]>([initialGroup]);
+	const [cards, setCards] = useState<Card[]>(initialCards);
 	const [currentGroup, setCurrentGroup] = useState<Group | undefined>(groups[0]);
-	const [addingCard, setAddingCard] = useState(true);
+	const [addingCard, setAddingCard] = useState(false);
+	const [selectedCard, setSelectedCard] = useState<Card | null>(null);
 
 	const onChangeGroup = (id: string) => {
 		const newGroup = groups.find(group => group.id === id);
@@ -43,26 +42,31 @@ function App() {
 	const onAddGroup = (group: Group) => {
 		let newGroups = [...groups, group];
 		setGroups(newGroups);
+		setCurrentGroup(group);
+		setSelectedCard(null);
+	}
+
+	const onEditGroup = (group: Group) => {
+		let newGroups = editInArray(group, groups);
+		setGroups(newGroups);
+		setCurrentGroup(group);
+	}
+
+	const onDeleteGroup = (group: Group) => {
+		let newGroups = removeFromArray(group, groups);
+		setGroups(newGroups);
+		setCurrentGroup(newGroups[0]);
+		let newCards = cards.filter(card => card.groupId !== group.id);
+		setCards(newCards);
+		setSelectedCard(null);
 	}
 
 	const onClickAddCard = () => {
 		if (!currentGroup) return;
 
 		setAddingCard(true);
-
-		//create new card
-		let newId = new Date().getTime();
-		let newCard: Card = {
-			id: `${newId}`,
-			groupId: currentGroup.id,
-			question: 'Question?',
-			answer: 'Answer',
-			points: 0,
-			lastChecked: newId,
-			lastCheckingPeriod: '1 Hour'
-		}
-
-		//add to beginning of current group
+		let newCard = createNewCard(currentGroup.id);
+		setSelectedCard(newCard);
 		addCard(newCard);
 	}
 
@@ -74,37 +78,42 @@ function App() {
 	const onEditCard = (card: Card) => {
 		let newCards = editInArray(card, cards);
 		setCards(newCards);
+		if (selectedCard) setSelectedCard(card);
 		setAddingCard(false);
 	}
 
 	const onDeleteCard = (card: Card) => {
 		let newCards = removeFromArray(card, cards);
 		setCards(newCards);
+		if (selectedCard) setSelectedCard(null);
+		setAddingCard(false);
 	}
 
 	const onCorrectAnswer = (card: Card) => {
-		let adjustTimes = timeSinceLastChecked(card.lastChecked, card.lastCheckingPeriod);
-		let points = card.points !== undefined ? card.points + 1 : 1;
-		//this will stop people repeatedly answering a question correctly to get lots of points
-		//only allow points after time periods have passed
-		points = adjustTimes || card.points === 0 ? points : card.points || 1;
-		let lastChecked = adjustTimes ? new Date().getTime() : card.lastChecked;
-		let lastCheckingPeriod = adjustTimes ? getNextValue(card.lastCheckingPeriod, checkingPeriods) : card.lastCheckingPeriod;
-		let newCards = editInArray({...card, points, lastChecked, lastCheckingPeriod}, cards);
-		setCards(newCards);
+		setSelectedCard(null);
+		setAddingCard(false);
+		correctCardAdjustment(card, cards, setCards);		
 	}
 
 	const onIncorrectAnswer = (card: Card) => {
 		let lastChecked = new Date().getTime()
 		let newCards = editInArray({...card, points: 0, lastChecked, lastCheckingPeriod: '1 Hour'}, cards);
 		setCards(newCards);
+		setSelectedCard(null);
+		setAddingCard(false);
 	}
 
+	//filter and sort cards and get first one ready to display
 	let firstCard;
 	let sortedCards;
 	if (currentGroup) {
 		const filteredCards = filterArrayByGroupId(currentGroup.id, cards);
 		sortedCards = sortArray(filteredCards);
+		//if a new card has been added, filter it out and put it at the front of the array
+		if (selectedCard) {
+			sortedCards = sortedCards.filter(card => card.id !== selectedCard.id);
+			sortedCards = [selectedCard, ...sortedCards];
+		}
 		firstCard = sortedCards[0];
 	}
 
@@ -112,17 +121,18 @@ function App() {
 		onCorrect: onCorrectAnswer,
 		onFail: onIncorrectAnswer,
 		onEdit: onEditCard,
-		onDelete: onDeleteCard
+		onDelete: onDeleteCard,
+		onSelect: setSelectedCard
 	}
 
 	return (
 		<div className="App">
 			<Header text='Memoriser'/>
-			<GroupSelect groups={groups} currentGroup={currentGroup} onChange={onChangeGroup} onAdd={onAddGroup}/>
+			<GroupSelect groups={groups} currentGroup={currentGroup} onChange={onChangeGroup} onAdd={onAddGroup} onEdit={onEditGroup} onDelete={onDeleteGroup}/>
 			<Button value='New Card' onClick={onClickAddCard}/>
-			{ firstCard ? <FlipCard key={'first-'+firstCard.id} card={firstCard} startInEditMode={addingCard} {...cardFunctions}/> : null }
+			{ firstCard ? <FlipCard key={'first-'+firstCard.id} width='300px' height='300px' card={firstCard} size='large' startInEditMode={addingCard} {...cardFunctions}/> : null }
 			<SquareGrid>
-				{ sortedCards ? sortedCards.map((card, i) => i === 0 ? null : <div key={card.id} className='medium'><FlipCard card={card} width='100%' height='100%' {...cardFunctions}/></div>) : null }
+				{ sortedCards ? sortedCards.map((card, i) => i === 0 ? null : <div key={card.id} className={getSize(card)}><FlipCard card={card} size={getSize(card)} {...cardFunctions}/></div>) : null }
 			</SquareGrid>
 		</div>
 	);
