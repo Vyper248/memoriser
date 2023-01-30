@@ -38,7 +38,7 @@ const StyledFlipCard = styled.div`
         cursor: pointer;
         transform: rotateY(0deg);
         ${props => props.flipped === true ? `animation: hide ${props.speed}s linear;` : ''}
-        ${props => props.flipped === false ? `animation: show ${props.speed}s linear;` : ''}
+        /* ${props => props.flipped === false ? `animation: show ${props.speed}s linear;` : ''} */
         animation-fill-mode: both;
     }
 
@@ -48,7 +48,7 @@ const StyledFlipCard = styled.div`
         left: 0px;
         transform: rotateY(90deg);
         ${props => props.flipped === true ? `animation: show ${props.speed}s linear;` : ''}
-        ${props => props.flipped === false ? `animation: hide ${props.speed}s linear;` : ''}
+        /* ${props => props.flipped === false ? `animation: hide ${props.speed}s linear;` : ''} */
         animation-fill-mode: both;
     }
 

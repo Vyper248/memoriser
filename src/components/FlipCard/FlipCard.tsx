@@ -78,12 +78,12 @@ const FlipCard = ({ speed=0.5, width='100%', height='100%', startInEditMode=fals
     const onSaveCard = (card: Card) => {
         onEdit(card);
         setEditMode(false);
-        setFlipped(false);
+        setFlipped(true);
     }
 
     const onCancelEdit = () => {
         setEditMode(false);
-        setFlipped(false);
+        setFlipped(true);
     }
 
     const onDeleteCard = () => {

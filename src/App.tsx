@@ -25,6 +25,60 @@ const initialCards: Card[] = [
 		answer: 'World',
 		points: 1,
 	},
+	{
+		id: '2',
+		groupId: '1',
+		question: 'What is my name?',
+		answer: 'Bob',
+		points: 2,
+	},
+	{
+		id: '3',
+		groupId: '1',
+		question: 'Favourite fruit?',
+		answer: 'Strawberry',
+		points: 0,
+		lastChecked: 1674136289747,
+		lastCheckingPeriod: '1 Hour'
+	},
+	{
+		id: '4',
+		groupId: '1',
+		question: 'Favourite Dessert?',
+		answer: 'Trifle',
+		points: 0,
+	},
+	{
+		id: '5',
+		groupId: '1',
+		question: 'Favourite Pizza?',
+		answer: 'Pineapple and Pepper',
+		points: 0,
+	},
+	{
+		id: '6',
+		groupId: '1',
+		question: 'Good morning in German?',
+		answer: 'Guten Morgen',
+		points: 0,
+		lastChecked: 1674136205133,
+		lastCheckingPeriod: '1 Hour'
+	},
+	{
+		id: '7',
+		groupId: '1',
+		question: 'Favourite battle royale?',
+		answer: 'Fortnite',
+		points: 3,
+	},
+	{
+		id: '8',
+		groupId: '1',
+		question: 'Favourite game?',
+		answer: 'Horizon: Forbidden West',
+		points: 5,
+		lastChecked: 1674136206133
+	},
 ];
 
 function App() {
