@@ -4,6 +4,7 @@ const StyledDropdownMenu = styled.div`
     display: inline-block;
     position: relative;
     margin: 5px;
+    z-index: 2;
 
     & > #icon {
         cursor: pointer;

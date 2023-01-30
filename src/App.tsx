@@ -184,7 +184,9 @@ function App() {
 			<Header text='Memoriser'/>
 			<GroupSelect groups={groups} currentGroup={currentGroup} onChange={onChangeGroup} onAdd={onAddGroup} onEdit={onEditGroup} onDelete={onDeleteGroup}/>
 			<Button value='New Card' onClick={onClickAddCard}/>
-			{ firstCard ? <FlipCard key={'first-'+firstCard.id} width='300px' height='300px' card={firstCard} size='large' startInEditMode={addingCard} {...cardFunctions}/> : null }
+			<div id='firstCard'>
+				{ firstCard ? <FlipCard key={'first-'+firstCard.id} width='300px' height='300px' card={firstCard} size='large' startInEditMode={addingCard} {...cardFunctions}/> : null }
+			</div>
 			<SquareGrid>
 				{ sortedCards ? sortedCards.map((card, i) => i === 0 ? null : <div key={card.id} className={getSize(card)}><FlipCard card={card} size={getSize(card)} {...cardFunctions}/></div>) : null }
 			</SquareGrid>
