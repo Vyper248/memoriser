@@ -7,6 +7,7 @@ import type { Group } from '../../types';
 
 import Modal from '../Modal/Modal';
 import Button from '../Button/Button';
+import DropdownMenu from '../DropdownMenu/DropdownMenu';
 
 type GroupSelectProps = {
     groups: Group[];
@@ -122,9 +123,11 @@ const GroupSelect = ({ groups, currentGroup, onChange, onAdd, onEdit, onDelete }
                     groups.map((group, i) => <option key={`groupName-${group.name}-${i}`} value={group.id}>{group.name}</option>)
                 }
             </select>
-            <Button value='New Group' onClick={onClickAddGroup}/>
-            <Button value='Edit Group' onClick={onClickEditGroup}/>
-            <Button value='Delete Group' onClick={onClickDeleteGroup}/>
+            <DropdownMenu>
+                <Button value='New Group' onClick={onClickAddGroup}/>
+                <Button value='Edit Group' onClick={onClickEditGroup}/>
+                <Button value='Delete Group' onClick={onClickDeleteGroup}/>
+            </DropdownMenu>
             <Modal open={modalOpen}>
                 { modalOpen && addingGroup ? <NewGroupMenu onSave={onAddNewGroup} onCancel={onCancelNewGroup}/> : null }
                 { modalOpen && editingGroup ? <NewGroupMenu initialName={currentGroup?.name} onSave={onEditGroup} onCancel={onCancelNewGroup}/> : null }
