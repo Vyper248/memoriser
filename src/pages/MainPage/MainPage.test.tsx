@@ -2,9 +2,75 @@ import {render, screen} from '@testing-library/react'
 import '@testing-library/jest-dom'
 import MainPage from './MainPage'
 
-test('Loads element without crashing', () => {
-    // render(<MainPage/>);
+import type { Group, Card } from '../../types';
 
-    // let element = screen.getByText('test');
-    // expect(element).toBeInTheDocument();
+const mockGroups: Group[] = [{
+    id: '1',
+    name: 'Group 1',
+}]
+
+const mockCards: Card[] = [
+    {
+        id: '1',
+        groupId: '1',
+        question: 'Question',
+        answer: 'Answer',
+        points: 0,
+    },
+    {
+        id: '2',
+        groupId: '1',
+        question: 'Second Question',
+        answer: 'Second Answer',
+        points: 0,
+    }
+];
+
+const mockSetGroups = (groups: Group[]) => {};
+const mockSetCards = (cards: Card[]) => {};
+
+it('Loads element without crashing', () => {
+    render(<MainPage cards={mockCards} groups={mockGroups} setCards={mockSetCards} setGroups={mockSetGroups}/>);
+});
+
+it('Shows the heading', () => {
+    render(<MainPage cards={mockCards} groups={mockGroups} setCards={mockSetCards} setGroups={mockSetGroups}/>);
+
+    let heading = screen.getByRole('heading');
+    expect(heading).toBeInTheDocument();
+    expect(heading).toHaveTextContent('Memoriser');
+});
+
+it('Shows the GroupSelect component', () => {
+    render(<MainPage cards={mockCards} groups={mockGroups} setCards={mockSetCards} setGroups={mockSetGroups}/>);
+
+    let element = screen.getByRole('option', {name: 'Group 1'}) as HTMLSelectElement;
+    expect(element).toBeInTheDocument();
+    expect(element.value).toBe('1');
+
+    let newGroupButton = screen.getByText('New Group');
+    expect(newGroupButton).toBeInTheDocument();
+
+    let editGroupButton = screen.getByText('Edit Group');
+    expect(editGroupButton).toBeInTheDocument();
+
+    let deleteGroupButton = screen.getByText('Delete Group');
+    expect(deleteGroupButton).toBeInTheDocument();
+});
+
+it('Shows the New Card button', () => {
+    render(<MainPage cards={mockCards} groups={mockGroups} setCards={mockSetCards} setGroups={mockSetGroups}/>);
+
+    let newCardButton = screen.getByText('New Card');
+    expect(newCardButton).toBeInTheDocument();
+});
+
+it('Shows the cards', () => {
+    render(<MainPage cards={mockCards} groups={mockGroups} setCards={mockSetCards} setGroups={mockSetGroups}/>);
+
+    let card1 = screen.getByText('Question');
+    expect(card1).toBeInTheDocument();
+
+    let card2 = screen.getByText('Second Question');
+    expect(card2).toBeInTheDocument();
 });
