@@ -52,6 +52,12 @@ const StyledFlipCard = styled.div`
         animation-fill-mode: both;
     }
 
+    & #answer {
+        & > div {
+            margin-bottom: 10px;
+        }
+    }
+
     @keyframes show {
         0% { transform: rotateY(90deg); }
         50% { transform: rotateY(90deg); }

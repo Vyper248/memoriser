@@ -100,7 +100,7 @@ const FlipCard = ({ speed=0.5, width='100%', height='100%', startInEditMode=fals
             <div className='hidden'>
                 { editMode 
                     ? <EditMenu card={card} onSave={onSaveCard} onCancel={onCancelEdit} onDelete={onDeleteCard}/> 
-                    : ( <div>
+                    : ( <div id='answer'>
                             <div>{card.answer}</div>
                             <div>
                                 <Button value='Correct' onClick={onClickCorrect}/>&nbsp;

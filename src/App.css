@@ -6,12 +6,6 @@
   text-align: center;
 }
 
-.App > #firstCard {
-  margin-top: 15px;
-  display: flex;
-  justify-content: center;
-}
-
 .App-logo {
   height: 40vmin;
   pointer-events: none;

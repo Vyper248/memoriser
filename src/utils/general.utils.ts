@@ -27,7 +27,7 @@ const checkingPeriods = [
 ];
 
 
-export const correctCardAdjustment = (card: Card, cards: Card[], setCards: React.Dispatch<React.SetStateAction<Card[]>>) => {
+export const correctCardAdjustment = (card: Card, cards: Card[], setCards: (cards:Card[])=>void) => {
     let adjustTimes = timeSinceLastChecked(card.lastChecked, card.lastCheckingPeriod);
     let beenAnHour = hourPassed(card.lastChecked);
 
