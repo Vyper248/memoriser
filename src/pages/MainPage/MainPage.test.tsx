@@ -1,4 +1,4 @@
-import {render, screen} from '@testing-library/react'
+import {fireEvent, render, screen} from '@testing-library/react'
 import '@testing-library/jest-dom'
 import MainPage from './MainPage'
 
@@ -26,8 +26,8 @@ const mockCards: Card[] = [
     }
 ];
 
-const mockSetGroups = (groups: Group[]) => {};
-const mockSetCards = (cards: Card[]) => {};
+const mockSetGroups = jest.fn();
+const mockSetCards = jest.fn();
 
 it('Loads element without crashing', () => {
     render(<MainPage cards={mockCards} groups={mockGroups} setCards={mockSetCards} setGroups={mockSetGroups}/>);
@@ -73,4 +73,12 @@ it('Shows the cards', () => {
 
     let card2 = screen.getByText('Second Question');
     expect(card2).toBeInTheDocument();
+});
+
+it('Creates a new card when clicking the New Card button', () => {
+    render(<MainPage cards={mockCards} groups={mockGroups} setCards={mockSetCards} setGroups={mockSetGroups}/>);
+
+    let newCardButton = screen.getByText('New Card');
+    fireEvent.click(newCardButton);
+    expect(mockSetCards).toBeCalled();
 });
