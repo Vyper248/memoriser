@@ -1,4 +1,4 @@
-import {render, screen} from '@testing-library/react'
+import {fireEvent, render, screen, waitFor} from '@testing-library/react'
 import '@testing-library/jest-dom'
 import GroupSelect from './GroupSelect'
 
@@ -6,37 +6,76 @@ const mockGroups = [
     {
         id: '1',
         name: 'Group1',
-        cards: []
     },
     {
         id: '2',
         name: 'Group2',
-        cards: []
     }
 ];
 
-it('Loads element without crashing and selects correct starting value', () => {
-    render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={()=>{}}/>);
-
-    let element = screen.getByRole('option', {name: 'Group1'}) as HTMLSelectElement;
-    expect(element).toBeInTheDocument();
-    expect(element.value).toBe('1');
+describe('The component shows the correct elements', () => {
+    it('Loads element without crashing and selects correct starting value', () => {
+        render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={()=>{}}/>);
+    
+        let element = screen.getByRole('option', {name: 'Group1'}) as HTMLSelectElement;
+        expect(element).toBeInTheDocument();
+        expect(element.value).toBe('1');
+    });
+    
+    it('Displays the correct number of options in the input', () => {
+        render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={()=>{}}/>);
+        expect(screen.getAllByRole('option').length).toBe(2);
+    });
+    
+    it('Includes new/edit/delete buttons', () => {
+        render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={()=>{}}/>);
+    
+        let button = screen.getByText('New Group');
+        expect(button).toBeInTheDocument();
+    
+        let button2 = screen.getByText('Edit Group');
+        expect(button2).toBeInTheDocument();
+    
+        let button3 = screen.getByText('Delete Group');
+        expect(button3).toBeInTheDocument();
+    });
 });
 
-it('Displays the correct number of options in the input', () => {
-    render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={()=>{}}/>);
-    expect(screen.getAllByRole('option').length).toBe(2);
-});
+describe('The component menu buttons work as expected', () => {
+    it('Creates a new group when clicking the New Group button', () => {
+        let mockSetGroups = jest.fn();
+        render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={mockSetGroups} onEdit={()=>{}} onDelete={()=>{}}/>);
+    
+        let newGroupButton = screen.getByText('New Group');
+        fireEvent.click(newGroupButton);
 
-it('Includes new/edit/delete buttons', () => {
-    render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={()=>{}}/>);
+        let newGroupInput = screen.getByRole('textbox');
+        fireEvent.change(newGroupInput, {target: {value: 'test'}});
+        fireEvent.keyPress(newGroupInput, {key: 'Enter'});
 
-    let button = screen.getByText('New Group');
-    expect(button).toBeInTheDocument();
+        expect(mockSetGroups).toBeCalledWith(expect.objectContaining({name: 'test'}));
+    });
 
-    let button2 = screen.getByText('Edit Group');
-    expect(button2).toBeInTheDocument();
+    it('Deletes a group when clicking Delete Group button', () => {
+        let mockDeleteGroups = jest.fn();
+        render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={mockDeleteGroups}/>);
+    
+        let deleteGroupButton = screen.getByText('Delete Group');
+        fireEvent.click(deleteGroupButton);
+        expect(mockDeleteGroups).toBeCalledWith({id: '1', name: 'Group1'});
+    });
 
-    let button3 = screen.getByText('Delete Group');
-    expect(button3).toBeInTheDocument();
+    it('Edits a group when clicking Edit Group button', async () => {
+        let mockEditGroup = jest.fn();
+        render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={()=>{}} onEdit={mockEditGroup} onDelete={()=>{}}/>);
+    
+        let editGroupButton = screen.getByText('Edit Group');
+        fireEvent.click(editGroupButton);
+
+        let editGroupInput = screen.getByRole('textbox');
+        fireEvent.change(editGroupInput, {target: {value: 'edit'}});
+        fireEvent.keyPress(editGroupInput, {key: 'Enter'});
+
+        expect(mockEditGroup).toBeCalledWith({id: '1', name: 'edit'});
+    });
 });
