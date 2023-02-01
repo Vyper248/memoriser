@@ -4,6 +4,7 @@ import StyledFlipCard from './FlipCard.style';
 import type { Card } from '../../types';
 
 import Button from '../Button/Button';
+import LabelledInput from '../LabelledInput/LabelledInput';
 import { useEnterListener } from '../../utils/customHooks';
 
 type FlipCardProps = {
@@ -43,11 +44,13 @@ const EditMenu = ({ card, onSave, onCancel, onDelete }: EditMenuProps) => {
 
     return (
         <div>
-            <div>Question: <input id='editCardQuestion' value={newCard.question} onChange={onChangeValue} name='question'/></div>
-            <div>Answer: <input id='editCardAnswer' value={newCard.answer} onChange={onChangeValue} name='answer'/></div>
-            <Button value='Save' onClick={onSaveCard}/>
-            <Button value='Cancel' onClick={onCancel}/>
-            <Button value='Delete' onClick={onDelete}/>
+            <LabelledInput label='Question: ' value={newCard.question} onChange={onChangeValue} name='question' labelWidth='80px'/>
+            <LabelledInput label='Answer: ' value={newCard.answer} onChange={onChangeValue} name='answer' labelWidth='80px'/>
+            <div>
+                <Button value='Save' onClick={onSaveCard}/>&nbsp;
+                <Button value='Cancel' onClick={onCancel}/>&nbsp;
+                <Button value='Delete' onClick={onDelete}/>
+            </div>
         </div>
     );
 }

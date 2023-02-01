@@ -8,6 +8,7 @@ import type { Group } from '../../types';
 import Modal from '../Modal/Modal';
 import Button from '../Button/Button';
 import DropdownMenu from '../DropdownMenu/DropdownMenu';
+import LabelledInput from '../LabelledInput/LabelledInput';
 
 type GroupSelectProps = {
     groups: Group[];
@@ -46,8 +47,7 @@ const NewGroupMenu = ({initialName='', onSave, onCancel}: NewGroupMenuProps) => 
     return (
         <>
             <h2>Add New Group</h2>
-            <input id='groupNameInput' value={newGroupName} onChange={onChangeNewGroupName} autoFocus/>
-            <br/>
+            <LabelledInput inputID='groupNameInput' label='Name: ' value={newGroupName} onChange={onChangeNewGroupName} autofocus/>
             <br/>
             <Button value='Cancel' onClick={onClickCancel}/>&nbsp;
             <Button value='Save' onClick={onClickSave}/>
