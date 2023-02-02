@@ -26,7 +26,7 @@ const StyledDropdownMenu = styled.div`
         border-radius: 5px;
         padding: 5px;
         width: ${props => props.width};
-        top: 100%;
+        top: calc(100% + 8px);
         left: 50%;
         display: flex;
         flex-direction: column;
@@ -37,8 +37,18 @@ const StyledDropdownMenu = styled.div`
         transform-origin: top left;
         z-index: 2;
 
-        * {
-            margin: 2px;
+        &::after {
+            content: '';
+            border: 1px solid #DDD;
+            border-right: none;
+            border-bottom: none;
+            background-color: white;
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            width: 8px;
+            height: 8px;
+            transform: translateX(-50%) rotate(45deg);
         }
     }
 `

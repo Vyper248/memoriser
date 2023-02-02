@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MdShare } from 'react-icons/md';
+import { MdIosShare } from 'react-icons/md';
 
 import StyledHeader from './Header.style';
 
@@ -55,7 +55,7 @@ const Header = ({ text, cards, groups, currentGroup, viewingShared }: HeaderProp
     return (
         <StyledHeader>
             <h1>{text}</h1>
-            { viewingShared ? null : (<DropdownMenu width='180px' icon={<MdShare/>}>
+            { viewingShared ? null : (<DropdownMenu width='180px' icon={<MdIosShare/>}>
 				<Button value='Share All' onClick={shareAll}/>
                 { currentGroup ? <Button value='Share Selected Group' onClick={shareSelectedGroup}/> : null }
                 { copyText.length > 0 ? <p id='copyText'>{copyText}</p> : null }

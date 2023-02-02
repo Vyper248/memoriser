@@ -15,7 +15,7 @@ const StyledHeader = styled.div`
 
     & > div {
         position: relative;
-        top: -2px;
+        top: -5px;
         font-size: 1.2em;
     }
 
