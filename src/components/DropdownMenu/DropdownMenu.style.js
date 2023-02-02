@@ -3,16 +3,15 @@ import styled from 'styled-components';
 const StyledDropdownMenu = styled.div`
     display: inline-block;
     position: relative;
-    margin: 5px;
+    /* margin: 5px; */
 
     & > #icon {
+        display: flex;
+        align-items: center;
         cursor: pointer;
         font-size: 1.5em;
 
         svg {
-            margin-bottom: -7px;
-            margin-top: -7px;
-
             :hover {
                 background-color: #EEE;
             }  

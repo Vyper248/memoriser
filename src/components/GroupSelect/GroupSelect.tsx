@@ -9,6 +9,7 @@ import Modal from '../Modal/Modal';
 import Button from '../Button/Button';
 import DropdownMenu from '../DropdownMenu/DropdownMenu';
 import LabelledInput from '../LabelledInput/LabelledInput';
+import LinkedBorders from '../LinkedBorders/LinkedBorders';
 
 type GroupSelectProps = {
     groups: Group[];
@@ -119,17 +120,19 @@ const GroupSelect = ({ groups, currentGroup, viewingShared, onChange, onAdd, onE
 
     return (
         <StyledGroupSelect>
-            <label>Group</label>
-            <select onChange={onChangeGroup} value={currentGroup?.id}>
-                {
-                    groups.map((group, i) => <option key={`groupName-${group.name}-${i}`} value={group.id}>{group.name}</option>)
-                }
-            </select>
-            { viewingShared ? null : (<DropdownMenu>
-                <Button value='New Group' onClick={onClickAddGroup}/>
-                <Button value='Edit Group' onClick={onClickEditGroup}/>
-                <Button value='Delete Group' onClick={onClickDeleteGroup}/>
-            </DropdownMenu>) }
+            <LinkedBorders>
+                <label>Group</label>
+                <select onChange={onChangeGroup} value={currentGroup?.id}>
+                    {
+                        groups.map((group, i) => <option key={`groupName-${group.name}-${i}`} value={group.id}>{group.name}</option>)
+                    }
+                </select>
+                { viewingShared ? null : (<DropdownMenu>
+                    <Button value='New Group' onClick={onClickAddGroup}/>
+                    <Button value='Edit Group' onClick={onClickEditGroup}/>
+                    <Button value='Delete Group' onClick={onClickDeleteGroup}/>
+                </DropdownMenu>) }
+            </LinkedBorders>
             <Modal open={modalOpen}>
                 { modalOpen && addingGroup ? <NewGroupMenu onSave={onAddNewGroup} onCancel={onCancelNewGroup}/> : null }
                 { modalOpen && editingGroup ? <NewGroupMenu initialName={currentGroup?.name} onSave={onEditGroup} onCancel={onCancelNewGroup}/> : null }
