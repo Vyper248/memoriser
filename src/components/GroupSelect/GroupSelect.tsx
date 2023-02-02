@@ -119,6 +119,7 @@ const GroupSelect = ({ groups, currentGroup, viewingShared, onChange, onAdd, onE
 
     return (
         <StyledGroupSelect>
+            <label>Group</label>
             <select onChange={onChangeGroup} value={currentGroup?.id}>
                 {
                     groups.map((group, i) => <option key={`groupName-${group.name}-${i}`} value={group.id}>{group.name}</option>)
