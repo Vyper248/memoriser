@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import './App.css';
 
 import type { Card, Group } from './types';
+
+import { parseHash } from './utils/general.utils';
 
 import MainPage from './pages/MainPage/MainPage';
 
@@ -30,17 +32,41 @@ const initialCards: Card[] = [
 function App() {
 	const [groups, setGroups] = useState<Group[]>([initialGroup]);
 	const [cards, setCards] = useState<Card[]>(initialCards);
+	const [viewingShared, setViewingShared] = useState(false);
+
+	//keep track of when the hash changes to refresh the page and update state
+	let hashChange = useCallback(() => {
+		window.location.reload();
+	}, []);
 
 	//retrieve data from local storage
 	useEffect(() => {
-		let localDataCards = localStorage.getItem('memoriser-data-cards');
-		let localDataGroups = localStorage.getItem('memoriser-data-groups');
+		//if hash available,
+		let dataObj = parseHash(window.location.hash);
+		if (dataObj !== null) {
+			if (dataObj.cards) setCards(dataObj.cards);
+			if (dataObj.groups) setGroups(dataObj.groups);
+			setViewingShared(true);
+		} else {
+			let localDataCards = localStorage.getItem('memoriser-data-cards');
+			let localDataGroups = localStorage.getItem('memoriser-data-groups');
+	
+			if (localDataCards) setCards(JSON.parse(localDataCards));
+			if (localDataGroups) setGroups(JSON.parse(localDataGroups));
+			setViewingShared(false);
+		}
 
-		if (localDataCards) setCards(JSON.parse(localDataCards));
-		if (localDataGroups) setGroups(JSON.parse(localDataGroups));
-	}, []);
+		window.addEventListener('hashchange', hashChange);
+
+		return () => {
+			window.removeEventListener('hashchange', hashChange);
+		}
+	}, [hashChange]);
 
 	const saveToLocal = (key: string, array: Card[] | Group[]) => {
+		//don't overwrite local storage when viewing a shared hash
+		if (viewingShared) return;
+
 		let string = JSON.stringify(array);
 		localStorage.setItem(`memoriser-data-${key}`, string);
 	}
@@ -57,7 +83,7 @@ function App() {
 
 	return (
 		<div className="App">
-			<MainPage cards={cards} groups={groups} setCards={onSetCards} setGroups={onSetGroups}/>
+			<MainPage cards={cards} groups={groups} setCards={onSetCards} setGroups={onSetGroups} viewingShared={viewingShared}/>
 		</div>
 	);
 }

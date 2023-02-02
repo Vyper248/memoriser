@@ -13,6 +13,7 @@ import LabelledInput from '../LabelledInput/LabelledInput';
 type GroupSelectProps = {
     groups: Group[];
     currentGroup: Group | undefined;
+    viewingShared: boolean;
     onChange: (id:string)=>void;
     onAdd: (group: Group)=>void;
     onEdit: (group: Group)=>void;
@@ -55,7 +56,7 @@ const NewGroupMenu = ({initialName='', onSave, onCancel}: NewGroupMenuProps) => 
     );
 }
 
-const GroupSelect = ({ groups, currentGroup, onChange, onAdd, onEdit, onDelete }: GroupSelectProps) => {
+const GroupSelect = ({ groups, currentGroup, viewingShared, onChange, onAdd, onEdit, onDelete }: GroupSelectProps) => {
     const [modalOpen, setModalOpen] = useState(false);
     const [addingGroup, setAddingGroup] = useState(false);
     const [editingGroup, setEditingGroup] = useState(false);
@@ -123,11 +124,11 @@ const GroupSelect = ({ groups, currentGroup, onChange, onAdd, onEdit, onDelete }
                     groups.map((group, i) => <option key={`groupName-${group.name}-${i}`} value={group.id}>{group.name}</option>)
                 }
             </select>
-            <DropdownMenu>
+            { viewingShared ? null : (<DropdownMenu>
                 <Button value='New Group' onClick={onClickAddGroup}/>
                 <Button value='Edit Group' onClick={onClickEditGroup}/>
                 <Button value='Delete Group' onClick={onClickDeleteGroup}/>
-            </DropdownMenu>
+            </DropdownMenu>) }
             <Modal open={modalOpen}>
                 { modalOpen && addingGroup ? <NewGroupMenu onSave={onAddNewGroup} onCancel={onCancelNewGroup}/> : null }
                 { modalOpen && editingGroup ? <NewGroupMenu initialName={currentGroup?.name} onSave={onEditGroup} onCancel={onCancelNewGroup}/> : null }

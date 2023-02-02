@@ -8,6 +8,7 @@ import LabelledInput from '../LabelledInput/LabelledInput';
 import { useEnterListener } from '../../utils/customHooks';
 
 type FlipCardProps = {
+    viewingShared: boolean;
     speed?: number;
     width?: string;
     height?: string;
@@ -55,7 +56,7 @@ const EditMenu = ({ card, onSave, onCancel, onDelete }: EditMenuProps) => {
     );
 }
 
-const FlipCard = ({ speed=0.5, width='100%', height='100%', startInEditMode=false, card, size='large', onCorrect, onFail, onEdit, onDelete, onSelect }: FlipCardProps) => {
+const FlipCard = ({ viewingShared, speed=0.5, width='100%', height='100%', startInEditMode=false, card, size='large', onCorrect, onFail, onEdit, onDelete, onSelect }: FlipCardProps) => {
     const [flipped, setFlipped] = useState<boolean | undefined>(undefined);
     const [editMode, setEditMode] = useState(startInEditMode);
 
@@ -105,11 +106,11 @@ const FlipCard = ({ speed=0.5, width='100%', height='100%', startInEditMode=fals
                     ? <EditMenu card={card} onSave={onSaveCard} onCancel={onCancelEdit} onDelete={onDeleteCard}/> 
                     : ( <div id='answer'>
                             <div>{card.answer}</div>
-                            <div>
+                            { viewingShared ? <Button value='Cancel' onClick={()=>setFlipped(false)}/> : (<div>
                                 <Button value='Correct' onClick={onClickCorrect}/>&nbsp;
                                 <Button value='Incorrect' onClick={onClickIncorrect}/>&nbsp;
                                 <Button value='Edit' onClick={onClickEdit}/>
-                            </div> 
+                            </div>) }
                         </div> ) }
             </div>
         </StyledFlipCard>

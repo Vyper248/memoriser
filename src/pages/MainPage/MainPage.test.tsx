@@ -30,11 +30,11 @@ const mockSetGroups = jest.fn();
 const mockSetCards = jest.fn();
 
 it('Loads element without crashing', () => {
-    render(<MainPage cards={mockCards} groups={mockGroups} setCards={mockSetCards} setGroups={mockSetGroups}/>);
+    render(<MainPage cards={mockCards} groups={mockGroups} setCards={mockSetCards} setGroups={mockSetGroups} viewingShared={false}/>);
 });
 
 it('Shows the heading', () => {
-    render(<MainPage cards={mockCards} groups={mockGroups} setCards={mockSetCards} setGroups={mockSetGroups}/>);
+    render(<MainPage cards={mockCards} groups={mockGroups} setCards={mockSetCards} setGroups={mockSetGroups} viewingShared={false}/>);
 
     let heading = screen.getByRole('heading');
     expect(heading).toBeInTheDocument();
@@ -42,7 +42,7 @@ it('Shows the heading', () => {
 });
 
 it('Shows the GroupSelect component', () => {
-    render(<MainPage cards={mockCards} groups={mockGroups} setCards={mockSetCards} setGroups={mockSetGroups}/>);
+    render(<MainPage cards={mockCards} groups={mockGroups} setCards={mockSetCards} setGroups={mockSetGroups} viewingShared={false}/>);
 
     let element = screen.getByRole('option', {name: 'Group 1'}) as HTMLSelectElement;
     expect(element).toBeInTheDocument();
@@ -59,14 +59,14 @@ it('Shows the GroupSelect component', () => {
 });
 
 it('Shows the New Card button', () => {
-    render(<MainPage cards={mockCards} groups={mockGroups} setCards={mockSetCards} setGroups={mockSetGroups}/>);
+    render(<MainPage cards={mockCards} groups={mockGroups} setCards={mockSetCards} setGroups={mockSetGroups} viewingShared={false}/>);
 
     let newCardButton = screen.getByText('New Card');
     expect(newCardButton).toBeInTheDocument();
 });
 
 it('Shows the cards', () => {
-    render(<MainPage cards={mockCards} groups={mockGroups} setCards={mockSetCards} setGroups={mockSetGroups}/>);
+    render(<MainPage cards={mockCards} groups={mockGroups} setCards={mockSetCards} setGroups={mockSetGroups} viewingShared={false}/>);
 
     let card1 = screen.getByText('Question');
     expect(card1).toBeInTheDocument();
@@ -76,7 +76,7 @@ it('Shows the cards', () => {
 });
 
 it('Creates a new card when clicking the New Card button', () => {
-    render(<MainPage cards={mockCards} groups={mockGroups} setCards={mockSetCards} setGroups={mockSetGroups}/>);
+    render(<MainPage cards={mockCards} groups={mockGroups} setCards={mockSetCards} setGroups={mockSetGroups} viewingShared={false}/>);
 
     let newCardButton = screen.getByText('New Card');
     fireEvent.click(newCardButton);

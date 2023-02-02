@@ -4,7 +4,6 @@ const StyledDropdownMenu = styled.div`
     display: inline-block;
     position: relative;
     margin: 5px;
-    z-index: 2;
 
     & > #icon {
         cursor: pointer;
@@ -26,7 +25,7 @@ const StyledDropdownMenu = styled.div`
         background-color: white;
         border-radius: 5px;
         padding: 5px;
-        width: 130px;
+        width: ${props => props.width};
         top: 100%;
         left: 50%;
         display: flex;
@@ -36,6 +35,7 @@ const StyledDropdownMenu = styled.div`
         opacity: ${props => props.open ? '1' : '0'};
         transition: scale 0.3s, opacity 0.3s;
         transform-origin: top left;
+        z-index: 2;
 
         * {
             margin: 2px;

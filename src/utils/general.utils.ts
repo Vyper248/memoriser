@@ -2,8 +2,10 @@ import React from "react";
 
 import { timeSinceLastChecked, hourPassed } from "./date.utils";
 import { editInArray, getNextValue } from "./array.utils";
+import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from "lz-string";
 
 import type { Card, Group } from "../types";
+import { ErrorCallback } from "typescript";
 
 type BasicCard = {
     points?: number | undefined;
@@ -69,4 +71,28 @@ export const createNewCard = (groupId: string): Card => {
     }
 
     return newCard;
+}
+
+export const generateHash = (cards: Card[], groups: Group[]) => {
+    //filter out properties unique to the user
+    let sharedCards = cards.map(card => {
+        let { id, groupId, question, answer } = card;
+        return {id, groupId, question, answer};
+    });
+
+    let combinedObj = JSON.stringify({cards: sharedCards, groups});
+	let hash = compressToEncodedURIComponent(combinedObj);
+    return hash;
+}
+
+export const parseHash = (hash: string): {cards: Card[], groups: Group[]} | null => {
+    let encoded = hash.replace('#', '');
+	let uncompressedString = decompressFromEncodedURIComponent(encoded) as string;
+    let dataObj = null;
+    try {
+        dataObj = JSON.parse(uncompressedString);
+    } catch (err) {
+        // if it doesnt work, then hash was invalid, so just return null
+    }
+    return dataObj;
 }

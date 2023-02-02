@@ -15,7 +15,7 @@ const mockGroups = [
 
 describe('The component shows the correct elements', () => {
     it('Loads element without crashing and selects correct starting value', () => {
-        render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={()=>{}}/>);
+        render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} viewingShared={false} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={()=>{}}/>);
     
         let element = screen.getByRole('option', {name: 'Group1'}) as HTMLSelectElement;
         expect(element).toBeInTheDocument();
@@ -23,12 +23,12 @@ describe('The component shows the correct elements', () => {
     });
     
     it('Displays the correct number of options in the input', () => {
-        render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={()=>{}}/>);
+        render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} viewingShared={false} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={()=>{}}/>);
         expect(screen.getAllByRole('option').length).toBe(2);
     });
     
     it('Includes new/edit/delete buttons', () => {
-        render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={()=>{}}/>);
+        render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} viewingShared={false} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={()=>{}}/>);
     
         let button = screen.getByText('New Group');
         expect(button).toBeInTheDocument();
@@ -39,12 +39,25 @@ describe('The component shows the correct elements', () => {
         let button3 = screen.getByText('Delete Group');
         expect(button3).toBeInTheDocument();
     });
+
+    it("Doesn't include option buttons when viewing shared link", () => {
+        render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} viewingShared={true} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={()=>{}}/>);
+    
+        let button = screen.queryByText('New Group');
+        expect(button).toBeNull();
+    
+        let button2 = screen.queryByText('Edit Group');
+        expect(button2).toBeNull();
+    
+        let button3 = screen.queryByText('Delete Group');
+        expect(button3).toBeNull();
+    });
 });
 
 describe('The component menu buttons work as expected', () => {
     it('Creates a new group when clicking the New Group button', () => {
         let mockSetGroups = jest.fn();
-        render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={mockSetGroups} onEdit={()=>{}} onDelete={()=>{}}/>);
+        render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} viewingShared={false} onChange={()=>{}} onAdd={mockSetGroups} onEdit={()=>{}} onDelete={()=>{}}/>);
     
         let newGroupButton = screen.getByText('New Group');
         fireEvent.click(newGroupButton);
@@ -58,7 +71,7 @@ describe('The component menu buttons work as expected', () => {
 
     it('Deletes a group when clicking Delete Group button', () => {
         let mockDeleteGroups = jest.fn();
-        render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={mockDeleteGroups}/>);
+        render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} viewingShared={false} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={mockDeleteGroups}/>);
     
         let deleteGroupButton = screen.getByText('Delete Group');
         fireEvent.click(deleteGroupButton);
@@ -67,7 +80,7 @@ describe('The component menu buttons work as expected', () => {
 
     it('Edits a group when clicking Edit Group button', async () => {
         let mockEditGroup = jest.fn();
-        render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={()=>{}} onEdit={mockEditGroup} onDelete={()=>{}}/>);
+        render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} viewingShared={false} onChange={()=>{}} onAdd={()=>{}} onEdit={mockEditGroup} onDelete={()=>{}}/>);
     
         let editGroupButton = screen.getByText('Edit Group');
         fireEvent.click(editGroupButton);

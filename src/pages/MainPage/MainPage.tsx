@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import StyledMainPage from './MainPage.style';
 
 import type { Group, Card } from '../../types';
@@ -17,9 +17,10 @@ type MainPageProps = {
     cards: Card[];
     setGroups: (groups: Group[])=>void;
     setCards: (cards: Card[])=>void;
+	viewingShared: boolean;
 }
 
-const MainPage = ({groups, setGroups, cards, setCards}: MainPageProps) => {
+const MainPage = ({groups, setGroups, cards, setCards, viewingShared}: MainPageProps) => {
     const [currentGroup, setCurrentGroup] = useState<Group | undefined>(groups[0]);
 	const [addingCard, setAddingCard] = useState(false);
 	const [selectedCard, setSelectedCard] = useState<Card | null>(null);
@@ -100,6 +101,10 @@ const MainPage = ({groups, setGroups, cards, setCards}: MainPageProps) => {
 		setAddingCard(false);
 	}
 
+	const onCancelShare = () => {
+		window.location.hash = '';
+	}
+
 	//filter and sort cards and get first one ready to display
 	let firstCard;
 	let sortedCards;
@@ -124,14 +129,15 @@ const MainPage = ({groups, setGroups, cards, setCards}: MainPageProps) => {
 
 	return (
 		<StyledMainPage>
-			<Header text='Memoriser'/>
-			<GroupSelect groups={groups} currentGroup={currentGroup} onChange={onChangeGroup} onAdd={onAddGroup} onEdit={onEditGroup} onDelete={onDeleteGroup}/>
-			<Button value='New Card' onClick={onClickAddCard}/>
+			<Header text='Memoriser' cards={cards} groups={groups} currentGroup={currentGroup} viewingShared={viewingShared}/>
+			{ viewingShared ? <Button value='Back to your groups' onClick={onCancelShare}/> : null }
+			<GroupSelect groups={groups} currentGroup={currentGroup} viewingShared={viewingShared} onChange={onChangeGroup} onAdd={onAddGroup} onEdit={onEditGroup} onDelete={onDeleteGroup}/>
+			{ viewingShared ? null : <Button value='New Card' onClick={onClickAddCard}/> }
 			<div id='firstCard'>
-				{ firstCard ? <FlipCard key={'first-'+firstCard.id} width='300px' height='300px' card={firstCard} size='large' startInEditMode={addingCard} {...cardFunctions}/> : null }
+				{ firstCard ? <FlipCard key={'first-'+firstCard.id} viewingShared={viewingShared} width='300px' height='300px' card={firstCard} size='large' startInEditMode={addingCard} {...cardFunctions}/> : null }
 			</div>
 			<SquareGrid>
-				{ sortedCards ? sortedCards.map((card, i) => i === 0 ? null : <div key={card.id} className={getSize(card)}><FlipCard card={card} size={getSize(card)} {...cardFunctions}/></div>) : null }
+				{ sortedCards ? sortedCards.map((card, i) => i === 0 ? null : <div key={card.id} className={getSize(card)}><FlipCard card={card} size={getSize(card)} viewingShared={viewingShared} {...cardFunctions}/></div>) : null }
 			</SquareGrid>
 		</StyledMainPage>
 	);
