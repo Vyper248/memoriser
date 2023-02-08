@@ -70,18 +70,24 @@ const GroupSelect = ({ groups, currentGroup, viewingShared, onChange, onAdd, onE
         setModalOpen(true);
         setAddingGroup(true);
         setEditingGroup(false);
+        //makes sure the clickOutside handler runs to close the DropdownMenu
+        document.body.click();
     }
 
     const onClickEditGroup = () => {
         setModalOpen(true);
         setEditingGroup(true);
         setAddingGroup(false);
+        //makes sure the clickOutside handler runs to close the DropdownMenu
+        document.body.click();
     }
 
     const onClickDeleteGroup = () => {
         if (!currentGroup) return;
 
         onDelete(currentGroup);
+        //makes sure the clickOutside handler runs to close the DropdownMenu
+        document.body.click();
     }
 
     const onAddNewGroup = (newGroupName: string) => {
@@ -96,7 +102,6 @@ const GroupSelect = ({ groups, currentGroup, viewingShared, onChange, onAdd, onE
 
         setModalOpen(false);
         setAddingGroup(false);
-        // setNewGroupName('');
         onAdd(newGroup);
     }
 
