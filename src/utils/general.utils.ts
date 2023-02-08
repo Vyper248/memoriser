@@ -1,11 +1,8 @@
-import React from "react";
-
 import { timeSinceLastChecked, hourPassed } from "./date.utils";
 import { editInArray, getNextValue } from "./array.utils";
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from "lz-string";
 
 import type { Card, Group } from "../types";
-import { ErrorCallback } from "typescript";
 
 type BasicCard = {
     points?: number | undefined;
@@ -95,4 +92,59 @@ export const parseHash = (hash: string): {cards: Card[], groups: Group[]} | null
         // if it doesnt work, then hash was invalid, so just return null
     }
     return dataObj;
+}
+
+export const getIDCheckObj = (arr: Card[] | Group[]) => {
+    let dataObj = {} as { [key: string]: boolean };
+    arr.forEach(obj => {
+        dataObj[obj.id] = true;
+    });
+    return dataObj;
+}
+
+export const mergeSharedData = (cards: Card[], groups: Group[]) => {
+    //get locally stored groups
+    let { localDataCards, localDataGroups } = getLocalData();
+
+    //check group IDs to make sure not the same
+    let localGroupsObj = getIDCheckObj(localDataGroups);
+    groups.forEach(group => {
+        if (localGroupsObj[group.id] !== undefined) {
+            //fix duplicate id with group and cards
+            let oldId = group.id;
+            let newId = Math.floor(Math.random()*10000000000000).toString();
+
+            cards.forEach(card => { if(card.groupId === oldId) card.groupId = newId; });
+            group.id = newId;
+        }
+    });
+
+    //check card IDs to make sure not the same
+    let localCardsObj = getIDCheckObj(localDataCards);
+    cards.forEach(card => {
+        if (localCardsObj[card.id] !== undefined) {
+            //fix duplicate
+            let newId = Math.floor(Math.random()*10000000000000).toString();
+            card.id = newId;
+        }
+    });
+
+    //merge arrays and save back to local storage
+    let newGroupsArr = [...localDataGroups, ...groups];
+    let newCardsArr = [...localDataCards, ...cards];
+    localStorage.setItem('memoriser-data-groups', JSON.stringify(newGroupsArr));
+    localStorage.setItem('memoriser-data-cards', JSON.stringify(newCardsArr));
+}
+
+export const getLocalData = () => {
+    let localDataCardsJson = localStorage.getItem('memoriser-data-cards');
+    let localDataGroupsJson = localStorage.getItem('memoriser-data-groups');
+
+    let localDataCards = [] as Card[];
+    if (localDataCardsJson) localDataCards = JSON.parse(localDataCardsJson);
+
+    let localDataGroups = [] as Group[];
+    if (localDataGroupsJson) localDataGroups = JSON.parse(localDataGroupsJson);
+
+    return { localDataCards, localDataGroups };
 }

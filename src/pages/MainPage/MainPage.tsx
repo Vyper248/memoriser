@@ -4,7 +4,7 @@ import StyledMainPage from './MainPage.style';
 import type { Group, Card } from '../../types';
 
 import { addToArray, removeFromArray, editInArray, filterArrayByGroupId, sortArray } from '../../utils/array.utils';
-import { getSize, correctCardAdjustment, createNewCard } from '../../utils/general.utils';
+import { getSize, correctCardAdjustment, createNewCard, getLocalData, mergeSharedData } from '../../utils/general.utils';
 
 import Button from '../../components/Button/Button';
 import FlipCard from '../../components/FlipCard/FlipCard';
@@ -105,6 +105,11 @@ const MainPage = ({groups, setGroups, cards, setCards, viewingShared}: MainPageP
 		window.location.hash = '';
 	}
 
+	const onAddShared = () => {
+		mergeSharedData(cards, groups);
+		onCancelShare();
+	}
+
 	//filter and sort cards and get first one ready to display
 	let firstCard;
 	let sortedCards;
@@ -131,6 +136,7 @@ const MainPage = ({groups, setGroups, cards, setCards, viewingShared}: MainPageP
 		<StyledMainPage>
 			<Header text='Memoriser' cards={cards} groups={groups} currentGroup={currentGroup} viewingShared={viewingShared}/>
 			{ viewingShared ? <Button value='Back to your groups' onClick={onCancelShare}/> : null }
+			{ viewingShared ? <Button value='Import' onClick={onAddShared}/> : null }
 			<GroupSelect groups={groups} currentGroup={currentGroup} viewingShared={viewingShared} onChange={onChangeGroup} onAdd={onAddGroup} onEdit={onEditGroup} onDelete={onDeleteGroup}/>
 			{ viewingShared ? null : <Button value='New Card' onClick={onClickAddCard}/> }
 			<div id='firstCard'>
