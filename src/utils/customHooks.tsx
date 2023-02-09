@@ -38,3 +38,20 @@ export const useClickOutside = <T extends HTMLElement>(callback: ()=>void, open:
 
     return ref;
 }
+
+export const useResizeListener = (callback: ()=>void, time: number) => {
+    useEffect(() => {
+        let timeout = null as NodeJS.Timeout | null;
+
+        let resizeListener = () => {
+            if (timeout) clearTimeout(timeout);
+            timeout = setTimeout(callback, time);
+        }
+
+        window.addEventListener('resize', resizeListener);
+
+        return () => {
+            window.removeEventListener('resize', resizeListener);
+        }
+    }, []);
+}
