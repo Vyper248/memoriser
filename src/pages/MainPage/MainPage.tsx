@@ -11,6 +11,7 @@ import FlipCard from '../../components/FlipCard/FlipCard';
 import GroupSelect from '../../components/GroupSelect/GroupSelect';
 import Header from '../../components/Header/Header';
 import SquareGrid from '../../components/SquareGrid/SquareGrid';
+import GridSorter from '../../components/GridSorter/GridSorter';
 
 type MainPageProps = {
     groups: Group[];
@@ -112,7 +113,7 @@ const MainPage = ({groups, setGroups, cards, setCards, viewingShared}: MainPageP
 
 	//filter and sort cards and get first one ready to display
 	let firstCard;
-	let sortedCards;
+	let sortedCards = [] as Card[];
 	if (currentGroup) {
 		const filteredCards = filterArrayByGroupId(currentGroup.id, cards);
 		sortedCards = sortArray(filteredCards);
@@ -139,12 +140,13 @@ const MainPage = ({groups, setGroups, cards, setCards, viewingShared}: MainPageP
 			{ viewingShared ? <Button value='Import' onClick={onAddShared}/> : null }
 			<GroupSelect groups={groups} currentGroup={currentGroup} viewingShared={viewingShared} onChange={onChangeGroup} onAdd={onAddGroup} onEdit={onEditGroup} onDelete={onDeleteGroup}/>
 			{ viewingShared ? null : <Button value='New Card' onClick={onClickAddCard}/> }
-			<div id='firstCard'>
+			<GridSorter cards={sortedCards} cardFunctions={cardFunctions} viewingShared={viewingShared}/>
+			{/* <div id='firstCard'>
 				{ firstCard ? <FlipCard key={'first-'+firstCard.id} viewingShared={viewingShared} width='300px' height='300px' card={firstCard} size='large' startInEditMode={addingCard} {...cardFunctions}/> : null }
 			</div>
 			<SquareGrid>
-				{ sortedCards ? sortedCards.map((card, i) => i === 0 ? null : <div key={card.id} className={getSize(card)}><FlipCard card={card} size={getSize(card)} viewingShared={viewingShared} {...cardFunctions}/></div>) : null }
-			</SquareGrid>
+				{ sortedCards.map((card, i) => i === 0 ? null : <div key={card.id} className={getSize(card)}><FlipCard card={card} size={getSize(card)} viewingShared={viewingShared} {...cardFunctions}/></div>) }
+			</SquareGrid> */}
 		</StyledMainPage>
 	);
 }

@@ -4,6 +4,11 @@
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
 
+// Add structuredClone function for Jest
+if(!global.structuredClone){
+    global.structuredClone = (obj: any) => JSON.parse(JSON.stringify(obj));
+}
+
 //used for mocking localstorage functions
 const localStorageMock = (function () {
     let store = {} as { [key: string]: string};
