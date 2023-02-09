@@ -10,12 +10,13 @@ type BasicCard = {
     lastCheckingPeriod?: string | undefined;
 }
 
-export const getSize = (card: BasicCard) => {
+export const getSize = (card: BasicCard): 'small' | 'medium' | 'large' => {
     if (timeSinceLastChecked(card.lastChecked, card.lastCheckingPeriod)) return 'large';
     if (card.points === undefined) return 'large';
     if (card.points === 0) return 'large';
     if (card.points > 4) return 'small';
     if (card.points > 0) return 'medium';
+    return 'large';
 }
 
 const checkingPeriods = [
@@ -62,8 +63,8 @@ export const createNewCard = (groupId: string): Card => {
     let newCard: Card = {
         id: `${newId}`,
         groupId: groupId,
-        question: 'Question?',
-        answer: 'Answer',
+        question: 'Flip to Edit',
+        answer: 'Edit Me',
         points: 0,
     }
 
