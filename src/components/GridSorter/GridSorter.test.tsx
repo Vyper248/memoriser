@@ -21,7 +21,7 @@ describe('Tests GridSorter component', () => {
     }
 
     it('Renders without crashing', () => {
-        render(<GridSorter cards={mockCards} cardFunctions={mockFunctions} viewingShared={false}/>);
+        render(<GridSorter cards={mockCards} selectedCard={null} cardFunctions={mockFunctions} viewingShared={false}/>);
     
         let element = screen.getByText('test question');
         expect(element).toBeInTheDocument();
@@ -37,7 +37,7 @@ describe('Tests GridSorter component', () => {
     });
 
     it('Wont allow showing buttons when viewing shared cards', () => {    
-        render(<GridSorter cards={mockCards} cardFunctions={mockFunctions} viewingShared={true}/>);
+        render(<GridSorter cards={mockCards} selectedCard={null} cardFunctions={mockFunctions} viewingShared={true}/>);
     
         let buttons = screen.queryAllByText('Correct');
         expect(buttons).toHaveLength(0);

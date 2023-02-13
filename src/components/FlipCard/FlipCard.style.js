@@ -32,6 +32,7 @@ const StyledFlipCard = styled.div`
         overflow: scroll;
         padding: 10px;
         text-align: center;
+        transition: font-size 0.6s;
     }
 
     & > div.visible {

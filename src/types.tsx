@@ -1,4 +1,4 @@
-export type Card = {
+export interface Card {
     id: string;
     groupId: string;
     question: string;
@@ -6,7 +6,6 @@ export type Card = {
     points?: number;
     lastChecked?: number;
     lastCheckingPeriod?: string;
-    size?: string;
 }
 
 export type Group = {
