@@ -10,6 +10,7 @@ const StyledLinkedBorders = styled.div`
         display: flex;
         align-items: center;
         padding: 5px;
+        margin: 0px;
     }
 
     & > *:first-child {

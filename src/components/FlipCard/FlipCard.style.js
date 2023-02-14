@@ -4,7 +4,14 @@ const StyledFlipCard = styled.div`
     position: relative;
     width: ${props => props.width};
     height: ${props => props.height};
+    width: 300px;
+    height: 300px;
+    transform: scale(0.965);
+    ${props => props.size === 'medium' ? 'transform: scale(0.63);' : ''}
+    ${props => props.size === 'small' ? 'transform: scale(0.30);' : ''}
+    transform-origin: top left;
     perspective: 1000px;
+    transition: transform 0.6s;
 
     & > div.visible::after {
         content: ${props => props.size !== 'large' ? '' : '\'Click Me!\''};
@@ -20,9 +27,9 @@ const StyledFlipCard = styled.div`
         border: 1px solid red;
         ${props => props.points > 0 ? 'border: 1px solid orange;' : ''}
         ${props => props.points > 4 ? 'border: 1px solid green;' : ''}
-        ${props => props.size === 'medium' ? 'font-size: 0.66em;' : ''}
-        ${props => props.size === 'small' ? 'font-size: 0.33em;' : ''}
         border-radius: 10px;
+        ${props => props.size === 'medium' ? 'border-radius: 15px; border-width: 1.66px;' : ''}
+        ${props => props.size === 'small' ? 'border-radius: 20px; border-width: 3px;' : ''}
         background-color: white;
         width: 100%;
         height: 100%;
@@ -32,7 +39,7 @@ const StyledFlipCard = styled.div`
         overflow: scroll;
         padding: 10px;
         text-align: center;
-        transition: font-size 0.6s;
+        transition: border-radius 0.6s, border-width 0.6s;
     }
 
     & > div.visible {

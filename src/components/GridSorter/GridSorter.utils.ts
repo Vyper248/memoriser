@@ -1,8 +1,10 @@
 export const getGridValues = () => {
-    const screenWidth = window.innerWidth - 100;
+    let screenWidth = window.innerWidth - 100;
+    if (screenWidth > 1400) screenWidth = 1400;
     const gridSize = 100;
     const maxGrid = Math.floor(screenWidth / gridSize);
-    const leftover = (screenWidth - (maxGrid*100)) / 2;
+    const actualWidth = window.innerWidth - 100;
+    const leftover = (actualWidth - (maxGrid*gridSize)) / 2;
 
     return { gridSize, maxGrid, leftover };
 }
