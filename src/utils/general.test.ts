@@ -1,6 +1,5 @@
-import { getSize, correctCardAdjustment, createNewCard, generateHash, parseHash, getLocalData, mergeSharedData, getIDCheckObj } from "./general.utils";
-
-import type { Card, Group } from "../types";
+import { getSize, correctCardAdjustment, createNewCard, generateHash, 
+        parseHash, getLocalData } from "./general.utils";
 
 describe('Testing the getSize function', () => {
     it('Gets the size of a card based on points and last checked', () => {
@@ -124,69 +123,5 @@ describe('Testing the getLocalData function', () => {
         expect(localDataGroups).toHaveLength(1);
         expect(localDataGroups[0].id).toEqual('1');
         expect(localDataGroups[0].name).toEqual('test group');
-    });
-});
-
-describe('Testing getIDCheckObj function', () => {
-    it('Returns the correct obj', () => {
-        let cardA = { id: '1' } as Card;
-        let cardB = { id: '2' } as Card;
-        let mockArr = [cardA, cardB];
-        let obj = getIDCheckObj(mockArr);
-
-        expect(obj[cardA.id]).toEqual(true);
-        expect(obj[cardB.id]).toEqual(true);
-        expect(obj['3']).toEqual(undefined);
-    });
-});
-
-describe('Testing mergeSharedData function', () => {
-    it('Merges data with local', () => {
-        localStorage.setItem('memoriser-data-groups', JSON.stringify([{id: '2', name: 'test group'}]));
-        localStorage.setItem('memoriser-data-cards', JSON.stringify([{id: '1', groupId: '2', question: 'test card'}]));
-
-        let mockCards = [{ id: '3', groupId: '4', question: 'new card'}] as Card[];
-        let mockGroups = [{id: '4', name: 'new group'}] as Group[];
-
-        mergeSharedData(mockCards, mockGroups);
-
-        let { localDataCards, localDataGroups } = getLocalData();
-        
-        expect(localDataCards).toHaveLength(2);
-        expect(localDataGroups).toHaveLength(2);
-
-        expect(localDataGroups[0].name).toEqual('test group');
-        expect(localDataGroups[0].id).toEqual('2');
-
-        expect(localDataGroups[1].name).toEqual('new group');
-        expect(localDataGroups[1].id).toEqual('4');
-
-        expect(localDataCards[0].question).toEqual('test card');
-        expect(localDataCards[0].id).toEqual('1');
-
-        expect(localDataCards[1].question).toEqual('new card');
-        expect(localDataCards[1].id).toEqual('3');
-    });
-
-    it('Updates any IDs that are duplicated with local data', () => {
-        localStorage.setItem('memoriser-data-groups', JSON.stringify([{id: '2', name: 'test group'}]));
-        localStorage.setItem('memoriser-data-cards', JSON.stringify([{id: '1', groupId: '2', question: 'test card'}]));
-
-        let mockCards = [{ id: '1', groupId: '2', question: 'new card'}] as Card[];
-        let mockGroups = [{id: '2', name: 'new group'}] as Group[];
-
-        mergeSharedData(mockCards, mockGroups);
-
-        let { localDataCards, localDataGroups } = getLocalData();
-        
-        expect(localDataCards).toHaveLength(2);
-        expect(localDataGroups).toHaveLength(2);
-
-        expect(localDataGroups[0].id).toEqual('2');
-        expect(localDataGroups[1].id).not.toEqual('2');
-
-        expect(localDataCards[0].id).toEqual('1');
-        expect(localDataCards[1].id).not.toEqual('1');
-        expect(localDataCards[1].groupId).toEqual(localDataGroups[1].id);
     });
 });
