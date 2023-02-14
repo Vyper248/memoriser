@@ -12,6 +12,7 @@ import GroupSelect from '../../components/GroupSelect/GroupSelect';
 import Header from '../../components/Header/Header';
 import GridSorter from '../../components/GridSorter/GridSorter';
 import LinkedBorders from '../../components/LinkedBorders/LinkedBorders';
+import ImportMenu from '../../components/ImportMenu/ImportMenu';
 
 type MainPageProps = {
     groups: Group[];
@@ -103,31 +104,6 @@ const MainPage = ({groups, setGroups, cards, setCards, viewingShared}: MainPageP
 		setAddingCard(false);
 	}
 
-	const onCancelShare = () => {
-		window.location.hash = '';
-	}
-
-	const onAddShared = () => {
-		importSharedData(cards, groups);
-		onCancelShare();
-	}
-
-	const onMergeShared = () => {
-		mergeSharedData(cards, groups);
-		onCancelShare();
-	}
-
-	const onMergeWithGroup = () => {
-		let selectedGroup = currentGroup as Group;
-		let filteredCards = cards.filter(card => card.groupId === selectedGroup.id);
-		mergeWithSelectedGroup(filteredCards, mergeGroup);
-		onCancelShare();
-	}
-
-	const onChangeMergeGroup = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		setMergeGroup(e.target.value);
-	}	
-
 	let filteredCards = [] as Card[];
 	if (currentGroup) {
 		filteredCards = filterArrayByGroupId(currentGroup.id, cards);
@@ -141,30 +117,10 @@ const MainPage = ({groups, setGroups, cards, setCards, viewingShared}: MainPageP
 		onSelect: setSelectedCard
 	}
 
-	let localGroups = [] as Group[];
-	if (viewingShared) {
-		let { localDataGroups } = getLocalData();	
-		localGroups = localDataGroups;
-	}
-
 	return (
 		<StyledMainPage>
 			<Header text='Memoriser' cards={cards} groups={groups} currentGroup={currentGroup} viewingShared={viewingShared}/>
-			{ viewingShared ? <Button value='Back to your groups' onClick={onCancelShare}/> : null }
-			{ viewingShared ? <Button value='Add All' onClick={onAddShared}/> : null }
-			{ viewingShared && localGroups.length > 0 ? <Button value='Merge All' onClick={onMergeShared}/> : null }
-			{ viewingShared && localGroups.length > 0 ? <>
-				<br/>
-				<LinkedBorders>
-					<label style={{backgroundColor: '#DDD'}}>Merge Selected Group With</label>
-					<select onChange={onChangeMergeGroup}>
-						{ localGroups.map(group => <option value={group.id}>{group.name}</option>) }
-					</select>
-					<Button value='Go' onClick={onMergeWithGroup}/>
-				</LinkedBorders>
-				<br/>
-				<br/>
-			</> : null }
+			{ viewingShared ? <ImportMenu cards={cards} groups={groups} currentGroup={currentGroup}/> : null }
 			<GroupSelect groups={groups} currentGroup={currentGroup} viewingShared={viewingShared} onChange={onChangeGroup} onAdd={onAddGroup} onEdit={onEditGroup} onDelete={onDeleteGroup}/>
 			{ viewingShared ? null : <Button value='New Card' onClick={onClickAddCard}/> }
 			<GridSorter cards={filteredCards} selectedCard={selectedCard} cardFunctions={cardFunctions} viewingShared={viewingShared}/>
