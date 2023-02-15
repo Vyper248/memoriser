@@ -121,7 +121,7 @@ const MainPage = ({groups, setGroups, cards, setCards, viewingShared}: MainPageP
 
 	return (
 		<StyledMainPage>
-			<Header text='Memoriser' cards={cards} groups={groups} currentGroup={currentGroup} viewingShared={viewingShared}/>
+			<Header text='Learn with Cards' cards={cards} groups={groups} currentGroup={currentGroup} viewingShared={viewingShared}/>
 			{ viewingShared ? <ImportMenu cards={cards} groups={groups} currentGroup={currentGroup}/> : null }
 			<GroupSelect groups={groups} currentGroup={currentGroup} viewingShared={viewingShared} onChange={onChangeGroup} onAdd={onAddGroup} onEdit={onEditGroup} onDelete={onDeleteGroup}/>
 			{ viewingShared ? null : <Button value='New Card' onClick={onClickAddCard}/> }
