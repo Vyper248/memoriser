@@ -6,6 +6,8 @@ import { importSharedData, mergeSharedData, mergeWithSelectedGroup } from '../..
 
 import Button from "../Button/Button";
 import LinkedBorders from "../LinkedBorders/LinkedBorders";
+import Dropdown from "../Dropdown/Dropdown";
+import Label from "../Label/Label";
 
 import type { Group, Card } from "../../types";
 
@@ -41,8 +43,8 @@ const ImportMenu = ({cards, groups, currentGroup}: ImportMenuProps) => {
 		onCancelShare();
 	}
 
-	const onChangeMergeGroup = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		setMergeGroup(e.target.value);
+	const onChangeMergeGroup = (value: string) => {
+		setMergeGroup(value);
 	}	
 
 	let { localDataGroups } = getLocalData();	
@@ -55,10 +57,8 @@ const ImportMenu = ({cards, groups, currentGroup}: ImportMenuProps) => {
 			{ localDataGroups.length > 0 ? <>
 				<br/>
 				<LinkedBorders>
-					<label style={{backgroundColor: '#DDD'}}>Merge Selected Group With</label>
-					<select onChange={onChangeMergeGroup}>
-						{ localDataGroups.map(group => <option key={'localGroups-'+group.id} value={group.id}>{group.name}</option>) }
-					</select>
+					<Label value='Merge Selected Group With'/>
+					<Dropdown value={mergeGroup} onChange={onChangeMergeGroup} options={localDataGroups.map(group => ({value: group.id, name: group.name}))}/>
 					<Button value='Go' onClick={onMergeWithGroup}/>
 				</LinkedBorders>
 				<br/>

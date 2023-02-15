@@ -6,7 +6,8 @@ const StyledLinkedBorders = styled.div`
 
     & > * {
         border: 1px solid #DDD;
-        border-right: none;
+        border-radius: 0px !important;
+        border-right: none !important;
         display: flex;
         align-items: center;
         padding: 5px;
@@ -14,12 +15,12 @@ const StyledLinkedBorders = styled.div`
     }
 
     & > *:first-child {
-        border-radius: 5px 0px 0px 5px;
+        border-radius: 5px 0px 0px 5px !important;
     }
 
     & > *:last-child {
-        border-radius: 0px 5px 5px 0px;
-        border-right: 1px solid #DDD;
+        border-radius: 0px 5px 5px 0px !important;
+        border-right: 1px solid #DDD !important;
     }
 
 

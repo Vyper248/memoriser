@@ -10,6 +10,8 @@ import Button from '../Button/Button';
 import DropdownMenu from '../DropdownMenu/DropdownMenu';
 import LabelledInput from '../LabelledInput/LabelledInput';
 import LinkedBorders from '../LinkedBorders/LinkedBorders';
+import Dropdown from '../Dropdown/Dropdown';
+import Label from '../Label/Label';
 
 type GroupSelectProps = {
     groups: Group[];
@@ -62,8 +64,12 @@ const GroupSelect = ({ groups, currentGroup, viewingShared, onChange, onAdd, onE
     const [addingGroup, setAddingGroup] = useState(false);
     const [editingGroup, setEditingGroup] = useState(false);
 
-    const onChangeGroup = (e: React.FormEvent<HTMLSelectElement>) => {
-        onChange(e.currentTarget.value);
+    // const onChangeGroup = (e: React.FormEvent<HTMLSelectElement>) => {
+    //     onChange(e.currentTarget.value);
+    // }
+
+    const onChangeGroup = (value: string) => {
+        onChange(value);
     }
 
     const onClickAddGroup = () => {
@@ -126,12 +132,8 @@ const GroupSelect = ({ groups, currentGroup, viewingShared, onChange, onAdd, onE
     return (
         <StyledGroupSelect>
             <LinkedBorders>
-                <label>Group</label>
-                <select onChange={onChangeGroup} value={currentGroup?.id}>
-                    {
-                        groups.map((group, i) => <option key={`groupName-${group.name}-${i}`} value={group.id}>{group.name}</option>)
-                    }
-                </select>
+                <Label value='Group'/>
+                <Dropdown value={currentGroup?.id} onChange={onChangeGroup} options={groups.map(group => ({value: group.id, name: group.name}))}/>
                 { viewingShared ? null : (<DropdownMenu>
                     <Button value='New Group' onClick={onClickAddGroup}/>
                     <Button value='Edit Group' onClick={onClickEditGroup}/>
