@@ -63,8 +63,8 @@ export const createNewCard = (groupId: string): Card => {
     let newCard: Card = {
         id: `${newId}`,
         groupId: groupId,
-        question: 'Flip to Edit',
-        answer: 'Edit Me',
+        question: 'Question',
+        answer: 'Answer',
         points: 0,
     }
 

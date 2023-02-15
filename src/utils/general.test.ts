@@ -18,8 +18,8 @@ describe('Testing the createNewCard function', () => {
         let newGroup = createNewCard('1');
         expect(newGroup).toHaveProperty('id');
         expect(newGroup.groupId).toBe('1');
-        expect(newGroup.question).toBe('Flip to Edit');
-        expect(newGroup.answer).toBe('Edit Me');
+        expect(newGroup.question).toBe('Question');
+        expect(newGroup.answer).toBe('Answer');
         expect(newGroup.points).toBe(0);
     });
 });
