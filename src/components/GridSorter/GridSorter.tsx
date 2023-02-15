@@ -1,8 +1,7 @@
 import { ReactNode, useState } from 'react';
 import StyledGridSorter, { StyledGridSquare } from './GridSorter.style';
 
-import { getSize } from '../../utils/general.utils';
-import { getNextLocation, getGridValues } from './GridSorter.utils';
+import { getGridValues, createCardObj, enlargeSelectedCard, addPositionToCard } from './GridSorter.utils';
 import { useResizeListener } from '../../utils/customHooks';
 
 import type { Card } from '../../types';
@@ -20,6 +19,7 @@ type GridSorterProps = {
         onSelect: (card: Card)=>void;
     };
     viewingShared: boolean;
+    addingCard: boolean;
     selectedCard: Card | null;
 }
 
@@ -30,11 +30,14 @@ interface PositionedCardExtra {
     first: boolean;
 }
 
-type PositionedCard = Card & PositionedCardExtra;
+export type PositionedCard = Card & PositionedCardExtra;
 
 interface GridSquareProps extends PositionedCardExtra {
     children: ReactNode;
 }
+
+export type CardObj = { [key: string]: PositionedCard };
+export type LocationObj = { [key: string]: boolean };
 
 const GridSquare = ({x=0, y=0, size, first=false, children}: GridSquareProps) => {
     const { gridSize, leftover } = getGridValues();
@@ -54,42 +57,37 @@ const GridSquare = ({x=0, y=0, size, first=false, children}: GridSquareProps) =>
     );
 };
 
-const GridSorter = ({cards, selectedCard, cardFunctions, viewingShared}: GridSorterProps) => {
-    const [_, updateLayout] = useState(0);
+const GridSorter = ({cards, selectedCard, cardFunctions, viewingShared, addingCard}: GridSorterProps) => {
+    const [, updateLayout] = useState(0);
 
     let newCards = structuredClone(cards) as PositionedCard[];
 
     //create obj from array for quicker lookup
-    let newCardObj = {} as {[key: string]: PositionedCard};
-    newCards.forEach(card => newCardObj[card.id] = card);
+    let newCardObj = createCardObj(newCards);
 
     //create obj to store locations of cards
-    const takenLocations = {} as {[key: string] : boolean};
+    const takenLocations = {} as LocationObj;
 
     //get sorted card array
-    let sortedCards = sortArray(cards);
+    let sortedCards = sortArray(newCards);
 
-    //sort cards and add values to card
+    if (addingCard && selectedCard !== null) {
+        //filter out that card from sorted cards
+        sortedCards = sortedCards.filter(card => card.id !== selectedCard.id);
+        sortedCards = [selectedCard as PositionedCard, ...sortedCards];
+    }
+
+    //if want to make a certain card larger in position (try with selected card)
+    if (selectedCard && !addingCard) {
+        //filter out that card from sorted cards
+        sortedCards = sortedCards.filter(card => card.id !== selectedCard.id);
+        //enlarge in-place
+        enlargeSelectedCard(newCardObj, selectedCard as PositionedCard, takenLocations);
+    }
+
+    //add values to card
     sortedCards.forEach((card, i) => {
-        let newCard = newCardObj[card.id];
-        if (!newCard) return;
-
-        //if it's the selected card or first card, put at top
-        if ((selectedCard && card.id === selectedCard.id) || (!selectedCard && i === 0)) {
-            newCard.x = 0;
-            newCard.y = -3;
-            newCard.size = 'large';
-            newCard.first = true;
-            return;
-        } 
-
-        //for all other cards, get location in grid
-        let size = getSize(card);
-        let { x, y } = getNextLocation(size, takenLocations);
-        newCard.x = x;
-        newCard.y = y;
-        newCard.size = size;
-        newCard.first = false;
+        addPositionToCard(card, i, newCardObj, takenLocations, addingCard);
     });
 
     useResizeListener(() => {
@@ -101,7 +99,7 @@ const GridSorter = ({cards, selectedCard, cardFunctions, viewingShared}: GridSor
             {
                 newCards.map((card, i) => {
                     return <GridSquare key={card.id} x={card.x} y={card.y} size={card.size} first={card.first}>
-                                <FlipCard card={card} size={card.size} viewingShared={viewingShared} {...cardFunctions}/>
+                                <FlipCard card={card} size={card.size} viewingShared={viewingShared} startInEditMode={addingCard} {...cardFunctions}/>
                             </GridSquare>
                 })
             }

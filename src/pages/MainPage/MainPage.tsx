@@ -4,14 +4,12 @@ import StyledMainPage from './MainPage.style';
 import type { Group, Card } from '../../types';
 
 import { addToArray, removeFromArray, editInArray, filterArrayByGroupId } from '../../utils/array.utils';
-import { correctCardAdjustment, createNewCard, getLocalData } from '../../utils/general.utils';
-import { importSharedData, mergeSharedData, mergeWithSelectedGroup } from '../../utils/importing.utils';
+import { correctCardAdjustment, createNewCard } from '../../utils/general.utils';
 
 import Button from '../../components/Button/Button';
 import GroupSelect from '../../components/GroupSelect/GroupSelect';
 import Header from '../../components/Header/Header';
 import GridSorter from '../../components/GridSorter/GridSorter';
-import LinkedBorders from '../../components/LinkedBorders/LinkedBorders';
 import ImportMenu from '../../components/ImportMenu/ImportMenu';
 
 type MainPageProps = {
@@ -25,7 +23,6 @@ type MainPageProps = {
 const MainPage = ({groups, setGroups, cards, setCards, viewingShared}: MainPageProps) => {
     const [currentGroup, setCurrentGroup] = useState<Group | undefined>(groups[0]);
 	const [addingCard, setAddingCard] = useState(false);
-	const [mergeGroup, setMergeGroup] = useState('');
 	const [selectedCard, setSelectedCard] = useState<Card | null>(null);
 
     //make sure current group is correct after loading data from local storage
@@ -79,7 +76,7 @@ const MainPage = ({groups, setGroups, cards, setCards, viewingShared}: MainPageP
 	const onEditCard = (card: Card) => {
 		let newCards = editInArray(card, cards);
 		setCards(newCards);
-		if (selectedCard) setSelectedCard(card);
+		if (selectedCard) setSelectedCard(null);
 		setAddingCard(false);
 	}
 
@@ -104,6 +101,11 @@ const MainPage = ({groups, setGroups, cards, setCards, viewingShared}: MainPageP
 		setAddingCard(false);
 	}
 
+	const onSelectCard = (card: Card) => {
+		setAddingCard(false);
+		setSelectedCard(card);
+	}
+
 	let filteredCards = [] as Card[];
 	if (currentGroup) {
 		filteredCards = filterArrayByGroupId(currentGroup.id, cards);
@@ -114,7 +116,7 @@ const MainPage = ({groups, setGroups, cards, setCards, viewingShared}: MainPageP
 		onFail: onIncorrectAnswer,
 		onEdit: onEditCard,
 		onDelete: onDeleteCard,
-		onSelect: setSelectedCard
+		onSelect: onSelectCard
 	}
 
 	return (
@@ -123,7 +125,7 @@ const MainPage = ({groups, setGroups, cards, setCards, viewingShared}: MainPageP
 			{ viewingShared ? <ImportMenu cards={cards} groups={groups} currentGroup={currentGroup}/> : null }
 			<GroupSelect groups={groups} currentGroup={currentGroup} viewingShared={viewingShared} onChange={onChangeGroup} onAdd={onAddGroup} onEdit={onEditGroup} onDelete={onDeleteGroup}/>
 			{ viewingShared ? null : <Button value='New Card' onClick={onClickAddCard}/> }
-			<GridSorter cards={filteredCards} selectedCard={selectedCard} cardFunctions={cardFunctions} viewingShared={viewingShared}/>
+			<GridSorter cards={filteredCards} selectedCard={selectedCard} cardFunctions={cardFunctions} viewingShared={viewingShared} addingCard={addingCard}/>
 		</StyledMainPage>
 	);
 }

@@ -1,3 +1,6 @@
+import type { CardObj, LocationObj, PositionedCard } from "./GridSorter";
+import { getSize } from "../../utils/general.utils";
+
 export const getGridValues = () => {
     let screenWidth = window.innerWidth - 100;
     if (screenWidth > 1400) screenWidth = 1400;
@@ -7,6 +10,15 @@ export const getGridValues = () => {
     const leftover = (actualWidth - (maxGrid*gridSize)) / 2;
 
     return { gridSize, maxGrid, leftover };
+}
+
+export const fillPositions = (x: number, y: number, size: number, obj: {[key: string] : boolean}) => {
+    for (let i = 0; i < size; i++) {
+        for (let j = 0; j < size; j++) {
+            let coord = `${x+j}-${y+i}`;
+            obj[coord] = true;
+        }
+    }
 }
 
 export const getNextLocation = (size: 'small' | 'medium' | 'large', takenLocations: {[key: string] : boolean}) => {
@@ -51,14 +63,61 @@ export const getNextLocation = (size: 'small' | 'medium' | 'large', takenLocatio
         }
 
         //if found, then fill in takenLocations
-        for (let i = 0; i < checks; i++) {
-            for (let j = 0; j < checks; j++) {
-                let coord = `${x+j}-${y+i}`;
-                takenLocations[coord] = true;
-            }
-        }
+        fillPositions(x, y, checks, takenLocations);
         break;
     }
 
     return { x, y };
+}
+
+export const createCardObj = (cardArray: PositionedCard[]) => {
+    let newCardObj = {} as CardObj;
+
+    //reset all positions and add to obj
+    cardArray.forEach(card => {
+        card.x = 0;
+        card.y = 0;
+        card.size = 'large';
+        card.first = false;
+        newCardObj[card.id] = card;
+    });
+
+    return newCardObj;
+}
+
+export const enlargeSelectedCard = (newCardObj: CardObj, selectedCard: PositionedCard, takenLocations: LocationObj) => {
+    //determine if x value needs to change if too close to the edge
+    let { x, y } = selectedCard;
+    let { maxGrid } = getGridValues();
+    if (x + 2 > maxGrid) x = maxGrid - 2;
+
+    //fill positions so no other card will overlap
+    fillPositions(x, y, 3, takenLocations);
+
+    //set values on card obj
+    newCardObj[selectedCard.id].x = x;
+    newCardObj[selectedCard.id].y = y;
+    newCardObj[selectedCard.id].size = 'large';
+}
+
+export const addPositionToCard = (card: PositionedCard, i: number, newCardObj: CardObj, takenLocations: LocationObj, addingCard: boolean) => {
+    let newCard = newCardObj[card.id];
+    if (!newCard) return;
+
+    //if it's the selected card or first card, put at top
+    if (i === 0) {
+        newCard.x = 0;
+        newCard.y = -3;
+        newCard.size = 'large';
+        newCard.first = true;
+        return;
+    } 
+
+    //for all other cards, get location in grid
+    let size = getSize(card);
+    let { x, y } = getNextLocation(size, takenLocations);
+    newCard.x = x;
+    newCard.y = y;
+    newCard.size = size;
+    newCard.first = false;
 }
