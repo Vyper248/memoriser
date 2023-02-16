@@ -1,7 +1,7 @@
 import {render, screen} from '@testing-library/react'
 import '@testing-library/jest-dom'
 import GridSorter, { CardObj, LocationObj } from './GridSorter'
-import { getNextLocation, getGridValues, createCardObj, enlargeSelectedCard, addPositionToCard, fillPositions } from './GridSorter.utils';
+import { getNextLocation, getGridValues, createCardObj, enlargeSelectedCard, addPositionToCard, fillPositions, getSizeFromIndex } from './GridSorter.utils';
 
 import type { Card } from '../../types';
 import type { PositionedCard } from './GridSorter';
@@ -148,7 +148,7 @@ describe('Testing the addPositionToCard function', () => {
         let index = 0;
         let mockTakenLocations = {} as LocationObj;
 
-        addPositionToCard(mockCard, index, mockCardObj, mockTakenLocations, false);
+        addPositionToCard(mockCard, index, mockCardObj, mockTakenLocations, {});
 
         expect(mockCardObj['1'].x).toBe(0);
         expect(mockCardObj['1'].y).toBe(-3);
@@ -159,10 +159,10 @@ describe('Testing the addPositionToCard function', () => {
     it('Adds the correct position values to the other cards', () => {
         let mockCard = {id: '1', x: 0, y: 0, size: 'small', points: 5} as PositionedCard;
         let mockCardObj =  {'1': mockCard } as CardObj;
-        let index = 1;
+        let index = 5;
         let mockTakenLocations = {} as LocationObj;
 
-        addPositionToCard(mockCard, index, mockCardObj, mockTakenLocations, false);
+        addPositionToCard(mockCard, index, mockCardObj, mockTakenLocations, {'1': 6});
 
         expect(mockCardObj['1'].x).toBe(0);
         expect(mockCardObj['1'].y).toBe(0);
@@ -173,10 +173,10 @@ describe('Testing the addPositionToCard function', () => {
     it('Adds the correct position values to the other cards if a position is taken', () => {
         let mockCard = {id: '1', x: 0, y: 0, size: 'small', points: 3} as PositionedCard;
         let mockCardObj =  {'1': mockCard } as CardObj;
-        let index = 1;
+        let index = 6;
         let mockTakenLocations = {'0-0': true} as LocationObj;
 
-        addPositionToCard(mockCard, index, mockCardObj, mockTakenLocations, false);
+        addPositionToCard(mockCard, index, mockCardObj, mockTakenLocations, {'1': 7});
 
         expect(mockCardObj['1'].x).toBe(1);
         expect(mockCardObj['1'].y).toBe(0);
@@ -211,5 +211,21 @@ describe('Testing the fillPositions function', () => {
         expect(mockTakenLocations['4-2']).toBeTruthy();
         expect(mockTakenLocations['5-2']).toBeTruthy();
         expect(Object.keys(mockTakenLocations)).toHaveLength(14);
+    });
+});
+
+describe('Testing getSizeFromIndex function', () => {
+    it('Gets a size based on the index, either small, medium or large', () => {
+        let size = getSizeFromIndex(0);
+        expect(size).toBe('small');
+
+        size = getSizeFromIndex(1);
+        expect(size).toBe('medium');
+
+        size = getSizeFromIndex(2);
+        expect(size).toBe('large');
+
+        size = getSizeFromIndex(3);
+        expect(size).toBe('small');
     });
 });
