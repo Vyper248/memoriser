@@ -100,7 +100,20 @@ export const enlargeSelectedCard = (newCardObj: CardObj, selectedCard: Positione
     newCardObj[selectedCard.id].size = 'large';
 }
 
-export const addPositionToCard = (card: PositionedCard, i: number, newCardObj: CardObj, takenLocations: LocationObj, addingCard: boolean) => {
+type Size = 'small' | 'medium' | 'large';
+export const getRandomSize = (): Size => {
+    let sizes = ['small', 'medium', 'large'] as Size[];
+    let random = Math.floor(Math.random()*3);
+    return sizes[random];
+}
+
+export const getSizeFromIndex = (i: number) => {
+    let sizes = ['small', 'medium', 'large'] as Size[];
+    let chosen = i % 3;
+    return sizes[chosen];
+}
+
+export const addPositionToCard = (card: PositionedCard, i: number, newCardObj: CardObj, takenLocations: LocationObj, originalIndexes: {[key: string]: number}) => {
     let newCard = newCardObj[card.id];
     if (!newCard) return;
 
@@ -114,7 +127,12 @@ export const addPositionToCard = (card: PositionedCard, i: number, newCardObj: C
     } 
 
     //for all other cards, get location in grid
-    let size = getSize(card);
+    //Set size based on index in original array - (prevents too much size changing if using original)
+    //allows for a better look, even when all would normally be large
+    let size: Size;
+    if (i > 4) size = getSizeFromIndex(originalIndexes[card.id]);
+    else size = 'large';
+
     let { x, y } = getNextLocation(size, takenLocations);
     newCard.x = x;
     newCard.y = y;

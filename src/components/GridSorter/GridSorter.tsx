@@ -62,6 +62,10 @@ const GridSorter = ({cards, selectedCard, cardFunctions, viewingShared, addingCa
 
     let newCards = structuredClone(cards) as PositionedCard[];
 
+    //make the original index of each card quickl accessible
+    let originalIndexes = {} as {[key: string]: number};
+    cards.forEach((card, i) => originalIndexes[card.id] = i);
+
     //create obj from array for quicker lookup
     let newCardObj = createCardObj(newCards);
 
@@ -87,7 +91,7 @@ const GridSorter = ({cards, selectedCard, cardFunctions, viewingShared, addingCa
 
     //add values to card
     sortedCards.forEach((card, i) => {
-        addPositionToCard(card, i, newCardObj, takenLocations, addingCard);
+        addPositionToCard(card, i, newCardObj, takenLocations, originalIndexes);
     });
 
     useResizeListener(() => {
