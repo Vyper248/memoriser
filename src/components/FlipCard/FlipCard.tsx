@@ -60,7 +60,7 @@ const EditMenu = ({ card, onSave, onCancel, onDelete }: EditMenuProps) => {
 const FlipCard = ({ viewingShared, speed=0.5, width='100%', height='100%', startInEditMode=false, card, size='large', onCorrect, onFail, onEdit, onDelete, onSelect }: FlipCardProps) => {
     const [flipped, setFlipped] = useState<boolean | undefined>(undefined);
     const [editMode, setEditMode] = useState(startInEditMode);
-    const [timeToPoint, setTimeToPoint] = useState('');
+    const [timeToPoint, setTimeToPoint] = useState(getTimeTillNextPoint(card.lastChecked, card.lastCheckingPeriod));
 
     //update times for this card every minute
     useEffect(() => {
