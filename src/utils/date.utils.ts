@@ -34,3 +34,47 @@ export const hourPassed = (lastChecked: number | undefined) => {
     if (difference >= hour) return true;
     return false;
 }
+
+export const getCheckingPeriodAsTime = (lastCheckingPeriod: string | undefined) => {
+    if (lastCheckingPeriod === undefined) return 0;
+
+    const hour = 3600000;
+    switch(lastCheckingPeriod) {
+        case '1 Hour': return hour;
+        case '2 Hours': return hour*2;
+        case '4 Hours': return hour*4;
+        case '8 Hours': return hour*8;
+        case '1 Day': return hour*24;
+        case '2 Days': return hour*48;
+        case '4 Days': return hour*96;
+        case '1 Week': return hour*168;
+        case '2 Weeks': return hour*336;
+        case '4 Weeks': return hour*672;
+    }
+
+    return 0;
+}
+
+export const getTimeString = (time: number) => {
+    if (time < 0) return 'Ready';
+    let minutes = Math.floor((time / 1000 / 60) % 60);
+    let hours = Math.floor((time / 1000 / 60 / 60) % 24);
+    let days = Math.floor((time / 1000 / 60 / 60 / 24) % 7);
+    let weeks = Math.floor((time / 1000 / 60 / 60 / 24 / 7));
+    let weekString = weeks > 0 ? weeks+'w:' : '';
+    let dayString = weeks > 0 || days > 0 ? days+'d:' : '';
+    let hourString = weeks > 0 || days > 0 || hours > 0 ? hours+'h:' : '';
+    let minuteString = minutes > 9 ? minutes+'m' : '0'+minutes+'m';
+    let formatted = `${weekString}${dayString}${hourString}${minuteString}`;
+    return formatted;
+}
+
+export const getTimeTillNextPoint = (lastChecked: number | undefined, lastCheckingPeriod: string | undefined) => {
+    if (lastChecked === undefined || lastCheckingPeriod === undefined) return '';
+    let currentDate = new Date().getTime();
+    let timeToNext = getCheckingPeriodAsTime(lastCheckingPeriod);
+    let nextCheckTime = lastChecked + timeToNext;
+    let difference = nextCheckTime - currentDate;
+    let timeString = getTimeString(difference);
+    return timeString;
+}

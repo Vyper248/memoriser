@@ -59,6 +59,7 @@ const GridSquare = ({x=0, y=0, size, first=false, children}: GridSquareProps) =>
 
 const GridSorter = ({cards, selectedCard, cardFunctions, viewingShared, addingCard}: GridSorterProps) => {
     const [, updateLayout] = useState(0);
+    const { gridSize } = getGridValues();
 
     let newCards = structuredClone(cards) as PositionedCard[];
 
@@ -89,9 +90,11 @@ const GridSorter = ({cards, selectedCard, cardFunctions, viewingShared, addingCa
         enlargeSelectedCard(newCardObj, selectedCard as PositionedCard, takenLocations);
     }
 
-    //add values to card
+    //add values to card and get highest y position
+    let highestY = 0;
     sortedCards.forEach((card, i) => {
-        addPositionToCard(card, i, newCardObj, takenLocations, originalIndexes);
+        let y = addPositionToCard(card, i, newCardObj, takenLocations, originalIndexes);
+        if (y > highestY) highestY = y;
     });
 
     useResizeListener(() => {
@@ -99,7 +102,7 @@ const GridSorter = ({cards, selectedCard, cardFunctions, viewingShared, addingCa
     }, 200);
 
     return (
-        <StyledGridSorter>
+        <StyledGridSorter y={highestY} gridSize={gridSize}>
             {
                 newCards.map((card, i) => {
                     return <GridSquare key={card.id} x={card.x} y={card.y} size={card.size} first={card.first}>

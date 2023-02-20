@@ -14,9 +14,15 @@ const StyledFlipCard = styled.div`
     transition: transform 0.6s;
 
     & > div.visible::after {
-        content: ${props => props.size !== 'large' ? '' : '\'Click Me!\''};
+        content: ${props => {
+            if (props.size === 'large') {
+                if (props.timeToPoint === 'Ready') return `'Check now for another point!'`;
+                else if (props.timeToPoint === '') return '';
+                else return `'Check after ${props.timeToPoint} for another point'`
+            } else return '';
+        }};
         position: absolute;
-        bottom: 10px;
+        bottom: 8px;
         left: 0px;
         width: 100%;
         font-size: 0.8em;
@@ -39,7 +45,14 @@ const StyledFlipCard = styled.div`
         overflow: scroll;
         padding: 10px;
         text-align: center;
-        transition: border-radius 0.6s, border-width 0.6s;
+        transition: border-radius 0.6s, border-width 0.6s, outline-width 0.3s linear;
+        outline-width: 2px;
+        ${props => props.size === 'medium' ? 'outline-width: 3px;' : ''}
+        ${props => props.size === 'small' ? 'outline-width: 6px;' : ''}
+        outline-color: red;
+        ${props => props.points > 0 ? 'outline-color: orange;' : ''}
+        ${props => props.points > 4 ? 'outline-color: green;' : ''}
+        ${props => props.timeToPoint === 'Ready' ? 'outline-style: solid;' : ''}
     }
 
     & > div.visible {

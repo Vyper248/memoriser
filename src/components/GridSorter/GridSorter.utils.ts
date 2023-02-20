@@ -102,14 +102,14 @@ export const enlargeSelectedCard = (newCardObj: CardObj, selectedCard: Positione
 
 type Size = 'small' | 'medium' | 'large';
 export const getSizeFromIndex = (i: number) => {
-    let sizes = ['small', 'medium', 'large'] as Size[];
-    let chosen = i % 3;
+    let sizes = ['small', 'medium', 'large', 'small'] as Size[];
+    let chosen = i % 4;
     return sizes[chosen];
 }
 
 export const addPositionToCard = (card: PositionedCard, i: number, newCardObj: CardObj, takenLocations: LocationObj, originalIndexes: {[key: string]: number}) => {
     let newCard = newCardObj[card.id];
-    if (!newCard) return;
+    if (!newCard) return 0;
 
     //if it's the selected card or first card, put at top
     if (i === 0) {
@@ -117,7 +117,7 @@ export const addPositionToCard = (card: PositionedCard, i: number, newCardObj: C
         newCard.y = -3;
         newCard.size = 'large';
         newCard.first = true;
-        return;
+        return -1;
     } 
 
     //for all other cards, get location in grid
@@ -132,4 +132,8 @@ export const addPositionToCard = (card: PositionedCard, i: number, newCardObj: C
     newCard.y = y;
     newCard.size = size;
     newCard.first = false;
+
+    if (size === 'small') return y;
+    else if (size === 'medium') return y+1;
+    else return y+2;
 }

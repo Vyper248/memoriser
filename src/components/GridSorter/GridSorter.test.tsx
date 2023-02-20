@@ -166,7 +166,7 @@ describe('Testing the addPositionToCard function', () => {
 
         expect(mockCardObj['1'].x).toBe(0);
         expect(mockCardObj['1'].y).toBe(0);
-        expect(mockCardObj['1'].size).toBe('small');
+        expect(mockCardObj['1'].size).toBe('large');
         expect(mockCardObj['1'].first).toBe(false);
     });
 
@@ -180,7 +180,7 @@ describe('Testing the addPositionToCard function', () => {
 
         expect(mockCardObj['1'].x).toBe(1);
         expect(mockCardObj['1'].y).toBe(0);
-        expect(mockCardObj['1'].size).toBe('medium'); //points > 0 and <= 4
+        expect(mockCardObj['1'].size).toBe('small'); //points > 0 and <= 4
         expect(mockCardObj['1'].first).toBe(false);
     });
 });

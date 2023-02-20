@@ -3,6 +3,7 @@ import styled from 'styled-components';
 const StyledGridSorter = styled.div`
     position: relative;
     top: 300px;
+    height: ${props => (props.y+3) * props.gridSize}px;
 `
 
 export default StyledGridSorter;

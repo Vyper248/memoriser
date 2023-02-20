@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import StyledFlipCard from './FlipCard.style';
 
 import type { Card } from '../../types';
@@ -6,6 +6,7 @@ import type { Card } from '../../types';
 import Button from '../Button/Button';
 import LabelledInput from '../LabelledInput/LabelledInput';
 import { useEnterListener } from '../../utils/customHooks';
+import { getTimeTillNextPoint } from '../../utils/date.utils';
 
 type FlipCardProps = {
     viewingShared: boolean;
@@ -59,6 +60,22 @@ const EditMenu = ({ card, onSave, onCancel, onDelete }: EditMenuProps) => {
 const FlipCard = ({ viewingShared, speed=0.5, width='100%', height='100%', startInEditMode=false, card, size='large', onCorrect, onFail, onEdit, onDelete, onSelect }: FlipCardProps) => {
     const [flipped, setFlipped] = useState<boolean | undefined>(undefined);
     const [editMode, setEditMode] = useState(startInEditMode);
+    const [timeToPoint, setTimeToPoint] = useState('');
+
+    //update times for this card every minute
+    useEffect(() => {
+        setTimeToPoint(getTimeTillNextPoint(card.lastChecked, card.lastCheckingPeriod));
+        if (size === 'large') {
+
+            let interval = setInterval(() => {
+                setTimeToPoint(getTimeTillNextPoint(card.lastChecked, card.lastCheckingPeriod));
+            }, 60000);
+    
+            return () => {
+                clearInterval(interval);
+            };
+        }
+    }, [size, card.lastChecked, card.lastCheckingPeriod]);
 
     const onClick = () => {
         //if not a large card, move to top instead
@@ -99,7 +116,7 @@ const FlipCard = ({ viewingShared, speed=0.5, width='100%', height='100%', start
     }
 
     return (
-        <StyledFlipCard flipped={editMode ? true : flipped} speed={speed} width={width} height={height} points={card.points} size={size}>
+        <StyledFlipCard flipped={editMode ? true : flipped} speed={speed} width={width} height={height} points={card.points} size={size} timeToPoint={timeToPoint}>
             <div className='visible' onClick={onClick}>{card.question}</div>
             <div className='hidden'>
                 { editMode 
