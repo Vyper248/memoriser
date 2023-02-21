@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 export const useEnterListener = (id: string, callback: ()=>void) => {
     useEffect(() => {
@@ -34,7 +34,7 @@ export const useClickOutside = <T extends HTMLElement>(callback: ()=>void, open:
         return () => {
             document.removeEventListener('click', onClickOutside);
         }
-    }, [open]);
+    }, [open, callback]);
 
     return ref;
 }
@@ -53,7 +53,7 @@ export const useResizeListener = (callback: ()=>void, time: number) => {
         return () => {
             window.removeEventListener('resize', resizeListener);
         }
-    }, []);
+    }, [callback, time]);
 }
 
 export const useScrollListener = (callback: ()=>void) => {
