@@ -1,7 +1,8 @@
 import {render, screen} from '@testing-library/react'
 import '@testing-library/jest-dom'
 import GridSorter, { CardObj, LocationObj } from './GridSorter'
-import { getNextLocation, getGridValues, createCardObj, enlargeSelectedCard, addPositionToCard, fillPositions, getSizeFromIndex } from './GridSorter.utils';
+import { getNextLocation, getGridValues, createCardObj, enlargeSelectedCard, addPositionToCard, 
+        fillPositions, getSizeFromIndex, getCardArray } from './GridSorter.utils';
 
 import type { Card } from '../../types';
 import type { PositionedCard } from './GridSorter';
@@ -22,7 +23,7 @@ describe('Tests GridSorter component', () => {
     }
 
     it('Renders without crashing', () => {
-        render(<GridSorter cards={mockCards} selectedCard={null} cardFunctions={mockFunctions} viewingShared={false} addingCard={false}/>);
+        render(<GridSorter cards={mockCards} currentGroup={undefined} selectedCard={null} cardFunctions={mockFunctions} viewingShared={false} addingCard={false}/>);
     
         let element = screen.getByText('test question');
         expect(element).toBeInTheDocument();
@@ -38,7 +39,7 @@ describe('Tests GridSorter component', () => {
     });
 
     it('Wont allow showing buttons when viewing shared cards', () => {    
-        render(<GridSorter cards={mockCards} selectedCard={null} cardFunctions={mockFunctions} viewingShared={true} addingCard={false}/>);
+        render(<GridSorter cards={mockCards} currentGroup={undefined} selectedCard={null} cardFunctions={mockFunctions} viewingShared={true} addingCard={false}/>);
     
         let buttons = screen.queryAllByText('Correct');
         expect(buttons).toHaveLength(0);
@@ -227,5 +228,32 @@ describe('Testing getSizeFromIndex function', () => {
 
         size = getSizeFromIndex(3);
         expect(size).toBe('small');
+    });
+});
+
+describe('Testing getCardArray function', () => {
+    let checkTime = new Date().getTime();
+    let mockCards = [
+        {id: '1', points: 2, lastChecked: checkTime - 60000, lastCheckingPeriod: '1 Hour'},
+        {id: '2', points: 1, lastChecked: checkTime - 120000, lastCheckingPeriod: '1 Hour'},
+        {id: '3', points: 3, lastChecked: checkTime - 3800000, lastCheckingPeriod: '1 Hour'},
+    ] as Card[];
+
+    it('Returns an array of cards with x,y,size values added', () => {
+        let { newCards, highestY } = getCardArray(mockCards, false, null);
+
+        expect(newCards[0].x).toBe(3);
+        expect(newCards[1].x).toBe(0);
+        expect(newCards[2].x).toBe(0);
+
+        expect(newCards[0].y).toBe(0);
+        expect(newCards[1].y).toBe(0);
+        expect(newCards[2].y).toBe(-3);
+
+        expect(newCards[0].size).toBe('large');
+        expect(newCards[1].size).toBe('large');
+        expect(newCards[2].size).toBe('large');
+
+        expect(highestY).toBe(2);
     });
 });

@@ -6,14 +6,20 @@ const StyledGridSorter = styled.div`
     height: ${props => (props.y+3) * props.gridSize}px;
 `
 
-export default StyledGridSorter;
-
-export const StyledGridSquare = styled.div`
+export const StyledGridSquare = styled.div.attrs((props) => {
+    let size = props.size+'px';
+    return {
+        style: {
+            width: size,
+            height: size
+        }
+    }
+})`
     position: absolute;
     transition: 0.6s;
-    width: ${props => props.size}px;
-    height: ${props => props.size}px;
     padding: 5px;
     left: 0px;
     top: 0px;
 `;
+    
+export default StyledGridSorter;

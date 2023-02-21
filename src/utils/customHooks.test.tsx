@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import { useEnterListener, useClickOutside, useResizeListener } from "./customHooks";
+import { useEnterListener, useClickOutside, useResizeListener, useScrollListener } from "./customHooks";
 
 let mockCallback = jest.fn();
 
@@ -85,6 +85,23 @@ describe('Testing useResizeListener hook', () => {
         jest.runAllTimers();
 
         //function called after timer
+        expect(mockFn).toBeCalled();
+    });
+});
+
+describe('Testing useScrollListener hook', () => {
+    let mockFn = jest.fn();
+
+    const MockComponent = () => {
+        useScrollListener(mockFn);
+        return <div>Div</div>
+    }
+
+    it('Calls the function when scrolling', () => {
+        render(<MockComponent/>);
+
+        fireEvent.scroll(document, {target: { scrollY: 400 }});
+
         expect(mockFn).toBeCalled();
     });
 });

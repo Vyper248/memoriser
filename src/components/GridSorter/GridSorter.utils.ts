@@ -1,5 +1,8 @@
 import type { CardObj, LocationObj, PositionedCard } from "./GridSorter";
 import { getSize } from "../../utils/general.utils";
+import { sortArray } from "../../utils/array.utils";
+
+import type { Card } from "../../types";
 
 export const getGridValues = () => {
     let screenWidth = window.innerWidth - 100;
@@ -136,4 +139,44 @@ export const addPositionToCard = (card: PositionedCard, i: number, newCardObj: C
     if (size === 'small') return y;
     else if (size === 'medium') return y+1;
     else return y+2;
+}
+
+export const getCardArray = (cards: Card[], addingCard: boolean, selectedCard: Card | null) => {
+    let newCards = structuredClone(cards) as PositionedCard[];
+
+    //make the original index of each card quickl accessible
+    let originalIndexes = {} as {[key: string]: number};
+    cards.forEach((card, i) => originalIndexes[card.id] = i);
+
+    //create obj from array for quicker lookup
+    let newCardObj = createCardObj(newCards);
+
+    //create obj to store locations of cards
+    const takenLocations = {} as LocationObj;
+
+    //get sorted card array
+    let sortedCards = sortArray(newCards);
+
+    if (addingCard && selectedCard !== null) {
+        //filter out that card from sorted cards
+        sortedCards = sortedCards.filter(card => card.id !== selectedCard.id);
+        sortedCards = [selectedCard as PositionedCard, ...sortedCards];
+    }
+
+    //if want to make a certain card larger in position (try with selected card)
+    if (selectedCard && !addingCard) {
+        //filter out that card from sorted cards
+        sortedCards = sortedCards.filter(card => card.id !== selectedCard.id);
+        //enlarge in-place
+        enlargeSelectedCard(newCardObj, selectedCard as PositionedCard, takenLocations);
+    }
+
+    //add values to card and get highest y position
+    let highestY = 0;
+    sortedCards.forEach((card, i) => {
+        let y = addPositionToCard(card, i, newCardObj, takenLocations, originalIndexes);
+        if (y > highestY) highestY = y;
+    });
+
+    return { newCards, highestY };
 }

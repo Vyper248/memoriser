@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import StyledFlipCard from './FlipCard.style';
+import StyledFlipCard, { StyledInner, StyledTimer } from './FlipCard.style';
 
 import type { Card } from '../../types';
 
@@ -58,7 +58,7 @@ const EditMenu = ({ card, onSave, onCancel, onDelete }: EditMenuProps) => {
 }
 
 const FlipCard = ({ viewingShared, speed=0.5, width='100%', height='100%', startInEditMode=false, card, size='large', onCorrect, onFail, onEdit, onDelete, onSelect }: FlipCardProps) => {
-    const [flipped, setFlipped] = useState<boolean | undefined>(undefined);
+    const [flipped, setFlipped] = useState<boolean | undefined>(false);
     const [editMode, setEditMode] = useState(startInEditMode);
     const [timeToPoint, setTimeToPoint] = useState(getTimeTillNextPoint(card.lastChecked, card.lastCheckingPeriod));
 
@@ -84,6 +84,12 @@ const FlipCard = ({ viewingShared, speed=0.5, width='100%', height='100%', start
             return;
         }
         setFlipped(true);
+    }
+
+    const onClickHidden = () => {
+        if (size !== 'large') {
+            onSelect(card);
+        }
     }
 
     const onClickCorrect = () => {
@@ -115,10 +121,29 @@ const FlipCard = ({ viewingShared, speed=0.5, width='100%', height='100%', start
         setEditMode(true);
     }
 
+    const getTimeText = () => {
+        if (size === 'large') {
+            if (timeToPoint === 'Ready') return `'Check now for another point!'`;
+            else if (timeToPoint === '') return '';
+            else return `'Check after ${timeToPoint} for another point'`
+        } else return '';
+    }
+
+    const styledProps = {
+        timeToPoint,
+        size,
+        flipped: editMode ? true : flipped,
+        points: card.points,
+        speed
+    }
+
     return (
-        <StyledFlipCard flipped={editMode ? true : flipped} speed={speed} width={width} height={height} points={card.points} size={size} timeToPoint={timeToPoint}>
-            <div className='visible' onClick={onClick}>{card.question}</div>
-            <div className='hidden'>
+        <StyledFlipCard width={width} height={height} size={size}>
+            <StyledInner className='visible' onClick={onClick} {...styledProps}>
+                {card.question}
+                <StyledTimer>{ getTimeText() }</StyledTimer>
+            </StyledInner>
+            <StyledInner className='hidden' onClick={onClickHidden} {...styledProps}>
                 { editMode 
                     ? <EditMenu card={card} onSave={onSaveCard} onCancel={onCancelEdit} onDelete={onDeleteCard}/> 
                     : ( <div id='answer'>
@@ -129,7 +154,7 @@ const FlipCard = ({ viewingShared, speed=0.5, width='100%', height='100%', start
                                 <Button value='Edit' onClick={onClickEdit}/>
                             </div>) }
                         </div> ) }
-            </div>
+            </StyledInner>
         </StyledFlipCard>
     );
 }

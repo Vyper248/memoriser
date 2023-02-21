@@ -125,7 +125,7 @@ const MainPage = ({groups, setGroups, cards, setCards, viewingShared}: MainPageP
 			{ viewingShared ? <ImportMenu cards={cards} groups={groups} currentGroup={currentGroup}/> : null }
 			<GroupSelect groups={groups} currentGroup={currentGroup} viewingShared={viewingShared} onChange={onChangeGroup} onAdd={onAddGroup} onEdit={onEditGroup} onDelete={onDeleteGroup}/>
 			{ viewingShared ? null : <Button value='New Card' onClick={onClickAddCard}/> }
-			<GridSorter cards={filteredCards} selectedCard={selectedCard} cardFunctions={cardFunctions} viewingShared={viewingShared} addingCard={addingCard}/>
+			<GridSorter currentGroup={currentGroup} cards={filteredCards} selectedCard={selectedCard} cardFunctions={cardFunctions} viewingShared={viewingShared} addingCard={addingCard}/>
 		</StyledMainPage>
 	);
 }

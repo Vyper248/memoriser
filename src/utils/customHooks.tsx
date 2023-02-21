@@ -55,3 +55,15 @@ export const useResizeListener = (callback: ()=>void, time: number) => {
         }
     }, []);
 }
+
+export const useScrollListener = (callback: ()=>void) => {
+    useEffect(() => {
+        let scrollEvent = () => {
+            callback();
+        };
+
+        document.addEventListener('scroll', scrollEvent);
+
+        return () => document.removeEventListener('scroll', scrollEvent);
+    }, [callback]);
+}

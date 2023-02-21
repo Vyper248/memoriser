@@ -1,82 +1,81 @@
 import styled from 'styled-components';
 
-const StyledFlipCard = styled.div`
+const StyledFlipCard = styled.div.attrs((props) => {
+    let transform = 'scale(0.965)';
+    if (props.size === 'medium') transform = 'scale(0.63)';
+    if (props.size === 'small') transform = 'scale(0.30)';
+
+    return {
+        style: {
+            transform
+        }
+    };
+})`
     position: relative;
-    width: ${props => props.width};
-    height: ${props => props.height};
     width: 300px;
     height: 300px;
-    transform: scale(0.965);
-    ${props => props.size === 'medium' ? 'transform: scale(0.63);' : ''}
-    ${props => props.size === 'small' ? 'transform: scale(0.30);' : ''}
     transform-origin: top left;
     perspective: 1000px;
     transition: transform 0.6s;
-
-    & > div.visible::after {
-        content: ${props => {
-            if (props.size === 'large') {
-                if (props.timeToPoint === 'Ready') return `'Check now for another point!'`;
-                else if (props.timeToPoint === '') return '';
-                else return `'Check after ${props.timeToPoint} for another point'`
-            } else return '';
-        }};
-        position: absolute;
-        bottom: 8px;
-        left: 0px;
-        width: 100%;
-        font-size: 0.8em;
-        opacity: 0.6;
-    }
-
-    & > div {
-        border: 1px solid red;
-        ${props => props.points > 0 ? 'border: 1px solid orange;' : ''}
-        ${props => props.points > 4 ? 'border: 1px solid green;' : ''}
-        border-radius: 10px;
-        ${props => props.size === 'medium' ? 'border-radius: 15px; border-width: 1.66px;' : ''}
-        ${props => props.size === 'small' ? 'border-radius: 20px; border-width: 3px;' : ''}
-        background-color: white;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        overflow: scroll;
-        padding: 10px;
-        text-align: center;
-        transition: border-radius 0.6s, border-width 0.6s, outline-width 0.3s linear;
-        outline-width: 2px;
-        ${props => props.size === 'medium' ? 'outline-width: 3px;' : ''}
-        ${props => props.size === 'small' ? 'outline-width: 6px;' : ''}
-        outline-color: red;
-        ${props => props.points > 0 ? 'outline-color: orange;' : ''}
-        ${props => props.points > 4 ? 'outline-color: green;' : ''}
-        ${props => props.timeToPoint === 'Ready' ? 'outline-style: solid;' : ''}
-    }
-
-    & > div.visible {
-        cursor: pointer;
-        transform: rotateY(0deg);
-        ${props => props.flipped === true ? `animation: hide ${props.speed}s linear;` : ''}
-        /* ${props => props.flipped === false ? `animation: show ${props.speed}s linear;` : ''} */
-        animation-fill-mode: both;
-    }
-
-    & > div.hidden {
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        transform: rotateY(90deg);
-        ${props => props.flipped === true ? `animation: show ${props.speed}s linear;` : ''}
-        /* ${props => props.flipped === false ? `animation: hide ${props.speed}s linear;` : ''} */
-        animation-fill-mode: both;
-    }
 
     & #answer {
         & > div {
             margin-bottom: 10px;
         }
+    }
+`
+
+export const StyledInner = styled.div.attrs((props) => {
+    let border = '1px solid red';
+    let outlineColor = 'red';
+    if (props.points > 0) { border = '1px solid orange'; outlineColor = 'orange'; }
+    if (props.points > 4) { border = '1px solid green'; outlineColor = 'green'; }
+
+    let borderRadius = '10px';
+    let borderWidth = '1px';
+    let outlineWidth = '2px';
+    if (props.size === 'medium') { borderRadius = '15px'; borderWidth = '1.66px'; outlineWidth = '3px'; }
+    if (props.size === 'small') { borderRadius = '20px'; borderWidth = '3px'; outlineWidth = '6px'; }
+
+    let outlineStyle = '';
+    if (props.timeToPoint === 'Ready') { outlineStyle = 'solid'; }
+
+    return {
+        style: {
+            border,
+            borderRadius,
+            borderWidth,
+            outlineWidth,
+            outlineColor,
+            outlineStyle
+        }
+    };
+})`
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: scroll;
+    padding: 10px;
+    text-align: center;
+    transition: border-radius 0.6s, border-width 0.6s, outline-width 0.3s linear;
+
+    &.visible {
+        cursor: pointer;
+        transform: rotateY(0deg);
+        ${props => props.flipped === true ? `animation: hide ${props.speed}s linear;` : ''}
+        animation-fill-mode: both;
+    }
+
+    &.hidden {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        transform: rotateY(90deg);
+        ${props => props.flipped === true ? `animation: show ${props.speed}s linear;` : ''}
+        animation-fill-mode: both;
     }
 
     @keyframes show {
@@ -90,6 +89,16 @@ const StyledFlipCard = styled.div`
         50% { transform: rotateY(-90deg); }
         100% { transform: rotateY(-90deg); }
     }
-`
+`;
+
+export const StyledTimer = styled.div`
+    position: absolute;
+    bottom: 8px;
+    left: 0px;
+    width: 100%;
+    font-size: 0.8em;
+    opacity: 0.6;
+    pointer-events: none;
+`;
 
 export default StyledFlipCard;

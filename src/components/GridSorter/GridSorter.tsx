@@ -1,16 +1,16 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import StyledGridSorter, { StyledGridSquare } from './GridSorter.style';
 
-import { getGridValues, createCardObj, enlargeSelectedCard, addPositionToCard } from './GridSorter.utils';
-import { useResizeListener } from '../../utils/customHooks';
+import { getGridValues, getCardArray } from './GridSorter.utils';
+import { useResizeListener, useScrollListener } from '../../utils/customHooks';
 
-import type { Card } from '../../types';
+import type { Card, Group } from '../../types';
 
 import FlipCard from '../FlipCard/FlipCard';
-import { sortArray } from '../../utils/array.utils';
 
 type GridSorterProps = {
     cards: Card[];
+    currentGroup: Group | undefined;
     cardFunctions: { 
         onCorrect: (card:Card)=>void;
         onFail: (card: Card)=>void;
@@ -57,54 +57,60 @@ const GridSquare = ({x=0, y=0, size, first=false, children}: GridSquareProps) =>
     );
 };
 
-const GridSorter = ({cards, selectedCard, cardFunctions, viewingShared, addingCard}: GridSorterProps) => {
+const GridSorter = ({cards, currentGroup, selectedCard, cardFunctions, viewingShared, addingCard}: GridSorterProps) => {
     const [, updateLayout] = useState(0);
+    const [scrollPos, setScrollPos] = useState(window.scrollY + window.innerHeight - 450);
+    const [scrollSet, setScrollSet] = useState(new Set());
+
     const { gridSize } = getGridValues();
 
-    let newCards = structuredClone(cards) as PositionedCard[];
-
-    //make the original index of each card quickl accessible
-    let originalIndexes = {} as {[key: string]: number};
-    cards.forEach((card, i) => originalIndexes[card.id] = i);
-
-    //create obj from array for quicker lookup
-    let newCardObj = createCardObj(newCards);
-
-    //create obj to store locations of cards
-    const takenLocations = {} as LocationObj;
-
-    //get sorted card array
-    let sortedCards = sortArray(newCards);
-
-    if (addingCard && selectedCard !== null) {
-        //filter out that card from sorted cards
-        sortedCards = sortedCards.filter(card => card.id !== selectedCard.id);
-        sortedCards = [selectedCard as PositionedCard, ...sortedCards];
-    }
-
-    //if want to make a certain card larger in position (try with selected card)
-    if (selectedCard && !addingCard) {
-        //filter out that card from sorted cards
-        sortedCards = sortedCards.filter(card => card.id !== selectedCard.id);
-        //enlarge in-place
-        enlargeSelectedCard(newCardObj, selectedCard as PositionedCard, takenLocations);
-    }
-
-    //add values to card and get highest y position
-    let highestY = 0;
-    sortedCards.forEach((card, i) => {
-        let y = addPositionToCard(card, i, newCardObj, takenLocations, originalIndexes);
-        if (y > highestY) highestY = y;
-    });
-
+    //if screen is resized, update grid layout and set new scroll position
     useResizeListener(() => {
         updateLayout(reset => reset+1);
+        setScrollPos(window.scrollY + window.innerHeight - 450);
     }, 200);
+
+    //if scrolling, update scroll position
+    useScrollListener(() => {
+        let divPosition = 450;
+        let scrollY = window.scrollY;
+        let height = window.innerHeight;
+        let bottom = scrollY + height - divPosition;
+
+        setScrollPos(scrollPos => {
+            if (bottom > scrollPos) return bottom;
+            return scrollPos;
+        });
+    });
+
+    //if changing groups, reset scroll position and Set
+    useEffect(() => {
+        setScrollPos(window.scrollY + window.innerHeight - 450);
+        setScrollSet(new Set());
+    }, [currentGroup]);
+
+    //Check card position. If offscreen and not in the Set, don't display it.
+    //If onscreen, add to set and display
+    //Set allows cards that are in display to remain in display even if they move offscreen, preserving the movement animation
+    const checkCardPos = (card: PositionedCard) => {
+        let cardPos = card.y * gridSize;
+        if (cardPos > scrollPos && scrollSet.has(card.id) === false) return false;
+        if (scrollSet.has(card.id) === false) {
+            setScrollSet(scrollSet => {
+                scrollSet.add(card.id);
+                return scrollSet;
+            });
+        }
+        return true;
+    }
+
+    const { newCards, highestY } = getCardArray(cards, addingCard, selectedCard);
 
     return (
         <StyledGridSorter y={highestY} gridSize={gridSize}>
             {
                 newCards.map((card, i) => {
+                    if (checkCardPos(card) === false) return null;
                     return <GridSquare key={card.id} x={card.x} y={card.y} size={card.size} first={card.first}>
                                 <FlipCard card={card} size={card.size} viewingShared={viewingShared} startInEditMode={addingCard} {...cardFunctions}/>
                             </GridSquare>
