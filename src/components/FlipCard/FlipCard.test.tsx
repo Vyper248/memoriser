@@ -19,7 +19,7 @@ it('Loads card and displays question, answer and buttons', () => {
     let incorrectButton = screen.getByText('Incorrect');
     expect(incorrectButton).toBeInTheDocument();
 
-    let editButton = screen.getByText('Edit');
+    let editButton = screen.getByTitle('Edit');
     expect(editButton).toBeInTheDocument();
 });
 
@@ -34,7 +34,7 @@ it("Displays cancel button instead of normal buttons when viewing shared link", 
     let incorrectButton = screen.queryByText('Incorrect');
     expect(incorrectButton).toBeNull();
 
-    let editButton = screen.queryByText('Edit');
+    let editButton = screen.queryByTitle('Edit');
     expect(editButton).toBeNull();
 
     let cancelButton = screen.getByText('Cancel');
