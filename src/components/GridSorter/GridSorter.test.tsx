@@ -2,7 +2,7 @@ import {render, screen} from '@testing-library/react'
 import '@testing-library/jest-dom'
 import GridSorter, { CardObj, LocationObj } from './GridSorter'
 import { getNextLocation, getGridValues, createCardObj, enlargeSelectedCard, addPositionToCard, 
-        fillPositions, getSizeFromIndex, getCardArray } from './GridSorter.utils';
+        getPositions, fillPositions, getSizeFromIndex, getCardArray } from './GridSorter.utils';
 
 import type { Card } from '../../types';
 import type { PositionedCard } from './GridSorter';
@@ -183,6 +183,28 @@ describe('Testing the addPositionToCard function', () => {
         expect(mockCardObj['1'].y).toBe(0);
         expect(mockCardObj['1'].size).toBe('small'); //points > 0 and <= 4
         expect(mockCardObj['1'].first).toBe(false);
+    });
+});
+
+describe('Testing the getPositions function', () => {
+    it('Gets an array of positions in string format', () => {
+        let positions = getPositions(0, 0, 3);
+
+        expect(positions).toHaveLength(9);
+        expect(typeof positions[3]).toBe('string');
+        expect(positions[0]).toBe('0-0');
+        expect(positions[5]).toBe('2-1');
+
+        positions = getPositions(4, 4, 1);
+
+        expect(positions).toHaveLength(1);
+        expect(positions[0]).toBe('4-4');
+
+        positions = getPositions(7, 2, 2);
+
+        expect(positions).toHaveLength(4);
+        expect(positions[0]).toBe('7-2');
+        expect(positions[3]).toBe('8-3');
     });
 });
 

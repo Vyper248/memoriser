@@ -1,5 +1,4 @@
 import type { CardObj, LocationObj, PositionedCard } from "./GridSorter";
-import { getSize } from "../../utils/general.utils";
 import { sortArray } from "../../utils/array.utils";
 
 import type { Card } from "../../types";
@@ -16,58 +15,44 @@ export const getGridValues = () => {
 }
 
 export const fillPositions = (x: number, y: number, size: number, obj: {[key: string] : boolean}) => {
-    for (let i = 0; i < size; i++) {
-        for (let j = 0; j < size; j++) {
-            let coord = `${x+j}-${y+i}`;
-            obj[coord] = true;
-        }
-    }
+    const positions = getPositions(x, y, size);
+    positions.forEach(position => obj[position] = true);
+}
+
+export const getPositions = (x: number, y: number, size: number) => {
+    return Array.from({ length: size ** 2 }, (_, index) => {
+        const xOffset = index % size;
+        const yOffset = Math.floor(index / size);
+        return `${x + xOffset}-${y + yOffset}`;
+    });
 }
 
 export const getNextLocation = (size: 'small' | 'medium' | 'large', takenLocations: {[key: string] : boolean}) => {
     const { maxGrid } = getGridValues();
-    let checks = 1;
-    if (size === 'medium') checks = 2;
-    if (size === 'large') checks = 3;
+    const checks = size === 'medium' ? 2 : size === 'large' ? 3 : 1;
 
     let x = 0;
     let y = 0;
-    let foreverStopper = 0;
 
-    while(true) {
-        foreverStopper++;
-        if (foreverStopper > 1000) break;
-
+    for (let i = 0; i < 2000; i++) {
         //if going off edge of grid, move to next level
         if (x + checks-1 > maxGrid) {
             x = 0;
             y += 1;
         }
 
-        //check all coordinates for size of card
-        let found = true;
-        let adjust = 0;
-        for (let i = 0; i < checks; i++) {
-            for (let j = 0; j < checks; j++) {
-                let coord = `${x+j}-${y+i}`;
-                if (takenLocations[coord] !== undefined) {
-                    found = false;
-                    adjust = j;
-                    break;
-                };
-            }
-            if (found === false) break;
-        }
+        //get all possible positions at x,y point
+        const positions = getPositions(x, y, checks);
 
-        //if not found, continue to next position and skip if needed
-        if (found === false) {
-            x += 1 + adjust;
+        //check if positions are taken
+        if (positions.some(position => takenLocations[position])) {
+            x++;
             continue;
         }
 
-        //if found, then fill in takenLocations
-        fillPositions(x, y, checks, takenLocations);
-        break;
+        //once position is found, fill in taken locations
+        positions.forEach(position => takenLocations[position] = true);
+        return { x, y };
     }
 
     return { x, y };
