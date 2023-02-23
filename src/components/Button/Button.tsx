@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { ButtonHTMLAttributes, ReactNode } from 'react';
 import StyledButton from './Button.style';
 
 type ButtonProps = {
-    value: string;
+    value: string | ReactNode;
     onClick: ()=>void;
+    [x: string]: any;
 }
 
-const Button = ({value, onClick}: ButtonProps) => {
+const Button = ({value, onClick, ...rest}: ButtonProps) => {
     return (
-        <StyledButton onClick={onClick}>{value}</StyledButton>
+        <StyledButton onClick={onClick} {...rest}>{value}</StyledButton>
     );
 }
 

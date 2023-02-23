@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import StyledFlipCard, { StyledInner, StyledTimer } from './FlipCard.style';
+import { MdEdit } from 'react-icons/md';
 
 import type { Card } from '../../types';
 
@@ -151,7 +152,7 @@ const FlipCard = ({ viewingShared, speed=0.5, width='100%', height='100%', start
                             { viewingShared ? <Button value='Cancel' onClick={()=>setFlipped(false)}/> : (<div>
                                 <Button value='Correct' onClick={onClickCorrect}/>&nbsp;
                                 <Button value='Incorrect' onClick={onClickIncorrect}/>&nbsp;
-                                <Button value='Edit' onClick={onClickEdit}/>
+                                <Button className='flipCardEditBtn' title='Edit' value={<MdEdit/>} onClick={onClickEdit}/>
                             </div>) }
                         </div> ) }
             </StyledInner>

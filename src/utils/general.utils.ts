@@ -43,9 +43,9 @@ export const correctCardAdjustment = (card: Card, cards: Card[], setCards: (card
 
     //if the above isn't true, can still increase points if it's been at least an hour since last checking
     //don't increase checking period as this means they haven't waited that long before checking yet
-    else if (beenAnHour) {
-        newCards = editInArray({...card, points, lastChecked}, cards);
-    }		
+    // else if (beenAnHour) {
+    //     newCards = editInArray({...card, points, lastChecked}, cards);
+    // }		
 
     //otherwise, it's not been an hour, not due to be checked and has already been checked
     //So just change lastChecked

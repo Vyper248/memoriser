@@ -78,6 +78,15 @@ export const StyledInner = styled.div.attrs((props) => {
         animation-fill-mode: both;
     }
 
+    & .flipCardEditBtn {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        background-color: white;
+        border: none;
+        font-size: 1.4em;
+    }
+
     @keyframes show {
         0% { transform: rotateY(90deg); }
         50% { transform: rotateY(90deg); }
