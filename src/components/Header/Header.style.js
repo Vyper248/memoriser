@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const StyledHeader = styled.div`
+const StyledHeader = styled.header`
     h1 {
         display: inline-block;
         margin-right: 10px;

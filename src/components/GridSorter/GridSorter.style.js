@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const StyledGridSorter = styled.div`
+const StyledGridSorter = styled.main`
     position: relative;
     top: 300px;
     height: ${props => (props.y+3) * props.gridSize}px;
