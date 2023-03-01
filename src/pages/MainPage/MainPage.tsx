@@ -29,7 +29,7 @@ const MainPage = ({groups, setGroups, cards, setCards, viewingShared}: MainPageP
     useEffect(() => {
         let groupCheck = groups.find(group => group.id === currentGroup?.id);
         if (!groupCheck) setCurrentGroup(groups[0]);
-    }, [groups]);
+    }, [groups, currentGroup]);
 
     const onChangeGroup = (id: string) => {
 		const newGroup = groups.find(group => group.id === id);
