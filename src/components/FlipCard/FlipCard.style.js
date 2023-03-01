@@ -27,27 +27,25 @@ const StyledFlipCard = styled.div.attrs((props) => {
 
 export const StyledInner = styled.div.attrs((props) => {
     let border = '1px solid red';
-    let outlineColor = 'red';
-    if (props.points > 0) { border = '1px solid orange'; outlineColor = 'orange'; }
-    if (props.points > 4) { border = '1px solid green'; outlineColor = 'green'; }
+    let shadowColor = 'red';
+    if (props.points > 0) { border = '1px solid orange'; shadowColor = 'orange'; }
+    if (props.points > 4) { border = '1px solid green'; shadowColor = 'green'; }
 
     let borderRadius = '10px';
     let borderWidth = '1px';
-    let outlineWidth = '2px';
-    if (props.size === 'medium') { borderRadius = '15px'; borderWidth = '1.66px'; outlineWidth = '3px'; }
-    if (props.size === 'small') { borderRadius = '20px'; borderWidth = '3px'; outlineWidth = '6px'; }
+    let shadowWidth = '2px';
+    if (props.size === 'medium') { borderRadius = '15px'; borderWidth = '1.66px'; shadowWidth = '3px'; }
+    if (props.size === 'small') { borderRadius = '20px'; borderWidth = '3px'; shadowWidth = '6px'; }
 
-    let outlineStyle = '';
-    if (props.timeToPoint === 'Ready') { outlineStyle = 'solid'; }
+    let boxShadow = '';
+    if (props.timeToPoint === 'Ready') { boxShadow = `0px 0px 0px ${shadowWidth} ${shadowColor}`; }
 
     return {
         style: {
             border,
             borderRadius,
             borderWidth,
-            outlineWidth,
-            outlineColor,
-            outlineStyle
+            boxShadow
         }
     };
 })`
@@ -60,7 +58,7 @@ export const StyledInner = styled.div.attrs((props) => {
     overflow: scroll;
     padding: 10px;
     text-align: center;
-    transition: border-radius 0.6s, border-width 0.6s, outline-width 0.3s linear;
+    transition: border-radius 0.6s, border-width 0.6s, box-shadow 0.3s linear;
 
     &.visible {
         cursor: pointer;
