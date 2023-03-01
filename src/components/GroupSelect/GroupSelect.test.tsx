@@ -64,7 +64,7 @@ describe('The component menu buttons work as expected', () => {
 
         let newGroupInput = screen.getByRole('textbox');
         fireEvent.change(newGroupInput, {target: {value: 'test'}});
-        fireEvent.keyPress(newGroupInput, {key: 'Enter'});
+        fireEvent.submit(newGroupInput);
 
         expect(mockSetGroups).toBeCalledWith(expect.objectContaining({name: 'test'}));
     });
@@ -87,7 +87,7 @@ describe('The component menu buttons work as expected', () => {
 
         let editGroupInput = screen.getByRole('textbox');
         fireEvent.change(editGroupInput, {target: {value: 'edit'}});
-        fireEvent.keyPress(editGroupInput, {key: 'Enter'});
+        fireEvent.submit(editGroupInput);
 
         expect(mockEditGroup).toBeCalledWith({id: '1', name: 'edit'});
     });

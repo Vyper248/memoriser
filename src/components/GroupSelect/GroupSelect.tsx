@@ -1,8 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import StyledGroupSelect from './GroupSelect.style';
 
-import { useEnterListener } from '../../utils/customHooks';
-
 import type { Group } from '../../types';
 
 import Modal from '../Modal/Modal';
@@ -32,12 +30,11 @@ type NewGroupMenuProps = {
 const NewGroupMenu = ({initialName='', onSave, onCancel}: NewGroupMenuProps) => {
     const [newGroupName, setNewGroupName] = useState(initialName);
     
-    const onClickSave = useCallback(() => {
+    const onClickSave = useCallback((e: React.SyntheticEvent) => {
+        e.preventDefault();
         onSave(newGroupName);
         setNewGroupName('');
     }, [newGroupName, onSave]);
-    
-    useEnterListener('groupNameInput', onClickSave);
 
     const onClickCancel = () => {
         onCancel();
@@ -51,10 +48,12 @@ const NewGroupMenu = ({initialName='', onSave, onCancel}: NewGroupMenuProps) => 
     return (
         <>
             <h2>Add New Group</h2>
-            <LabelledInput inputID='groupNameInput' label='Name: ' value={newGroupName} onChange={onChangeNewGroupName} autofocus/>
-            <br/>
-            <Button value='Cancel' onClick={onClickCancel}/>&nbsp;
-            <Button value='Save' onClick={onClickSave}/>
+            <form onSubmit={onClickSave}>
+                <LabelledInput inputID='groupNameInput' label='Name: ' value={newGroupName} onChange={onChangeNewGroupName} autofocus/>
+                <br/>
+                <Button value='Save' type='submit' onClick={onClickSave}/>
+                <Button value='Cancel' type='button' onClick={onClickCancel}/>&nbsp;
+            </form>
         </>
     );
 }
@@ -63,10 +62,6 @@ const GroupSelect = ({ groups, currentGroup, viewingShared, onChange, onAdd, onE
     const [modalOpen, setModalOpen] = useState(false);
     const [addingGroup, setAddingGroup] = useState(false);
     const [editingGroup, setEditingGroup] = useState(false);
-
-    // const onChangeGroup = (e: React.FormEvent<HTMLSelectElement>) => {
-    //     onChange(e.currentTarget.value);
-    // }
 
     const onChangeGroup = (value: string) => {
         onChange(value);

@@ -1,34 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import { useEnterListener, useClickOutside, useResizeListener, useScrollListener } from "./customHooks";
+import { useClickOutside, useResizeListener, useScrollListener } from "./customHooks";
 
 let mockCallback = jest.fn();
-
-describe('Testing useEnterListener hook', () => {
-    const MockComponent = () => {
-        useEnterListener('testId', mockCallback);
-    
-        return (
-            <input type='text' id='testId' autoFocus/>
-        );
-    }
-    
-    it('Allows user to press Enter instead of clicking a button', () => {
-        render(<MockComponent/>);
-        const input = screen.getByRole('textbox');
-        fireEvent.keyPress(input, {key: 'Enter'});
-        expect(mockCallback).toHaveBeenCalledTimes(1);
-    });
-    
-    it('Hook doesnt do anything when other keys are pressed', () => {
-        render(<MockComponent/>);
-        const input = screen.getByRole('textbox');
-        fireEvent.keyPress(input, {key: 'Space'});
-        fireEvent.keyPress(input, {key: 'B'});
-        fireEvent.keyPress(input, {key: '5'});
-        expect(mockCallback).not.toBeCalled();
-    });
-});
 
 describe('Testing useClickOutside hook', () => {
     const MockComponent2 = ({open}: {open: boolean}) => {

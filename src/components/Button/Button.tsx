@@ -1,9 +1,9 @@
-import React, { ButtonHTMLAttributes, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import StyledButton from './Button.style';
 
 type ButtonProps = {
     value: string | ReactNode;
-    onClick: ()=>void;
+    onClick: (e: React.SyntheticEvent)=>void;
     [x: string]: any;
 }
 

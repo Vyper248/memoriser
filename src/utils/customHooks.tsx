@@ -1,24 +1,5 @@
 import { useEffect, useRef } from "react";
 
-export const useEnterListener = (id: string, callback: ()=>void) => {
-    useEffect(() => {
-        let input = document.getElementById(id);
-
-        const keypressListener = (e: KeyboardEvent) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                callback();
-            }
-        }
-
-        input?.addEventListener('keypress', keypressListener);
-
-        return () => {
-            input?.removeEventListener('keypress', keypressListener);
-        }
-    }, [id, callback]);
-}
-
 export const useClickOutside = <T extends HTMLElement>(callback: ()=>void, open: boolean) => {
     const ref = useRef<T>(null);
 
@@ -47,7 +28,7 @@ export const useResizeListener = (callback: ()=>void, time: number) => {
             if (timeout) clearTimeout(timeout);
             timeout = setTimeout(callback, time);
         }
-
+        
         window.addEventListener('resize', resizeListener);
 
         return () => {

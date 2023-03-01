@@ -6,7 +6,6 @@ import type { Card } from '../../types';
 
 import Button from '../Button/Button';
 import LabelledInput from '../LabelledInput/LabelledInput';
-import { useEnterListener } from '../../utils/customHooks';
 import { getTimeTillNextPoint } from '../../utils/date.utils';
 
 type FlipCardProps = {
@@ -34,12 +33,10 @@ type EditMenuProps = {
 const EditMenu = ({ card, onSave, onCancel, onDelete }: EditMenuProps) => {
     const [newCard, setNewCard] = useState({...card});
     
-    const onSaveCard = useCallback(() => {
+    const onSaveCard = useCallback((e: React.SyntheticEvent) => {
+        e.preventDefault();
         onSave(newCard);
     }, [newCard, onSave]);
-
-    useEnterListener('editCardQuestion', onSaveCard);
-    useEnterListener('editCardAnswer', onSaveCard);
 
     const onChangeValue = (e: React.FormEvent<HTMLInputElement>) => {
         setNewCard({...newCard, [e.currentTarget.name]: e.currentTarget.value});
@@ -47,13 +44,15 @@ const EditMenu = ({ card, onSave, onCancel, onDelete }: EditMenuProps) => {
 
     return (
         <div>
-            <LabelledInput label='Question: ' value={newCard.question} onChange={onChangeValue} name='question' labelWidth='80px'/>
-            <LabelledInput label='Answer: ' value={newCard.answer} onChange={onChangeValue} name='answer' labelWidth='80px'/>
-            <div>
-                <Button value='Save' onClick={onSaveCard}/>&nbsp;
-                <Button value='Cancel' onClick={onCancel}/>&nbsp;
-                <Button value='Delete' onClick={onDelete}/>
-            </div>
+            <form onSubmit={onSaveCard}>
+                <LabelledInput label='Question: ' value={newCard.question} onChange={onChangeValue} name='question' labelWidth='80px'/>
+                <LabelledInput label='Answer: ' value={newCard.answer} onChange={onChangeValue} name='answer' labelWidth='80px'/>
+                <div>
+                    <Button value='Save' type='submit' onClick={onSaveCard}/>&nbsp;
+                    <Button value='Cancel' type='button' onClick={onCancel}/>&nbsp;
+                    <Button value='Delete' type='button' onClick={onDelete}/>
+                </div>
+            </form>
         </div>
     );
 }
@@ -153,7 +152,7 @@ const FlipCard = ({ viewingShared, speed=0.5, width='100%', height='100%', start
                             { viewingShared ? <Button value='Cancel' onClick={()=>setFlipped(false)}/> : (<div>
                                 <Button value='Correct' onClick={onClickCorrect}/>&nbsp;
                                 <Button value='Incorrect' onClick={onClickIncorrect}/>&nbsp;
-                                <Button className='flipCardEditBtn' title='Edit' value={<MdEdit/>} onClick={onClickEdit}/>
+                                <Button className='flipCardEditBtn' title='Edit' aria-label='Edit Flip Card' value={<MdEdit/>} onClick={onClickEdit}/>
                             </div>) }
                         </div> ) }
             </StyledInner>
