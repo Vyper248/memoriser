@@ -124,9 +124,9 @@ const FlipCard = ({ viewingShared, speed=0.5, width='100%', height='100%', start
 
     const getTimeText = () => {
         if (size === 'large') {
-            if (timeToPoint === 'Ready') return `'Check now for another point!'`;
+            if (timeToPoint === 'Ready') return `Check now for another point!`;
             else if (timeToPoint === '') return '';
-            else return `'Check after ${timeToPoint} for another point'`
+            else return `Check after ${timeToPoint} for another point`
         } else return '';
     }
 
