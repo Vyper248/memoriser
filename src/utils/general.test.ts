@@ -72,10 +72,10 @@ describe('Testing the correctCardAdjustment function', () => {
         expect(correctCardAdjustment(mockCard, [mockCard], mockSetState)[0].points).toBe(1);
         expect(correctCardAdjustment(mockCard, [mockCard], mockSetState)[0].lastChecked).not.toBe(newId-100000);
     
-        //last checked over an hour ago, but doesn't match lastCheckingPeriod, so increase to 2 points but don't change lastChecking Period
+        //last checked over an hour ago, but doesn't match lastCheckingPeriod, so don't change lastChecking Period
         mockCard.lastChecked = newId-3700000;
         mockCard.lastCheckingPeriod = '2 Hours';
-        expect(correctCardAdjustment(mockCard, [mockCard], mockSetState)[0].points).toBe(2);
+        expect(correctCardAdjustment(mockCard, [mockCard], mockSetState)[0].points).toBe(1);
         expect(correctCardAdjustment(mockCard, [mockCard], mockSetState)[0].lastChecked).not.toBe(newId-3700000);
         expect(correctCardAdjustment(mockCard, [mockCard], mockSetState)[0].lastCheckingPeriod).toBe('2 Hours');
     });

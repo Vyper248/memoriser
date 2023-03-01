@@ -29,7 +29,7 @@ const checkingPeriods = [
 
 export const correctCardAdjustment = (card: Card, cards: Card[], setCards: (cards:Card[])=>void) => {
     let adjustTimes = timeSinceLastChecked(card.lastChecked, card.lastCheckingPeriod);
-    let beenAnHour = hourPassed(card.lastChecked);
+    // let beenAnHour = hourPassed(card.lastChecked);
 
     let lastChecked = new Date().getTime();
     let points = card.points !== undefined ? card.points + 1 : 1;
