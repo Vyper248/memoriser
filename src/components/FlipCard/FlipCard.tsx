@@ -141,7 +141,7 @@ const FlipCard = ({ viewingShared, speed=0.5, width='100%', height='100%', start
     return (
         <StyledFlipCard width={width} height={height} size={size}>
             <StyledInner className='visible' onClick={onClick} {...styledProps}>
-                { card.points && card.points > 0 ? <StyledPoints>{ card.points } points</StyledPoints> : null }
+                { card.points && card.points > 0 && size === 'large' ? <StyledPoints>{ card.points } points</StyledPoints> : null }
                 {card.question}
                 <StyledTimer>{ getTimeText() }</StyledTimer>
             </StyledInner>

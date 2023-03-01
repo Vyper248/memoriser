@@ -26,10 +26,10 @@ const StyledFlipCard = styled.div.attrs((props) => {
 `
 
 export const StyledInner = styled.div.attrs((props) => {
-    let border = '1px solid red';
-    let shadowColor = 'red';
-    if (props.points > 0) { border = '1px solid orange'; shadowColor = 'orange'; }
-    if (props.points > 4) { border = '1px solid green'; shadowColor = 'green'; }
+    let borderStyle = 'solid';
+    let borderColor = 'red';
+    if (props.points > 0) { borderColor = 'orange'; }
+    if (props.points > 4) { borderColor = 'green'; }
 
     let borderRadius = '10px';
     let borderWidth = '1px';
@@ -38,12 +38,13 @@ export const StyledInner = styled.div.attrs((props) => {
     if (props.size === 'small') { borderRadius = '20px'; borderWidth = '3px'; shadowWidth = '6px'; }
 
     let boxShadow = '';
-    if (props.timeToPoint === 'Ready') { boxShadow = `0px 0px 0px ${shadowWidth} ${shadowColor}`; }
+    if (props.timeToPoint === 'Ready') { boxShadow = `0px 0px 0px ${shadowWidth} ${borderColor}`; }
 
     return {
         style: {
-            border,
+            borderStyle,
             borderRadius,
+            borderColor,
             borderWidth,
             boxShadow
         }
