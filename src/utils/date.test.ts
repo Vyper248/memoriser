@@ -130,6 +130,7 @@ describe('Testing getTimeTillNextPoint function', () => {
         string = getTimeTillNextPoint(lastChecked, lastCheckingPeriod);
         expect(string).toBe('Ready');
 
-
+        string = getTimeTillNextPoint(undefined, undefined);
+        expect(string).toBe('Ready');
     });
 });
