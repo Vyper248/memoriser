@@ -108,4 +108,8 @@ export const StyledTimer = styled.div`
     pointer-events: none;
 `;
 
+export const StyledPoints = styled(StyledTimer)`
+    top: 8px;
+`;
+
 export default StyledFlipCard;

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import StyledFlipCard, { StyledInner, StyledTimer } from './FlipCard.style';
+import StyledFlipCard, { StyledInner, StyledTimer, StyledPoints } from './FlipCard.style';
 import { MdEdit } from 'react-icons/md';
 
 import type { Card } from '../../types';
@@ -141,6 +141,7 @@ const FlipCard = ({ viewingShared, speed=0.5, width='100%', height='100%', start
     return (
         <StyledFlipCard width={width} height={height} size={size}>
             <StyledInner className='visible' onClick={onClick} {...styledProps}>
+                { card.points && card.points > 0 ? <StyledPoints>{ card.points } points</StyledPoints> : null }
                 {card.question}
                 <StyledTimer>{ getTimeText() }</StyledTimer>
             </StyledInner>
