@@ -13,7 +13,7 @@ const StyledConfirmationButton = styled.div`
         width: 100%;
     }
 
-    & #menu {
+    & > div > #menu {
         flex-direction: row;
     }
 `;
