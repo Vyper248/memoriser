@@ -1,4 +1,4 @@
-import {render, screen} from '@testing-library/react'
+import {fireEvent, render, screen} from '@testing-library/react'
 import '@testing-library/jest-dom'
 import FlipCard from './FlipCard'
 
@@ -77,4 +77,73 @@ it('Displays text to check for another point if ready', () => {
 
     let points = screen.queryByText('Check now for another point!');
     expect(points).toBeTruthy();
+});
+
+it('Displays the edit menu when clicking the edit button', () => {
+    let mockDelete = jest.fn();
+
+    render(<FlipCard size='large' card={{id: '1', groupId: '1', question: 'Hello?', answer: 'World', points: 0}} 
+                                viewingShared={false} onCorrect={()=>{}} onFail={()=>{}}
+                                onEdit={()=>{}} onDelete={mockDelete} onSelect={()=>{}}/>);
+
+    let editButton = screen.getByTitle('Edit');
+    fireEvent.click(editButton);
+
+    screen.getByText('Save');
+    screen.getAllByText('Cancel');
+    screen.getByText('Delete');
+});
+
+it('Calls the delete function when pressing the confirm delete button', () => {
+    let mockDelete = jest.fn();
+
+    render(<FlipCard size='large' card={{id: '1', groupId: '1', question: 'Hello?', answer: 'World', points: 0}} 
+                                viewingShared={false} onCorrect={()=>{}} onFail={()=>{}}
+                                onEdit={()=>{}} onDelete={mockDelete} onSelect={()=>{}}/>);
+
+    let editButton = screen.getByTitle('Edit');
+    fireEvent.click(editButton);
+
+    let confirmDeleteButton = screen.getByText('Confirm');
+    fireEvent.click(confirmDeleteButton);
+    expect(mockDelete).toBeCalled();
+});
+
+it('Calls the save function when pressing the confirm delete button', () => {
+    let mockEdit = jest.fn();
+
+    render(<FlipCard size='large' card={{id: '1', groupId: '1', question: 'Hello?', answer: 'World', points: 0}} 
+                                viewingShared={false} onCorrect={()=>{}} onFail={()=>{}}
+                                onEdit={mockEdit} onDelete={()=>{}} onSelect={()=>{}}/>);
+
+    let editButton = screen.getByTitle('Edit');
+    fireEvent.click(editButton);
+
+    let saveButton = screen.getByText('Save');
+    fireEvent.click(saveButton);
+    expect(mockEdit).toBeCalled();
+});
+
+it('Calls the onCorrect function when clicking the Correct button', () => {
+    let mockCorrect = jest.fn();
+
+    render(<FlipCard size='large' card={{id: '1', groupId: '1', question: 'Hello?', answer: 'World', points: 0}} 
+                                viewingShared={false} onCorrect={mockCorrect} onFail={()=>{}}
+                                onEdit={()=>{}} onDelete={()=>{}} onSelect={()=>{}}/>);
+
+    let correctButton = screen.getByText('Correct');
+    fireEvent.click(correctButton);
+    expect(mockCorrect).toBeCalled();
+});
+
+it('Calls the onFail function when clicking the Incorrect button', () => {
+    let mockFail = jest.fn();
+
+    render(<FlipCard size='large' card={{id: '1', groupId: '1', question: 'Hello?', answer: 'World', points: 0}} 
+                                viewingShared={false} onCorrect={()=>{}} onFail={mockFail}
+                                onEdit={()=>{}} onDelete={()=>{}} onSelect={()=>{}}/>);
+
+    let incorrectButton = screen.getByText('Incorrect');
+    fireEvent.click(incorrectButton);
+    expect(mockFail).toBeCalled();
 });

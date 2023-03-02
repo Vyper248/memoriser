@@ -5,7 +5,8 @@ import type { Group } from '../../types';
 
 import Modal from '../Modal/Modal';
 import Button from '../Button/Button';
-import DropdownMenu from '../DropdownMenu/DropdownMenu';
+import ConfirmationButton from '../ConfirmationButton/ConfirmationButton';
+import PopupMenu from '../PopupMenu/PopupMenu';
 import LabelledInput from '../LabelledInput/LabelledInput';
 import LinkedBorders from '../LinkedBorders/LinkedBorders';
 import Dropdown from '../Dropdown/Dropdown';
@@ -71,7 +72,7 @@ const GroupSelect = ({ groups, currentGroup, viewingShared, onChange, onAdd, onE
         setModalOpen(true);
         setAddingGroup(true);
         setEditingGroup(false);
-        //makes sure the clickOutside handler runs to close the DropdownMenu
+        //makes sure the clickOutside handler runs to close the PopupMenu
         document.body.click();
     }
 
@@ -79,7 +80,7 @@ const GroupSelect = ({ groups, currentGroup, viewingShared, onChange, onAdd, onE
         setModalOpen(true);
         setEditingGroup(true);
         setAddingGroup(false);
-        //makes sure the clickOutside handler runs to close the DropdownMenu
+        //makes sure the clickOutside handler runs to close the PopupMenu
         document.body.click();
     }
 
@@ -87,7 +88,7 @@ const GroupSelect = ({ groups, currentGroup, viewingShared, onChange, onAdd, onE
         if (!currentGroup) return;
 
         onDelete(currentGroup);
-        //makes sure the clickOutside handler runs to close the DropdownMenu
+        //makes sure the clickOutside handler runs to close the PopupMenu
         document.body.click();
     }
 
@@ -129,11 +130,11 @@ const GroupSelect = ({ groups, currentGroup, viewingShared, onChange, onAdd, onE
             <LinkedBorders>
                 <Label value='Group'/>
                 <Dropdown value={currentGroup?.id} onChange={onChangeGroup} options={groups.map(group => ({value: group.id, name: group.name}))}/>
-                { viewingShared ? null : (<DropdownMenu>
+                { viewingShared ? null : (<PopupMenu>
                     <Button value='New Group' onClick={onClickAddGroup}/>
                     <Button value='Edit Group' onClick={onClickEditGroup}/>
-                    <Button value='Delete Group' onClick={onClickDeleteGroup}/>
-                </DropdownMenu>) }
+                    <ConfirmationButton value='Delete Group' onClick={onClickDeleteGroup}/>
+                </PopupMenu>) }
             </LinkedBorders>
             <Modal open={modalOpen}>
                 { modalOpen && addingGroup ? <NewGroupMenu onSave={onAddNewGroup} onCancel={onCancelNewGroup}/> : null }

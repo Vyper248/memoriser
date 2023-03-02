@@ -76,8 +76,6 @@ const MainPage = ({groups, setGroups, cards, setCards, viewingShared}: MainPageP
 	const onEditCard = (card: Card) => {
 		let newCards = editInArray(card, cards);
 		setCards(newCards);
-		if (selectedCard) setSelectedCard(null);
-		setAddingCard(false);
 	}
 
 	const onDeleteCard = (card: Card) => {

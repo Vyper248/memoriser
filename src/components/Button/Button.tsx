@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import StyledButton from './Button.style';
 
-type ButtonProps = {
+export type ButtonProps = {
     value: string | ReactNode;
     onClick: (e: React.SyntheticEvent)=>void;
     [x: string]: any;

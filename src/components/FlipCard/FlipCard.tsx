@@ -5,6 +5,7 @@ import { MdEdit } from 'react-icons/md';
 import type { Card } from '../../types';
 
 import Button from '../Button/Button';
+import ConfirmationButton from '../ConfirmationButton/ConfirmationButton';
 import LabelledInput from '../LabelledInput/LabelledInput';
 import { getTimeTillNextPoint } from '../../utils/date.utils';
 
@@ -50,7 +51,7 @@ const EditMenu = ({ card, onSave, onCancel, onDelete }: EditMenuProps) => {
                 <div>
                     <Button value='Save' type='submit' onClick={onSaveCard}/>&nbsp;
                     <Button value='Cancel' type='button' onClick={onCancel}/>&nbsp;
-                    <Button value='Delete' type='button' onClick={onDelete}/>
+                    <ConfirmationButton value='Delete' type='button' onClick={onDelete}/>
                 </div>
             </form>
         </div>

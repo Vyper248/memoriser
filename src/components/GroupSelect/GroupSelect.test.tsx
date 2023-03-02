@@ -69,13 +69,26 @@ describe('The component menu buttons work as expected', () => {
         expect(mockSetGroups).toBeCalledWith(expect.objectContaining({name: 'test'}));
     });
 
-    it('Deletes a group when clicking Delete Group button', () => {
+    it('Deletes a group when clicking Delete Group button and confirming', () => {
+        let mockDeleteGroups = jest.fn();
+        render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} viewingShared={false} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={mockDeleteGroups}/>);
+
+        let deletePopupConfirm = screen.getByText('Confirm');
+        expect(deletePopupConfirm).toBeInTheDocument();
+
+        fireEvent.click(deletePopupConfirm);
+        expect(mockDeleteGroups).toBeCalledWith({id: '1', name: 'Group1'});
+    });
+
+    it('Doesnt delete a group when clicking Delete Group button and cancelling', () => {
         let mockDeleteGroups = jest.fn();
         render(<GroupSelect groups={mockGroups} currentGroup={mockGroups[0]} viewingShared={false} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={mockDeleteGroups}/>);
     
-        let deleteGroupButton = screen.getByText('Delete Group');
-        fireEvent.click(deleteGroupButton);
-        expect(mockDeleteGroups).toBeCalledWith({id: '1', name: 'Group1'});
+        let deleteButtonCancel = screen.getByText('Cancel');
+        expect(deleteButtonCancel).toBeInTheDocument();
+
+        fireEvent.click(deleteButtonCancel);
+        expect(mockDeleteGroups).not.toBeCalled();
     });
 
     it('Edits a group when clicking Edit Group button', async () => {

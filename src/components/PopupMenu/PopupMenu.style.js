@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const StyledDropdownMenu = styled.div`
+const StyledPopupMenu = styled.div`
     display: inline-block;
     position: relative;
     /* margin: 5px; */
@@ -52,4 +52,4 @@ const StyledDropdownMenu = styled.div`
     }
 `
 
-export default StyledDropdownMenu;
+export default StyledPopupMenu;
