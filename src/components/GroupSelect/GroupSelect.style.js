@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const StyledGroupSelect = styled.div`
+const StyledGroupSelect = styled.nav`
     margin: 5px;
 
     & label {
@@ -19,6 +19,20 @@ const StyledGroupSelect = styled.div`
         :focus {
             outline: none;
         }
+    }
+
+    & > #warning {
+        color: red;
+        margin: 5px;
+        cursor: pointer;
+    }
+
+    & p#copyText {
+        font-size: 0.6em;
+    }
+
+    hr {
+        width: 100%;
     }
 `
 

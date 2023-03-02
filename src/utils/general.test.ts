@@ -1,5 +1,5 @@
 import { getSize, correctCardAdjustment, createNewCard, generateHash, 
-        parseHash, getLocalData } from "./general.utils";
+        parseHash, generateURL, getLocalData } from "./general.utils";
 
 describe('Testing the getSize function', () => {
     it('Gets the size of a card based on points and last checked', () => {
@@ -123,5 +123,21 @@ describe('Testing the getLocalData function', () => {
         expect(localDataGroups).toHaveLength(1);
         expect(localDataGroups[0].id).toEqual('1');
         expect(localDataGroups[0].name).toEqual('test group');
+    });
+});
+
+Object.assign(navigator, {
+    clipboard: {
+      writeText: () => {},
+    },
+  });
+
+describe('Testing the generateURL function', () => {
+    it('Generates a url and copies to the clipboard', () => {
+        jest.spyOn(navigator.clipboard, 'writeText');
+
+        generateURL([], []);
+
+        expect(navigator.clipboard.writeText).toHaveBeenCalled();
     });
 });

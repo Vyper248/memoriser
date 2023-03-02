@@ -117,11 +117,18 @@ const MainPage = ({groups, setGroups, cards, setCards, viewingShared}: MainPageP
 		onSelect: onSelectCard
 	}
 
+	const groupfunctions = {
+		onChange: onChangeGroup,
+		onAdd: onAddGroup,
+		onEdit: onEditGroup,
+		onDelete: onDeleteGroup
+	}
+
 	return (
 		<StyledMainPage>
-			<Header text='Learn with Cards' cards={cards} groups={groups} currentGroup={currentGroup} viewingShared={viewingShared}/>
+			<Header text='Learn with Cards'/>
 			{ viewingShared ? <ImportMenu cards={cards} groups={groups} currentGroup={currentGroup}/> : null }
-			<GroupSelect groups={groups} currentGroup={currentGroup} viewingShared={viewingShared} onChange={onChangeGroup} onAdd={onAddGroup} onEdit={onEditGroup} onDelete={onDeleteGroup}/>
+			<GroupSelect groups={groups} cards={cards} currentGroup={currentGroup} viewingShared={viewingShared} {...groupfunctions}/>
 			{ viewingShared ? null : <Button value='New Card' onClick={onClickAddCard}/> }
 			<GridSorter currentGroup={currentGroup} cards={filteredCards} selectedCard={selectedCard} cardFunctions={cardFunctions} viewingShared={viewingShared} addingCard={addingCard}/>
 		</StyledMainPage>

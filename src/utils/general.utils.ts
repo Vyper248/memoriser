@@ -89,6 +89,19 @@ export const parseHash = (hash: string): {cards: Card[], groups: Group[]} | null
     return dataObj;
 }
 
+export const onClearHash = () => {
+    window.location.hash = '';
+}
+
+export const generateURL = (cards: Card[], groups: Group[]) => {
+    let hash = generateHash(cards, groups);
+
+    let href = window.location.href;
+    //have to check whether url already includes a hash
+    let url = href.includes('#') ? href + hash : href + '#' + hash;
+    navigator.clipboard.writeText(url);        
+}
+
 export const getLocalData = () => {
     let localDataCardsJson = localStorage.getItem('memoriser-data-cards');
     let localDataGroupsJson = localStorage.getItem('memoriser-data-groups');
