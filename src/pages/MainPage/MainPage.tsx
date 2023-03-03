@@ -5,6 +5,7 @@ import type { Group, Card } from '../../types';
 
 import { addToArray, removeFromArray, editInArray, filterArrayByGroupId } from '../../utils/array.utils';
 import { correctCardAdjustment, createNewCard } from '../../utils/general.utils';
+import { useAppSelector } from '../../redux/hooks';
 
 import Button from '../../components/Button/Button';
 import GroupSelect from '../../components/GroupSelect/GroupSelect';
@@ -17,13 +18,13 @@ type MainPageProps = {
     cards: Card[];
     setGroups: (groups: Group[])=>void;
     setCards: (cards: Card[])=>void;
-	viewingShared: boolean;
 }
 
-const MainPage = ({groups, setGroups, cards, setCards, viewingShared}: MainPageProps) => {
+const MainPage = ({groups, setGroups, cards, setCards }: MainPageProps) => {
     const [currentGroup, setCurrentGroup] = useState<Group | undefined>(groups[0]);
 	const [addingCard, setAddingCard] = useState(false);
 	const [selectedCard, setSelectedCard] = useState<Card | null>(null);
+	const viewingShared = useAppSelector(state => state.main.viewingShared);
 
     //make sure current group is correct after loading data from local storage
     useEffect(() => {
@@ -128,9 +129,9 @@ const MainPage = ({groups, setGroups, cards, setCards, viewingShared}: MainPageP
 		<StyledMainPage>
 			<Header text='Learn with Cards'/>
 			{ viewingShared ? <ImportMenu cards={cards} groups={groups} currentGroup={currentGroup}/> : null }
-			<GroupSelect groups={groups} cards={cards} currentGroup={currentGroup} viewingShared={viewingShared} {...groupfunctions}/>
+			<GroupSelect groups={groups} cards={cards} currentGroup={currentGroup} {...groupfunctions}/>
 			{ viewingShared ? null : <Button value='New Card' onClick={onClickAddCard}/> }
-			<GridSorter currentGroup={currentGroup} cards={filteredCards} selectedCard={selectedCard} cardFunctions={cardFunctions} viewingShared={viewingShared} addingCard={addingCard}/>
+			<GridSorter currentGroup={currentGroup} cards={filteredCards} selectedCard={selectedCard} cardFunctions={cardFunctions} addingCard={addingCard}/>
 		</StyledMainPage>
 	);
 }

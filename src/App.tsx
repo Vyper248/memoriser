@@ -4,6 +4,8 @@ import './App.css';
 import type { Card, Group } from './types';
 
 import { parseHash } from './utils/general.utils';
+import { setViewingShared } from './redux/mainSlice';
+import { useAppSelector, useAppDispatch } from './redux/hooks';
 
 import MainPage from './pages/MainPage/MainPage';
 
@@ -32,7 +34,8 @@ const initialCards: Card[] = [
 function App() {
 	const [groups, setGroups] = useState<Group[]>([initialGroup]);
 	const [cards, setCards] = useState<Card[]>(initialCards);
-	const [viewingShared, setViewingShared] = useState(false);
+	const viewingShared = useAppSelector(state => state.main.viewingShared);
+	const dispatch = useAppDispatch();
 
 	//keep track of when the hash changes to refresh the page and update state
 	let hashChange = useCallback(() => {
@@ -46,14 +49,14 @@ function App() {
 		if (dataObj !== null) {
 			if (dataObj.cards) setCards(dataObj.cards);
 			if (dataObj.groups) setGroups(dataObj.groups);
-			setViewingShared(true);
+			dispatch(setViewingShared(true));
 		} else {
 			let localDataCards = localStorage.getItem('memoriser-data-cards');
 			let localDataGroups = localStorage.getItem('memoriser-data-groups');
 	
 			if (localDataCards) setCards(JSON.parse(localDataCards));
 			if (localDataGroups) setGroups(JSON.parse(localDataGroups));
-			setViewingShared(false);
+			dispatch(setViewingShared(false));
 		}
 
 		window.addEventListener('hashchange', hashChange);
@@ -61,7 +64,7 @@ function App() {
 		return () => {
 			window.removeEventListener('hashchange', hashChange);
 		}
-	}, [hashChange]);
+	}, [hashChange, dispatch]);
 
 	const saveToLocal = (key: string, array: Card[] | Group[]) => {
 		//don't overwrite local storage when viewing a shared hash
@@ -83,7 +86,7 @@ function App() {
 
 	return (
 		<div className="App">
-			<MainPage cards={cards} groups={groups} setCards={onSetCards} setGroups={onSetGroups} viewingShared={viewingShared}/>
+			<MainPage cards={cards} groups={groups} setCards={onSetCards} setGroups={onSetGroups}/>
 		</div>
 	);
 }

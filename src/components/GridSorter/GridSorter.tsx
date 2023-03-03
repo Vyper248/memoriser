@@ -18,7 +18,6 @@ type GridSorterProps = {
         onDelete: (card: Card)=>void;
         onSelect: (card: Card)=>void;
     };
-    viewingShared: boolean;
     addingCard: boolean;
     selectedCard: Card | null;
 }
@@ -57,7 +56,7 @@ const GridSquare = ({x=0, y=0, size, first=false, children}: GridSquareProps) =>
     );
 };
 
-const GridSorter = ({cards, currentGroup, selectedCard, cardFunctions, viewingShared, addingCard}: GridSorterProps) => {
+const GridSorter = ({cards, currentGroup, selectedCard, cardFunctions, addingCard}: GridSorterProps) => {
     const [, updateLayout] = useState(0);
     const [scrollPos, setScrollPos] = useState(window.scrollY + window.innerHeight - 450);
     const [scrollSet, setScrollSet] = useState(new Set());
@@ -112,7 +111,7 @@ const GridSorter = ({cards, currentGroup, selectedCard, cardFunctions, viewingSh
                 newCards.map((card, i) => {
                     if (checkCardPos(card) === false) return null;
                     return <GridSquare key={card.id} x={card.x} y={card.y} size={card.size} first={card.first}>
-                                <FlipCard card={card} size={card.size} viewingShared={viewingShared} startInEditMode={addingCard} {...cardFunctions}/>
+                                <FlipCard card={card} size={card.size} startInEditMode={addingCard} {...cardFunctions}/>
                             </GridSquare>
                 })
             }

@@ -1,5 +1,7 @@
-import {render, screen} from '@testing-library/react'
+import {screen} from '@testing-library/react'
 import '@testing-library/jest-dom'
+
+import { getBasicMockState, render } from '../../utils/test.utils';
 import GridSorter, { CardObj, LocationObj } from './GridSorter'
 import { getNextLocation, getGridValues, createCardObj, enlargeSelectedCard, addPositionToCard, 
         getPositions, fillPositions, getSizeFromIndex, getCardArray } from './GridSorter.utils';
@@ -23,7 +25,7 @@ describe('Tests GridSorter component', () => {
     }
 
     it('Renders without crashing', () => {
-        render(<GridSorter cards={mockCards} currentGroup={undefined} selectedCard={null} cardFunctions={mockFunctions} viewingShared={false} addingCard={false}/>);
+        render(<GridSorter cards={mockCards} currentGroup={undefined} selectedCard={null} cardFunctions={mockFunctions} addingCard={false}/>);
     
         let element = screen.getByText('test question');
         expect(element).toBeInTheDocument();
@@ -39,7 +41,8 @@ describe('Tests GridSorter component', () => {
     });
 
     it('Wont allow showing buttons when viewing shared cards', () => {    
-        render(<GridSorter cards={mockCards} currentGroup={undefined} selectedCard={null} cardFunctions={mockFunctions} viewingShared={true} addingCard={false}/>);
+        let mockState = getBasicMockState({viewingShared: true});
+        render(<GridSorter cards={mockCards} currentGroup={undefined} selectedCard={null} cardFunctions={mockFunctions} addingCard={false}/>, mockState);
     
         let buttons = screen.queryAllByText('Correct');
         expect(buttons).toHaveLength(0);

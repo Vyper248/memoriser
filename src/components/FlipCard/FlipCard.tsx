@@ -4,13 +4,14 @@ import { MdEdit } from 'react-icons/md';
 
 import type { Card } from '../../types';
 
+import { getTimeTillNextPoint } from '../../utils/date.utils';
+import { useAppSelector } from '../../redux/hooks';
+
 import Button from '../Button/Button';
 import ConfirmationButton from '../ConfirmationButton/ConfirmationButton';
 import LabelledInput from '../LabelledInput/LabelledInput';
-import { getTimeTillNextPoint } from '../../utils/date.utils';
 
 type FlipCardProps = {
-    viewingShared: boolean;
     speed?: number;
     width?: string;
     height?: string;
@@ -58,10 +59,11 @@ const EditMenu = ({ card, onSave, onCancel, onDelete }: EditMenuProps) => {
     );
 }
 
-const FlipCard = ({ viewingShared, speed=0.5, width='100%', height='100%', startInEditMode=false, card, size='large', onCorrect, onFail, onEdit, onDelete, onSelect }: FlipCardProps) => {
+const FlipCard = ({ speed=0.5, width='100%', height='100%', startInEditMode=false, card, size='large', onCorrect, onFail, onEdit, onDelete, onSelect }: FlipCardProps) => {
     const [flipped, setFlipped] = useState<boolean | undefined>(false);
     const [editMode, setEditMode] = useState(startInEditMode);
     const [timeToPoint, setTimeToPoint] = useState(getTimeTillNextPoint(card.lastChecked, card.lastCheckingPeriod));
+    const viewingShared = useAppSelector(state => state.main.viewingShared);
 
     //update times for this card every minute
     useEffect(() => {
@@ -141,9 +143,9 @@ const FlipCard = ({ viewingShared, speed=0.5, width='100%', height='100%', start
     return (
         <StyledFlipCard width={width} height={height} size={size}>
             <StyledInner className='visible' onClick={onClick} {...styledProps}>
-                { card.points && card.points > 0 && size === 'large' ? <StyledPoints>{ card.points } points</StyledPoints> : null }
+                { card.points && card.points > 0 && size === 'large' && !viewingShared ? <StyledPoints>{ card.points } points</StyledPoints> : null }
                 {card.question}
-                <StyledTimer>{ getTimeText() }</StyledTimer>
+                { !viewingShared ? <StyledTimer>{ getTimeText() }</StyledTimer> : null }
             </StyledInner>
             <StyledInner className='hidden' onClick={onClickHidden} {...styledProps}>
                 { editMode 
