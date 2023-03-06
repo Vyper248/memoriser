@@ -34,9 +34,12 @@ export const mainSlice = createSlice({
         setFlippedCard: (state, action: PayloadAction<Card | null>) => {
             state.flippedCard = action.payload;
         },
+        setSelectedGroup: (state, action: PayloadAction<Group | null>) => {
+            state.selectedGroup = action.payload;
+        },
     }
 });
 
-export const { setViewingShared, setSelectedCard, setFlippedCard } = mainSlice.actions;
+export const { setViewingShared, setSelectedCard, setFlippedCard, setSelectedGroup } = mainSlice.actions;
 
 export default mainSlice.reducer;

@@ -6,7 +6,7 @@ import type { Group, Card } from '../../types';
 import { addToArray, removeFromArray, editInArray, filterArrayByGroupId } from '../../utils/array.utils';
 import { correctCardAdjustment, createNewCard } from '../../utils/general.utils';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { setSelectedCard } from '../../redux/mainSlice';
+import { setSelectedCard, setSelectedGroup } from '../../redux/mainSlice';
 
 import Button from '../../components/Button/Button';
 import GroupSelect from '../../components/GroupSelect/GroupSelect';
@@ -23,50 +23,50 @@ type MainPageProps = {
 
 const MainPage = ({groups, setGroups, cards, setCards }: MainPageProps) => {
 	const dispatch = useAppDispatch();
-    const [currentGroup, setCurrentGroup] = useState<Group | undefined>(groups[0]);
 	const [addingCard, setAddingCard] = useState(false);
 	const viewingShared = useAppSelector(state => state.main.viewingShared);
 	const selectedCard = useAppSelector(state => state.main.selectedCard);
+	const selectedGroup = useAppSelector(state => state.main.selectedGroup);
 
     //make sure current group is correct after loading data from local storage
     useEffect(() => {
-        let groupCheck = groups.find(group => group.id === currentGroup?.id);
-        if (!groupCheck) setCurrentGroup(groups[0]);
-    }, [groups, currentGroup]);
+        let groupCheck = groups.find(group => group.id === selectedGroup?.id);
+        if (!groupCheck) dispatch(setSelectedGroup(groups[0]));
+    }, [groups, selectedGroup]);
 
     const onChangeGroup = (id: string) => {
 		const newGroup = groups.find(group => group.id === id);
-		if (newGroup) setCurrentGroup(newGroup);
+		if (newGroup) dispatch(setSelectedGroup(newGroup));
         if (selectedCard) dispatch(setSelectedCard(null));
 	}
 
 	const onAddGroup = (group: Group) => {
 		let newGroups = [...groups, group];
 		setGroups(newGroups);
-		setCurrentGroup(group);
+		dispatch(setSelectedGroup(group));
 		dispatch(setSelectedCard(null));
 	}
 
 	const onEditGroup = (group: Group) => {
 		let newGroups = editInArray(group, groups);
 		setGroups(newGroups);
-		setCurrentGroup(group);
+		dispatch(setSelectedGroup(group));
 	}
 
 	const onDeleteGroup = (group: Group) => {
 		let newGroups = removeFromArray(group, groups);
 		setGroups(newGroups);
-		setCurrentGroup(newGroups[0]);
+		dispatch(setSelectedGroup(newGroups[0]));
 		let newCards = cards.filter(card => card.groupId !== group.id);
 		setCards(newCards);
 		dispatch(setSelectedCard(null));
 	}
 
 	const onClickAddCard = () => {
-		if (!currentGroup) return;
+		if (!selectedGroup) return;
 
 		setAddingCard(true);
-		let newCard = createNewCard(currentGroup.id);
+		let newCard = createNewCard(selectedGroup.id);
 		dispatch(setSelectedCard(newCard));
 		addCard(newCard);
 	}
@@ -108,8 +108,8 @@ const MainPage = ({groups, setGroups, cards, setCards }: MainPageProps) => {
 	}
 
 	let filteredCards = [] as Card[];
-	if (currentGroup) {
-		filteredCards = filterArrayByGroupId(currentGroup.id, cards);
+	if (selectedGroup) {
+		filteredCards = filterArrayByGroupId(selectedGroup.id, cards);
 	}
 
 	const cardFunctions = {
@@ -130,10 +130,10 @@ const MainPage = ({groups, setGroups, cards, setCards }: MainPageProps) => {
 	return (
 		<StyledMainPage>
 			<Header text='Learn with Cards'/>
-			{ viewingShared ? <ImportMenu cards={cards} groups={groups} currentGroup={currentGroup}/> : null }
-			<GroupSelect groups={groups} cards={cards} currentGroup={currentGroup} {...groupfunctions}/>
+			{ viewingShared ? <ImportMenu cards={cards} groups={groups}/> : null }
+			<GroupSelect groups={groups} cards={cards} {...groupfunctions}/>
 			{ viewingShared ? null : <Button value='New Card' onClick={onClickAddCard}/> }
-			<GridSorter currentGroup={currentGroup} cards={filteredCards} cardFunctions={cardFunctions} addingCard={addingCard}/>
+			<GridSorter cards={filteredCards} cardFunctions={cardFunctions} addingCard={addingCard}/>
 		</StyledMainPage>
 	);
 }

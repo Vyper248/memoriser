@@ -1,6 +1,8 @@
-import {render, screen} from "@testing-library/react";
+import {screen} from "@testing-library/react";
 import "@testing-library/jest-dom";
 import ImportMenu from "./ImportMenu"
+
+import { render } from "../../utils/test.utils";
 
 import type { Card, Group } from '../../types';
 
@@ -12,9 +14,8 @@ beforeEach(() => {
 it("Loads element without crashing", () => {
 	const mockCards = [{id: '1', groupId: '2'}] as Card[];
 	const mockGroups = [{id: '1'}] as Group[];
-	const currentGroup = mockGroups[0];
 
-	render(<ImportMenu cards={mockCards} groups={mockGroups} currentGroup={currentGroup}/>);
+	render(<ImportMenu cards={mockCards} groups={mockGroups}/>);
 });
 
 it('Shows correct elements', () => {
@@ -23,9 +24,8 @@ it('Shows correct elements', () => {
 
 	const mockCards = [{id: '1', groupId: '2'}] as Card[];
 	const mockGroups = [{id: '1'}] as Group[];
-	const currentGroup = mockGroups[0];
 
-	render(<ImportMenu cards={mockCards} groups={mockGroups} currentGroup={currentGroup}/>);
+	render(<ImportMenu cards={mockCards} groups={mockGroups}/>);
 
 	let backBtn = screen.getByText("Back to your groups");
 	expect(backBtn).toBeInTheDocument();
@@ -49,9 +49,8 @@ it('Shows correct elements', () => {
 it('Doesnt show merge elements if no local groups', () => {
 	const mockCards = [{id: '1', groupId: '2'}] as Card[];
 	const mockGroups = [{id: '1'}] as Group[];
-	const currentGroup = mockGroups[0];
 
-	render(<ImportMenu cards={mockCards} groups={mockGroups} currentGroup={currentGroup}/>);
+	render(<ImportMenu cards={mockCards} groups={mockGroups}/>);
 
 	let backBtn = screen.getByText("Back to your groups");
 	expect(backBtn).toBeInTheDocument();
@@ -75,9 +74,8 @@ it('Shows local groups if there are any', () => {
 
 	const mockCards = [{id: '1', groupId: '2'}] as Card[];
 	const mockGroups = [{id: '1'}] as Group[];
-	const currentGroup = mockGroups[0];
 
-	render(<ImportMenu cards={mockCards} groups={mockGroups} currentGroup={currentGroup}/>);
+	render(<ImportMenu cards={mockCards} groups={mockGroups}/>);
 
 	let localGroupSelect = screen.getByText('test group');
 	expect(localGroupSelect).toBeInTheDocument();

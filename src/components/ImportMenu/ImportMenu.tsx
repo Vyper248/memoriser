@@ -3,6 +3,7 @@ import StyledImportMenu from "./ImportMenu.style";
 
 import { getLocalData } from "../../utils/general.utils";
 import { importSharedData, mergeSharedData, mergeWithSelectedGroup } from '../../utils/importing.utils';
+import { useAppSelector } from "../../redux/hooks";
 
 import Button from "../Button/Button";
 import LinkedBorders from "../LinkedBorders/LinkedBorders";
@@ -14,10 +15,10 @@ import type { Group, Card } from "../../types";
 type ImportMenuProps = {
 	cards: Card[];
 	groups: Group[];
-	currentGroup: Group | undefined;
 }
 
-const ImportMenu = ({cards, groups, currentGroup}: ImportMenuProps) => {
+const ImportMenu = ({cards, groups}: ImportMenuProps) => {
+	const selectedGroup = useAppSelector(state => state.main.selectedGroup);
 	const [mergeGroup, setMergeGroup] = useState('');
 
 	const onCancelShare = () => {
@@ -35,9 +36,8 @@ const ImportMenu = ({cards, groups, currentGroup}: ImportMenuProps) => {
 	}
 
 	const onMergeWithGroup = () => {
-		if (currentGroup === undefined) return;
+		if (selectedGroup === null) return;
 
-		let selectedGroup = currentGroup as Group;
 		let filteredCards = cards.filter(card => card.groupId === selectedGroup.id);
 		mergeWithSelectedGroup(filteredCards, mergeGroup);
 		onCancelShare();

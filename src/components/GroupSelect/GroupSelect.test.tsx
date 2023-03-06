@@ -14,9 +14,11 @@ const mockGroups = [
     }
 ];
 
+let mockState = getBasicMockState({selectedGroup: mockGroups[0]});
+
 describe('The component shows the correct elements', () => {
     it('Loads element without crashing and selects correct starting value', () => {
-        render(<GroupSelect groups={mockGroups} cards={[]} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={()=>{}}/>);
+        render(<GroupSelect groups={mockGroups} cards={[]} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={()=>{}}/>, mockState);
     
         let element = screen.getByRole('option', {name: 'Group1'}) as HTMLSelectElement;
         expect(element).toBeInTheDocument();
@@ -24,12 +26,12 @@ describe('The component shows the correct elements', () => {
     });
     
     it('Displays the correct number of options in the input', () => {
-        render(<GroupSelect groups={mockGroups} cards={[]} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={()=>{}}/>);
+        render(<GroupSelect groups={mockGroups} cards={[]} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={()=>{}}/>, mockState);
         expect(screen.getAllByRole('option').length).toBe(2);
     });
     
     it('Includes new/edit/delete buttons', () => {
-        render(<GroupSelect groups={mockGroups} cards={[]} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={()=>{}}/>);
+        render(<GroupSelect groups={mockGroups} cards={[]} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={()=>{}}/>, mockState);
     
         let button = screen.getByText('New Group');
         expect(button).toBeInTheDocument();
@@ -42,8 +44,8 @@ describe('The component shows the correct elements', () => {
     });
 
     it("Doesn't include option buttons when viewing shared link", () => {
-        let mockState = getBasicMockState({viewingShared: true});
-        render(<GroupSelect groups={mockGroups} cards={[]} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={()=>{}}/>, mockState);
+        let mockState = getBasicMockState({viewingShared: true, selectedGroup: mockGroups[0]});
+        render(<GroupSelect groups={mockGroups} cards={[]} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={()=>{}}/>, mockState);
     
         let button = screen.queryByText('New Group');
         expect(button).toBeNull();
@@ -59,7 +61,7 @@ describe('The component shows the correct elements', () => {
 describe('The component menu buttons work as expected', () => {
     it('Creates a new group when clicking the New Group button', () => {
         let mockSetGroups = jest.fn();
-        render(<GroupSelect groups={mockGroups} cards={[]} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={mockSetGroups} onEdit={()=>{}} onDelete={()=>{}}/>);
+        render(<GroupSelect groups={mockGroups} cards={[]} onChange={()=>{}} onAdd={mockSetGroups} onEdit={()=>{}} onDelete={()=>{}}/>, mockState);
     
         let newGroupButton = screen.getByText('New Group');
         fireEvent.click(newGroupButton);
@@ -73,7 +75,7 @@ describe('The component menu buttons work as expected', () => {
 
     it('Deletes a group when clicking Delete Group button and confirming', () => {
         let mockDeleteGroups = jest.fn();
-        render(<GroupSelect groups={mockGroups} cards={[]} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={mockDeleteGroups}/>);
+        render(<GroupSelect groups={mockGroups} cards={[]} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={mockDeleteGroups}/>, mockState);
 
         let deletePopupConfirm = screen.getByText('Confirm');
         expect(deletePopupConfirm).toBeInTheDocument();
@@ -84,7 +86,7 @@ describe('The component menu buttons work as expected', () => {
 
     it('Doesnt delete a group when clicking Delete Group button and cancelling', () => {
         let mockDeleteGroups = jest.fn();
-        render(<GroupSelect groups={mockGroups} cards={[]} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={mockDeleteGroups}/>);
+        render(<GroupSelect groups={mockGroups} cards={[]} onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={mockDeleteGroups}/>, mockState);
     
         let deleteButtonCancel = screen.getByText('Cancel');
         expect(deleteButtonCancel).toBeInTheDocument();
@@ -95,7 +97,7 @@ describe('The component menu buttons work as expected', () => {
 
     it('Edits a group when clicking Edit Group button', async () => {
         let mockEditGroup = jest.fn();
-        render(<GroupSelect groups={mockGroups} cards={[]} currentGroup={mockGroups[0]} onChange={()=>{}} onAdd={()=>{}} onEdit={mockEditGroup} onDelete={()=>{}}/>);
+        render(<GroupSelect groups={mockGroups} cards={[]} onChange={()=>{}} onAdd={()=>{}} onEdit={mockEditGroup} onDelete={()=>{}}/>, mockState);
     
         let editGroupButton = screen.getByText('Edit Group');
         fireEvent.click(editGroupButton);

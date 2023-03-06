@@ -11,7 +11,6 @@ import FlipCard from '../FlipCard/FlipCard';
 
 type GridSorterProps = {
     cards: Card[];
-    currentGroup: Group | undefined;
     cardFunctions: { 
         onCorrect: (card:Card)=>void;
         onFail: (card: Card)=>void;
@@ -56,11 +55,12 @@ const GridSquare = ({x=0, y=0, size, first=false, children}: GridSquareProps) =>
     );
 };
 
-const GridSorter = ({cards, currentGroup, cardFunctions, addingCard}: GridSorterProps) => {
+const GridSorter = ({cards, cardFunctions, addingCard}: GridSorterProps) => {
     const [, updateLayout] = useState(0);
     const [scrollPos, setScrollPos] = useState(window.scrollY + window.innerHeight - 450);
     const [scrollSet, setScrollSet] = useState(new Set());
     const selectedCard = useAppSelector(state => state.main.selectedCard);
+    const selectedGroup = useAppSelector(state => state.main.selectedGroup);
 
     const { gridSize } = getGridValues();
 
@@ -87,7 +87,7 @@ const GridSorter = ({cards, currentGroup, cardFunctions, addingCard}: GridSorter
     useEffect(() => {
         setScrollPos(window.scrollY + window.innerHeight - 450);
         setScrollSet(new Set());
-    }, [currentGroup]);
+    }, [selectedGroup]);
 
     //Check card position. If offscreen and not in the Set, don't display it.
     //If onscreen, add to set and display
