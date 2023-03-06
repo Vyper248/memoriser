@@ -10,15 +10,10 @@ import LinkedBorders from "../LinkedBorders/LinkedBorders";
 import Dropdown from "../Dropdown/Dropdown";
 import Label from "../Label/Label";
 
-import type { Group, Card } from "../../types";
-
-type ImportMenuProps = {
-	cards: Card[];
-	groups: Group[];
-}
-
-const ImportMenu = ({cards, groups}: ImportMenuProps) => {
+const ImportMenu = () => {
 	const selectedGroup = useAppSelector(state => state.main.selectedGroup);
+	const cards = useAppSelector(state => state.main.cards);
+	const groups = useAppSelector(state => state.main.groups);
 	const [mergeGroup, setMergeGroup] = useState('');
 
 	const onCancelShare = () => {

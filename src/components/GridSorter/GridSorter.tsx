@@ -5,7 +5,7 @@ import { getGridValues, getCardArray } from './GridSorter.utils';
 import { useResizeListener, useScrollListener } from '../../utils/customHooks';
 import { useAppSelector } from '../../redux/hooks';
 
-import type { Card, Group } from '../../types';
+import type { Card } from '../../types';
 
 import FlipCard from '../FlipCard/FlipCard';
 

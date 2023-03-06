@@ -27,16 +27,14 @@ const mockCards: Card[] = [
     }
 ];
 
-const mockSetGroups = jest.fn();
-
-const mockState = getBasicMockState({cards: mockCards});
+const mockState = getBasicMockState({cards: mockCards, groups: mockGroups});
 
 it('Loads element without crashing', () => {
-    render(<MainPage groups={mockGroups} setGroups={mockSetGroups}/>, mockState);
+    render(<MainPage/>, mockState);
 });
 
 it('Shows the heading', () => {
-    render(<MainPage groups={mockGroups} setGroups={mockSetGroups}/>, mockState);
+    render(<MainPage/>, mockState);
 
     let heading = screen.getByRole('heading');
     expect(heading).toBeInTheDocument();
@@ -44,7 +42,7 @@ it('Shows the heading', () => {
 });
 
 it('Shows the GroupSelect component', () => {
-    render(<MainPage groups={mockGroups} setGroups={mockSetGroups}/>, mockState);
+    render(<MainPage/>, mockState);
 
     let element = screen.getByRole('option', {name: 'Group 1'}) as HTMLSelectElement;
     expect(element).toBeInTheDocument();
@@ -61,14 +59,14 @@ it('Shows the GroupSelect component', () => {
 });
 
 it('Shows the New Card button', () => {
-    render(<MainPage groups={mockGroups} setGroups={mockSetGroups}/>, mockState);
+    render(<MainPage/>, mockState);
 
     let newCardButton = screen.getByText('New Card');
     expect(newCardButton).toBeInTheDocument();
 });
 
 it('Shows the cards', () => {
-    render(<MainPage groups={mockGroups} setGroups={mockSetGroups}/>, mockState);
+    render(<MainPage/>, mockState);
 
     let card1 = screen.getByText('Question');
     expect(card1).toBeInTheDocument();
@@ -79,7 +77,7 @@ it('Shows the cards', () => {
 
 it('Creates a new card when clicking the New Card button', () => {
     const mockState = getBasicMockState({cards: []});
-    render(<MainPage groups={mockGroups} setGroups={mockSetGroups}/>, mockState);
+    render(<MainPage/>, mockState);
 
     let newCardButton = screen.getByText('New Card');
     fireEvent.click(newCardButton);

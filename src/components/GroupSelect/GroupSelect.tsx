@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import StyledGroupSelect from './GroupSelect.style';
 
-import type { Card, Group } from '../../types';
+import type { Group } from '../../types';
 
 import { useAppSelector } from '../../redux/hooks';
 
@@ -16,8 +16,6 @@ import Label from '../Label/Label';
 import { generateURL, onClearHash } from '../../utils/general.utils';
 
 type GroupSelectProps = {
-    groups: Group[];
-    cards: Card[];
     onChange: (id:string)=>void;
     onAdd: (group: Group)=>void;
     onEdit: (group: Group)=>void;
@@ -61,13 +59,15 @@ const NewGroupMenu = ({initialName='', onSave, onCancel}: NewGroupMenuProps) => 
     );
 }
 
-const GroupSelect = ({ groups, cards, onChange, onAdd, onEdit, onDelete }: GroupSelectProps) => {
+const GroupSelect = ({ onChange, onAdd, onEdit, onDelete }: GroupSelectProps) => {
     const [modalOpen, setModalOpen] = useState(false);
     const [addingGroup, setAddingGroup] = useState(false);
     const [editingGroup, setEditingGroup] = useState(false);
     const [copyText, setCopyText] = useState('');
     const viewingShared = useAppSelector(state => state.main.viewingShared);
     const selectedGroup = useAppSelector(state => state.main.selectedGroup);
+    const cards = useAppSelector(state => state.main.cards);
+    const groups = useAppSelector(state => state.main.groups);
 
     let invalidShareLink = window.location.hash.length > 0 && !viewingShared;
 

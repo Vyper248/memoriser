@@ -29,7 +29,12 @@ export const initialState: MainSlice = {
             points: 0,
         }
     ],
-    groups: [],
+    groups: [
+        {
+            id: '1',
+            name: 'Instructions',
+        }
+    ],
     selectedCard: null,
     flippedCard: null,
     selectedGroup: null,
@@ -49,6 +54,15 @@ export const mainSlice = createSlice({
                 localStorage.setItem(`memoriser-data-cards`, string);
             }
         },
+        setGroups: (state, action: PayloadAction<Group[]>) => {
+            state.groups = action.payload;
+
+            //if not viewing shared cards, save to local storage
+            if (state.viewingShared === false) {
+                let string = JSON.stringify(action.payload);
+                localStorage.setItem(`memoriser-data-groups`, string);
+            }
+        },
         setViewingShared: (state, action: PayloadAction<boolean>) => {
             state.viewingShared = action.payload;
         },
@@ -60,10 +74,11 @@ export const mainSlice = createSlice({
         },
         setSelectedGroup: (state, action: PayloadAction<Group | null>) => {
             state.selectedGroup = action.payload;
-        },
+            state.selectedCard = null;
+        }
     }
 });
 
-export const { setCards, setViewingShared, setSelectedCard, setFlippedCard, setSelectedGroup } = mainSlice.actions;
+export const { setCards, setGroups, setViewingShared, setSelectedCard, setFlippedCard, setSelectedGroup } = mainSlice.actions;
 
 export default mainSlice.reducer;

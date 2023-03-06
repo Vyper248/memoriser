@@ -2,9 +2,13 @@ import {screen} from "@testing-library/react";
 import "@testing-library/jest-dom";
 import ImportMenu from "./ImportMenu"
 
-import { render } from "../../utils/test.utils";
+import { getBasicMockState, render } from "../../utils/test.utils";
 
 import type { Card, Group } from '../../types';
+
+const mockCards = [{id: '1', groupId: '2'}] as Card[];
+const mockGroups = [{id: '1'}] as Group[];
+const mockState = getBasicMockState({cards: mockCards, groups: mockGroups});
 
 beforeEach(() => {
 	localStorage.removeItem('memoriser-data-groups');
@@ -12,20 +16,14 @@ beforeEach(() => {
 });
 
 it("Loads element without crashing", () => {
-	const mockCards = [{id: '1', groupId: '2'}] as Card[];
-	const mockGroups = [{id: '1'}] as Group[];
-
-	render(<ImportMenu cards={mockCards} groups={mockGroups}/>);
+	render(<ImportMenu/>);
 });
 
 it('Shows correct elements', () => {
 	localStorage.setItem('memoriser-data-groups', JSON.stringify([{id: '2', name: 'test group'}]));
 	localStorage.setItem('memoriser-data-cards', JSON.stringify([{id: '1', groupId: '2', question: 'test card'}]));
 
-	const mockCards = [{id: '1', groupId: '2'}] as Card[];
-	const mockGroups = [{id: '1'}] as Group[];
-
-	render(<ImportMenu cards={mockCards} groups={mockGroups}/>);
+	render(<ImportMenu/>, mockState);
 
 	let backBtn = screen.getByText("Back to your groups");
 	expect(backBtn).toBeInTheDocument();
@@ -47,10 +45,7 @@ it('Shows correct elements', () => {
 });
 
 it('Doesnt show merge elements if no local groups', () => {
-	const mockCards = [{id: '1', groupId: '2'}] as Card[];
-	const mockGroups = [{id: '1'}] as Group[];
-
-	render(<ImportMenu cards={mockCards} groups={mockGroups}/>);
+	render(<ImportMenu/>, mockState);
 
 	let backBtn = screen.getByText("Back to your groups");
 	expect(backBtn).toBeInTheDocument();
@@ -72,10 +67,7 @@ it('Shows local groups if there are any', () => {
 	localStorage.setItem('memoriser-data-groups', JSON.stringify([{id: '2', name: 'test group'}, {id: '3', name: 'other group'}]));
 	localStorage.setItem('memoriser-data-cards', JSON.stringify([{id: '1', groupId: '2', question: 'test card'}]));
 
-	const mockCards = [{id: '1', groupId: '2'}] as Card[];
-	const mockGroups = [{id: '1'}] as Group[];
-
-	render(<ImportMenu cards={mockCards} groups={mockGroups}/>);
+	render(<ImportMenu/>, mockState);
 
 	let localGroupSelect = screen.getByText('test group');
 	expect(localGroupSelect).toBeInTheDocument();
