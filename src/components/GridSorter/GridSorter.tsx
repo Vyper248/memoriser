@@ -18,7 +18,6 @@ type GridSorterProps = {
         onDelete: (card: Card)=>void;
         onSelect: (card: Card)=>void;
     };
-    addingCard: boolean;
 }
 
 interface PositionedCardExtra {
@@ -55,12 +54,13 @@ const GridSquare = ({x=0, y=0, size, first=false, children}: GridSquareProps) =>
     );
 };
 
-const GridSorter = ({cards, cardFunctions, addingCard}: GridSorterProps) => {
+const GridSorter = ({cards, cardFunctions}: GridSorterProps) => {
     const [, updateLayout] = useState(0);
     const [scrollPos, setScrollPos] = useState(window.scrollY + window.innerHeight - 450);
     const [scrollSet, setScrollSet] = useState(new Set());
     const selectedCard = useAppSelector(state => state.main.selectedCard);
     const selectedGroup = useAppSelector(state => state.main.selectedGroup);
+    const addingCard = useAppSelector(state => state.main.addingCard);
 
     const { gridSize } = getGridValues();
 

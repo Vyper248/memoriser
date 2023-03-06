@@ -6,7 +6,7 @@ import type { Group, Card } from '../../types';
 import { addToArray, removeFromArray, editInArray, filterArrayByGroupId } from '../../utils/array.utils';
 import { correctCardAdjustment, createNewCard } from '../../utils/general.utils';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { setSelectedCard, setSelectedGroup, setCards, setGroups } from '../../redux/mainSlice';
+import { setSelectedCard, setSelectedGroup, setCards, setGroups, setAddingCard } from '../../redux/mainSlice';
 
 import Button from '../../components/Button/Button';
 import GroupSelect from '../../components/GroupSelect/GroupSelect';
@@ -16,7 +16,6 @@ import ImportMenu from '../../components/ImportMenu/ImportMenu';
 
 const MainPage = () => {
 	const dispatch = useAppDispatch();
-	const [addingCard, setAddingCard] = useState(false);
 	const viewingShared = useAppSelector(state => state.main.viewingShared);
 	const selectedCard = useAppSelector(state => state.main.selectedCard);
 	const selectedGroup = useAppSelector(state => state.main.selectedGroup);
@@ -57,7 +56,7 @@ const MainPage = () => {
 	const onClickAddCard = () => {
 		if (!selectedGroup) return;
 
-		setAddingCard(true);
+		dispatch(setAddingCard(true));
 		let newCard = createNewCard(selectedGroup.id);
 		dispatch(setSelectedCard(newCard));
 		addCard(newCard);
@@ -77,12 +76,12 @@ const MainPage = () => {
 		let newCards = removeFromArray(card, cards);
 		dispatch(setCards(newCards));
 		if (selectedCard) dispatch(setSelectedCard(null));
-		setAddingCard(false);
+		dispatch(setAddingCard(false));
 	}
 
 	const onCorrectAnswer = (card: Card) => {
 		dispatch(setSelectedCard(null));
-		setAddingCard(false);
+		dispatch(setAddingCard(false));
 		const setCardsFunction = (cards: Card[]) => dispatch(setCards(cards));
 		correctCardAdjustment(card, cards, setCardsFunction);		
 	}
@@ -92,11 +91,11 @@ const MainPage = () => {
 		let newCards = editInArray({...card, points: 0, lastChecked, lastCheckingPeriod: '1 Hour'}, cards);
 		dispatch(setCards(newCards));
 		dispatch(setSelectedCard(null));
-		setAddingCard(false);
+		dispatch(setAddingCard(false));
 	}
 
 	const onSelectCard = (card: Card) => {
-		setAddingCard(false);
+		dispatch(setAddingCard(false));
 		dispatch(setSelectedCard(card));
 	}
 
@@ -126,7 +125,7 @@ const MainPage = () => {
 			{ viewingShared ? <ImportMenu/> : null }
 			<GroupSelect {...groupfunctions}/>
 			{ viewingShared ? null : <Button value='New Card' onClick={onClickAddCard}/> }
-			<GridSorter cards={filteredCards} cardFunctions={cardFunctions} addingCard={addingCard}/>
+			<GridSorter cards={filteredCards} cardFunctions={cardFunctions}/>
 		</StyledMainPage>
 	);
 }

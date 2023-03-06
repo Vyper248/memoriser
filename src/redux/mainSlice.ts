@@ -9,6 +9,7 @@ export type MainSlice = {
     selectedCard: Card | null;
     flippedCard: Card | null;
     selectedGroup: Group | null;
+    addingCard: boolean;
     viewingShared: boolean;
 };
 
@@ -38,6 +39,7 @@ export const initialState: MainSlice = {
     selectedCard: null,
     flippedCard: null,
     selectedGroup: null,
+    addingCard: false,
     viewingShared: false
 };
 
@@ -75,10 +77,13 @@ export const mainSlice = createSlice({
         setSelectedGroup: (state, action: PayloadAction<Group | null>) => {
             state.selectedGroup = action.payload;
             state.selectedCard = null;
-        }
+        },
+        setAddingCard: (state, action: PayloadAction<boolean>) => {
+            state.addingCard = action.payload;
+        },
     }
 });
 
-export const { setCards, setGroups, setViewingShared, setSelectedCard, setFlippedCard, setSelectedGroup } = mainSlice.actions;
+export const { setCards, setGroups, setViewingShared, setSelectedCard, setFlippedCard, setSelectedGroup, setAddingCard } = mainSlice.actions;
 
 export default mainSlice.reducer;
