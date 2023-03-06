@@ -3,7 +3,8 @@ import StyledGroupSelect from './GroupSelect.style';
 
 import type { Group } from '../../types';
 
-import { useAppSelector } from '../../redux/hooks';
+import { useAppSelector, useAppDispatch } from '../../redux/hooks';
+import { addGroup, editGroup, changeGroup, deleteGroup } from '../../redux/mainSlice';
 
 import Modal from '../Modal/Modal';
 import Button from '../Button/Button';
@@ -14,13 +15,6 @@ import LinkedBorders from '../LinkedBorders/LinkedBorders';
 import Dropdown from '../Dropdown/Dropdown';
 import Label from '../Label/Label';
 import { generateURL, onClearHash } from '../../utils/general.utils';
-
-type GroupSelectProps = {
-    onChange: (id:string)=>void;
-    onAdd: (group: Group)=>void;
-    onEdit: (group: Group)=>void;
-    onDelete: (group: Group)=>void;
-}
 
 type NewGroupMenuProps = {
     initialName?: string;
@@ -59,7 +53,8 @@ const NewGroupMenu = ({initialName='', onSave, onCancel}: NewGroupMenuProps) => 
     );
 }
 
-const GroupSelect = ({ onChange, onAdd, onEdit, onDelete }: GroupSelectProps) => {
+const GroupSelect = () => {
+    const dispatch = useAppDispatch();
     const [modalOpen, setModalOpen] = useState(false);
     const [addingGroup, setAddingGroup] = useState(false);
     const [editingGroup, setEditingGroup] = useState(false);
@@ -93,7 +88,7 @@ const GroupSelect = ({ onChange, onAdd, onEdit, onDelete }: GroupSelectProps) =>
     }
 
     const onChangeGroup = (value: string) => {
-        onChange(value);
+        dispatch(changeGroup(value));
     }
 
     const onClickAddGroup = () => {
@@ -115,7 +110,7 @@ const GroupSelect = ({ onChange, onAdd, onEdit, onDelete }: GroupSelectProps) =>
     const onClickDeleteGroup = () => {
         if (!selectedGroup) return;
 
-        onDelete(selectedGroup);
+        dispatch(deleteGroup(selectedGroup));
         //makes sure the clickOutside handler runs to close the PopupMenu
         document.body.click();
     }
@@ -124,14 +119,9 @@ const GroupSelect = ({ onChange, onAdd, onEdit, onDelete }: GroupSelectProps) =>
         //id based on time will always be unique for a single user
         const id = new Date().getTime();
 
-        let newGroup: Group = {
-            id: `${id}`,
-            name: newGroupName
-        }
-
         setModalOpen(false);
         setAddingGroup(false);
-        onAdd(newGroup);
+        dispatch(addGroup({id: `${id}`, name: newGroupName}));
     }
 
     const onCancelNewGroup = () => {
@@ -146,7 +136,7 @@ const GroupSelect = ({ onChange, onAdd, onEdit, onDelete }: GroupSelectProps) =>
             name: groupName
         }
 
-        onEdit(newGroup);
+        dispatch(editGroup(newGroup));
         setModalOpen(false);
         setEditingGroup(false);
     }

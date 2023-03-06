@@ -1,6 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
+import { editInArray, removeFromArray } from "../utils/array.utils";
+
 import type { Card, Group } from "../types";
 
 export type MainSlice = {
@@ -81,9 +83,32 @@ export const mainSlice = createSlice({
         setAddingCard: (state, action: PayloadAction<boolean>) => {
             state.addingCard = action.payload;
         },
+        addGroup: (state, action: PayloadAction<Group>) => {
+            let newGroups = [...state.groups, action.payload];
+            state.groups = newGroups;
+            state.selectedGroup = action.payload;
+        },
+        editGroup: (state, action: PayloadAction<Group>) => {
+            let newGroups = editInArray(action.payload, state.groups);
+            state.groups = newGroups;
+            state.selectedGroup = action.payload;
+        },
+        changeGroup: (state, action: PayloadAction<string>) => {
+            const newGroup = state.groups.find(group => group.id === action.payload);
+            if (newGroup) state.selectedGroup = newGroup;
+        },
+        deleteGroup: (state, action: PayloadAction<Group>) => {
+            let newGroups = removeFromArray(action.payload, state.groups);
+            state.groups = newGroups;
+            state.selectedGroup = newGroups[0];
+            let newCards = state.cards.filter(card => card.groupId !== action.payload.id);
+            state.cards = newCards;
+        }
     }
 });
 
-export const { setCards, setGroups, setViewingShared, setSelectedCard, setFlippedCard, setSelectedGroup, setAddingCard } = mainSlice.actions;
+export const {  setCards, setGroups, 
+                setViewingShared, setSelectedCard, setFlippedCard, setSelectedGroup, setAddingCard, 
+                addGroup, editGroup, changeGroup, deleteGroup } = mainSlice.actions;
 
 export default mainSlice.reducer;

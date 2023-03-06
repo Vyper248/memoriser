@@ -18,7 +18,7 @@ let mockState = getBasicMockState({selectedGroup: mockGroups[0], groups: mockGro
 
 describe('The component shows the correct elements', () => {
     it('Loads element without crashing and selects correct starting value', () => {
-        render(<GroupSelect onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={()=>{}}/>, mockState);
+        render(<GroupSelect/>, mockState);
     
         let element = screen.getByRole('option', {name: 'Group1'}) as HTMLSelectElement;
         expect(element).toBeInTheDocument();
@@ -26,12 +26,27 @@ describe('The component shows the correct elements', () => {
     });
     
     it('Displays the correct number of options in the input', () => {
-        render(<GroupSelect onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={()=>{}}/>, mockState);
+        render(<GroupSelect/>, mockState);
         expect(screen.getAllByRole('option').length).toBe(2);
+    });
+
+    it('Changes group when selecting a different group', () => {
+        render(<GroupSelect/>, mockState);
+
+        let optionsBefore = screen.getAllByRole('option') as HTMLOptionElement[];
+        expect(optionsBefore[0].selected).toBeTruthy();
+        expect(optionsBefore[1].selected).toBeFalsy();
+
+        let groupSelect = screen.getByRole('combobox');
+        fireEvent.change(groupSelect, { target: { value: '2' } });
+
+        let options = screen.getAllByRole('option') as HTMLOptionElement[];
+        expect(options[0].selected).toBeFalsy();
+        expect(options[1].selected).toBeTruthy();
     });
     
     it('Includes new/edit/delete buttons', () => {
-        render(<GroupSelect onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={()=>{}}/>, mockState);
+        render(<GroupSelect/>, mockState);
     
         let button = screen.getByText('New Group');
         expect(button).toBeInTheDocument();
@@ -44,8 +59,8 @@ describe('The component shows the correct elements', () => {
     });
 
     it("Doesn't include option buttons when viewing shared link", () => {
-        let mockState = getBasicMockState({viewingShared: true, selectedGroup: mockGroups[0]});
-        render(<GroupSelect onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={()=>{}}/>, mockState);
+        let mockState = getBasicMockState({viewingShared: true});
+        render(<GroupSelect/>, mockState);
     
         let button = screen.queryByText('New Group');
         expect(button).toBeNull();
@@ -60,8 +75,7 @@ describe('The component shows the correct elements', () => {
 
 describe('The component menu buttons work as expected', () => {
     it('Creates a new group when clicking the New Group button', () => {
-        let mockSetGroups = jest.fn();
-        render(<GroupSelect onChange={()=>{}} onAdd={mockSetGroups} onEdit={()=>{}} onDelete={()=>{}}/>, mockState);
+        render(<GroupSelect/>, mockState);
     
         let newGroupButton = screen.getByText('New Group');
         fireEvent.click(newGroupButton);
@@ -70,34 +84,34 @@ describe('The component menu buttons work as expected', () => {
         fireEvent.change(newGroupInput, {target: {value: 'test'}});
         fireEvent.submit(newGroupInput);
 
-        expect(mockSetGroups).toBeCalledWith(expect.objectContaining({name: 'test'}));
+        screen.getByRole('option', { name: 'test' });
     });
 
     it('Deletes a group when clicking Delete Group button and confirming', () => {
-        let mockDeleteGroups = jest.fn();
-        render(<GroupSelect onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={mockDeleteGroups}/>, mockState);
+        render(<GroupSelect/>, mockState);
 
         let deletePopupConfirm = screen.getByText('Confirm');
         expect(deletePopupConfirm).toBeInTheDocument();
 
         fireEvent.click(deletePopupConfirm);
-        expect(mockDeleteGroups).toBeCalledWith({id: '1', name: 'Group1'});
+
+        let groupOption = screen.queryByRole('option', { name: 'Group1' });
+        expect(groupOption).toBeFalsy();
     });
 
     it('Doesnt delete a group when clicking Delete Group button and cancelling', () => {
-        let mockDeleteGroups = jest.fn();
-        render(<GroupSelect onChange={()=>{}} onAdd={()=>{}} onEdit={()=>{}} onDelete={mockDeleteGroups}/>, mockState);
+        render(<GroupSelect/>, mockState);
     
         let deleteButtonCancel = screen.getByText('Cancel');
         expect(deleteButtonCancel).toBeInTheDocument();
 
         fireEvent.click(deleteButtonCancel);
-        expect(mockDeleteGroups).not.toBeCalled();
+        let groupOption = screen.queryByRole('option', { name: 'Group1' });
+        expect(groupOption).toBeTruthy();
     });
 
     it('Edits a group when clicking Edit Group button', async () => {
-        let mockEditGroup = jest.fn();
-        render(<GroupSelect onChange={()=>{}} onAdd={()=>{}} onEdit={mockEditGroup} onDelete={()=>{}}/>, mockState);
+        render(<GroupSelect/>, mockState);
     
         let editGroupButton = screen.getByText('Edit Group');
         fireEvent.click(editGroupButton);
@@ -106,6 +120,8 @@ describe('The component menu buttons work as expected', () => {
         fireEvent.change(editGroupInput, {target: {value: 'edit'}});
         fireEvent.submit(editGroupInput);
 
-        expect(mockEditGroup).toBeCalledWith({id: '1', name: 'edit'});
+        screen.getByRole('option', { name: 'edit' });
+        let oldGroup = screen.queryByRole('option', { name: 'Group1' });
+        expect(oldGroup).toBeFalsy();
     });
 });

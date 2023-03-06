@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import StyledMainPage from './MainPage.style';
 
 import type { Group, Card } from '../../types';
@@ -27,31 +27,6 @@ const MainPage = () => {
         let groupCheck = groups.find(group => group.id === selectedGroup?.id);
         if (!groupCheck) dispatch(setSelectedGroup(groups[0]));
     }, [groups, selectedGroup, dispatch]);
-
-    const onChangeGroup = (id: string) => {
-		const newGroup = groups.find(group => group.id === id);
-		if (newGroup) dispatch(setSelectedGroup(newGroup));
-	}
-
-	const onAddGroup = (group: Group) => {
-		let newGroups = [...groups, group];
-		dispatch(setGroups(newGroups));
-		dispatch(setSelectedGroup(group));
-	}
-
-	const onEditGroup = (group: Group) => {
-		let newGroups = editInArray(group, groups);
-		dispatch(setGroups(newGroups));
-		dispatch(setSelectedGroup(group));
-	}
-
-	const onDeleteGroup = (group: Group) => {
-		let newGroups = removeFromArray(group, groups);
-		dispatch(setGroups(newGroups));
-		dispatch(setSelectedGroup(newGroups[0]));
-		let newCards = cards.filter(card => card.groupId !== group.id);
-		dispatch(setCards(newCards));
-	}
 
 	const onClickAddCard = () => {
 		if (!selectedGroup) return;
@@ -112,18 +87,11 @@ const MainPage = () => {
 		onSelect: onSelectCard
 	}
 
-	const groupfunctions = {
-		onChange: onChangeGroup,
-		onAdd: onAddGroup,
-		onEdit: onEditGroup,
-		onDelete: onDeleteGroup
-	}
-
 	return (
 		<StyledMainPage>
 			<Header text='Learn with Cards'/>
 			{ viewingShared ? <ImportMenu/> : null }
-			<GroupSelect {...groupfunctions}/>
+			<GroupSelect/>
 			{ viewingShared ? null : <Button value='New Card' onClick={onClickAddCard}/> }
 			<GridSorter cards={filteredCards} cardFunctions={cardFunctions}/>
 		</StyledMainPage>
