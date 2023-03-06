@@ -15,7 +15,7 @@ const LabelledInput = ({label, value, onChange, name='', autofocus=false, labelW
     return (
         <StyledLabelledInput labelWidth={labelWidth}>
             <label>{label}</label>
-            <input value={value} onChange={onChange} name={name} autoFocus={autofocus} id={inputID}/>
+            <input value={value} onChange={onChange} name={name} autoFocus={autofocus} id={inputID} aria-label={name}/>
         </StyledLabelledInput>
     );
 }

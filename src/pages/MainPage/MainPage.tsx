@@ -6,7 +6,7 @@ import type { Group, Card } from '../../types';
 import { addToArray, removeFromArray, editInArray, filterArrayByGroupId } from '../../utils/array.utils';
 import { correctCardAdjustment, createNewCard } from '../../utils/general.utils';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { setSelectedCard, setSelectedGroup } from '../../redux/mainSlice';
+import { setSelectedCard, setSelectedGroup, setCards } from '../../redux/mainSlice';
 
 import Button from '../../components/Button/Button';
 import GroupSelect from '../../components/GroupSelect/GroupSelect';
@@ -16,17 +16,16 @@ import ImportMenu from '../../components/ImportMenu/ImportMenu';
 
 type MainPageProps = {
     groups: Group[];
-    cards: Card[];
     setGroups: (groups: Group[])=>void;
-    setCards: (cards: Card[])=>void;
 }
 
-const MainPage = ({groups, setGroups, cards, setCards }: MainPageProps) => {
+const MainPage = ({groups, setGroups }: MainPageProps) => {
 	const dispatch = useAppDispatch();
 	const [addingCard, setAddingCard] = useState(false);
 	const viewingShared = useAppSelector(state => state.main.viewingShared);
 	const selectedCard = useAppSelector(state => state.main.selectedCard);
 	const selectedGroup = useAppSelector(state => state.main.selectedGroup);
+	const cards = useAppSelector(state => state.main.cards);
 
     //make sure current group is correct after loading data from local storage
     useEffect(() => {
@@ -58,7 +57,7 @@ const MainPage = ({groups, setGroups, cards, setCards }: MainPageProps) => {
 		setGroups(newGroups);
 		dispatch(setSelectedGroup(newGroups[0]));
 		let newCards = cards.filter(card => card.groupId !== group.id);
-		setCards(newCards);
+		dispatch(setCards(newCards));
 		dispatch(setSelectedCard(null));
 	}
 
@@ -73,17 +72,17 @@ const MainPage = ({groups, setGroups, cards, setCards }: MainPageProps) => {
 
 	const addCard = (card: Card) => {
 		let newCards = addToArray(card, cards);
-		setCards(newCards);
+		dispatch(setCards(newCards));
 	}
 
 	const onEditCard = (card: Card) => {
 		let newCards = editInArray(card, cards);
-		setCards(newCards);
+		dispatch(setCards(newCards));
 	}
 
 	const onDeleteCard = (card: Card) => {
 		let newCards = removeFromArray(card, cards);
-		setCards(newCards);
+		dispatch(setCards(newCards));
 		if (selectedCard) dispatch(setSelectedCard(null));
 		setAddingCard(false);
 	}
@@ -91,13 +90,14 @@ const MainPage = ({groups, setGroups, cards, setCards }: MainPageProps) => {
 	const onCorrectAnswer = (card: Card) => {
 		dispatch(setSelectedCard(null));
 		setAddingCard(false);
-		correctCardAdjustment(card, cards, setCards);		
+		const setCardsFunction = (cards: Card[]) => dispatch(setCards(cards));
+		correctCardAdjustment(card, cards, setCardsFunction);		
 	}
 
 	const onIncorrectAnswer = (card: Card) => {
 		let lastChecked = new Date().getTime()
 		let newCards = editInArray({...card, points: 0, lastChecked, lastCheckingPeriod: '1 Hour'}, cards);
-		setCards(newCards);
+		dispatch(setCards(newCards));
 		dispatch(setSelectedCard(null));
 		setAddingCard(false);
 	}

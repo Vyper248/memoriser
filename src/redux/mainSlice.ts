@@ -13,7 +13,22 @@ export type MainSlice = {
 };
 
 export const initialState: MainSlice = {
-    cards: [],
+    cards: [
+        {
+            id: '1',
+            groupId: '1',
+            question: 'Look at a card, try to guess, then check if you got it right by clicking on it.',
+            answer: 'Be truthful here, otherwise it won\'t help you.',
+            points: 0,
+        },
+        {
+            id: '2',
+            groupId: '1',
+            question: 'You can use the dropdown menu above to add, edit or delete a group.',
+            answer: 'So start creating some cards and learning!',
+            points: 0,
+        }
+    ],
     groups: [],
     selectedCard: null,
     flippedCard: null,
@@ -25,6 +40,15 @@ export const mainSlice = createSlice({
     name: 'main',
     initialState,
     reducers: {
+        setCards: (state, action: PayloadAction<Card[]>) => {
+            state.cards = action.payload;
+
+            //if not viewing shared cards, save to local storage
+            if (state.viewingShared === false) {
+                let string = JSON.stringify(action.payload);
+                localStorage.setItem(`memoriser-data-cards`, string);
+            }
+        },
         setViewingShared: (state, action: PayloadAction<boolean>) => {
             state.viewingShared = action.payload;
         },
@@ -40,6 +64,6 @@ export const mainSlice = createSlice({
     }
 });
 
-export const { setViewingShared, setSelectedCard, setFlippedCard, setSelectedGroup } = mainSlice.actions;
+export const { setCards, setViewingShared, setSelectedCard, setFlippedCard, setSelectedGroup } = mainSlice.actions;
 
 export default mainSlice.reducer;

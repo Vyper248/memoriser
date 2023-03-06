@@ -4,7 +4,7 @@ import './App.css';
 import type { Card, Group } from './types';
 
 import { parseHash } from './utils/general.utils';
-import { setViewingShared } from './redux/mainSlice';
+import { setViewingShared, setCards } from './redux/mainSlice';
 import { useAppSelector, useAppDispatch } from './redux/hooks';
 
 import MainPage from './pages/MainPage/MainPage';
@@ -14,26 +14,8 @@ const initialGroup: Group = {
 	name: 'Instructions',
 }
 
-const initialCards: Card[] = [
-	{
-		id: '1',
-		groupId: '1',
-		question: 'Look at a card, try to guess, then check if you got it right by clicking on it.',
-		answer: 'Be truthful here, otherwise it won\'t help you.',
-		points: 0,
-	},
-	{
-		id: '2',
-		groupId: '1',
-		question: 'You can use the dropdown menu above to add, edit or delete a group.',
-		answer: 'So start creating some cards and learning!',
-		points: 0,
-	}
-];
-
 function App() {
 	const [groups, setGroups] = useState<Group[]>([initialGroup]);
-	const [cards, setCards] = useState<Card[]>(initialCards);
 	const viewingShared = useAppSelector(state => state.main.viewingShared);
 	const dispatch = useAppDispatch();
 
@@ -47,16 +29,16 @@ function App() {
 		//if hash available,
 		let dataObj = parseHash(window.location.hash);
 		if (dataObj !== null) {
-			if (dataObj.cards) setCards(dataObj.cards);
-			if (dataObj.groups) setGroups(dataObj.groups);
 			dispatch(setViewingShared(true));
+			if (dataObj.cards) dispatch(setCards(dataObj.cards));
+			if (dataObj.groups) setGroups(dataObj.groups);
 		} else {
 			let localDataCards = localStorage.getItem('memoriser-data-cards');
 			let localDataGroups = localStorage.getItem('memoriser-data-groups');
 	
-			if (localDataCards) setCards(JSON.parse(localDataCards));
-			if (localDataGroups) setGroups(JSON.parse(localDataGroups));
 			dispatch(setViewingShared(false));
+			if (localDataCards) dispatch(setCards(JSON.parse(localDataCards)));
+			if (localDataGroups) setGroups(JSON.parse(localDataGroups));
 		}
 
 		window.addEventListener('hashchange', hashChange);
@@ -74,11 +56,6 @@ function App() {
 		localStorage.setItem(`memoriser-data-${key}`, string);
 	}
 
-	const onSetCards = (cards: Card[]) => {
-		setCards(cards);
-		saveToLocal('cards', cards);
-	}
-
 	const onSetGroups = (groups: Group[]) => {
 		setGroups(groups)
 		saveToLocal('groups', groups);
@@ -86,7 +63,7 @@ function App() {
 
 	return (
 		<div className="App">
-			<MainPage cards={cards} groups={groups} setCards={onSetCards} setGroups={onSetGroups}/>
+			<MainPage groups={groups} setGroups={onSetGroups}/>
 		</div>
 	);
 }
