@@ -3,6 +3,7 @@ import StyledGridSorter, { StyledGridSquare } from './GridSorter.style';
 
 import { getGridValues, getCardArray } from './GridSorter.utils';
 import { useResizeListener, useScrollListener } from '../../utils/customHooks';
+import { useAppSelector } from '../../redux/hooks';
 
 import type { Card, Group } from '../../types';
 
@@ -19,7 +20,6 @@ type GridSorterProps = {
         onSelect: (card: Card)=>void;
     };
     addingCard: boolean;
-    selectedCard: Card | null;
 }
 
 interface PositionedCardExtra {
@@ -56,10 +56,11 @@ const GridSquare = ({x=0, y=0, size, first=false, children}: GridSquareProps) =>
     );
 };
 
-const GridSorter = ({cards, currentGroup, selectedCard, cardFunctions, addingCard}: GridSorterProps) => {
+const GridSorter = ({cards, currentGroup, cardFunctions, addingCard}: GridSorterProps) => {
     const [, updateLayout] = useState(0);
     const [scrollPos, setScrollPos] = useState(window.scrollY + window.innerHeight - 450);
     const [scrollSet, setScrollSet] = useState(new Set());
+    const selectedCard = useAppSelector(state => state.main.selectedCard);
 
     const { gridSize } = getGridValues();
 

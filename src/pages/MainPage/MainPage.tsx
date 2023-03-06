@@ -5,7 +5,8 @@ import type { Group, Card } from '../../types';
 
 import { addToArray, removeFromArray, editInArray, filterArrayByGroupId } from '../../utils/array.utils';
 import { correctCardAdjustment, createNewCard } from '../../utils/general.utils';
-import { useAppSelector } from '../../redux/hooks';
+import { useAppSelector, useAppDispatch } from '../../redux/hooks';
+import { setSelectedCard } from '../../redux/mainSlice';
 
 import Button from '../../components/Button/Button';
 import GroupSelect from '../../components/GroupSelect/GroupSelect';
@@ -21,10 +22,11 @@ type MainPageProps = {
 }
 
 const MainPage = ({groups, setGroups, cards, setCards }: MainPageProps) => {
+	const dispatch = useAppDispatch();
     const [currentGroup, setCurrentGroup] = useState<Group | undefined>(groups[0]);
 	const [addingCard, setAddingCard] = useState(false);
-	const [selectedCard, setSelectedCard] = useState<Card | null>(null);
 	const viewingShared = useAppSelector(state => state.main.viewingShared);
+	const selectedCard = useAppSelector(state => state.main.selectedCard);
 
     //make sure current group is correct after loading data from local storage
     useEffect(() => {
@@ -35,14 +37,14 @@ const MainPage = ({groups, setGroups, cards, setCards }: MainPageProps) => {
     const onChangeGroup = (id: string) => {
 		const newGroup = groups.find(group => group.id === id);
 		if (newGroup) setCurrentGroup(newGroup);
-        if (selectedCard) setSelectedCard(null);
+        if (selectedCard) dispatch(setSelectedCard(null));
 	}
 
 	const onAddGroup = (group: Group) => {
 		let newGroups = [...groups, group];
 		setGroups(newGroups);
 		setCurrentGroup(group);
-		setSelectedCard(null);
+		dispatch(setSelectedCard(null));
 	}
 
 	const onEditGroup = (group: Group) => {
@@ -57,7 +59,7 @@ const MainPage = ({groups, setGroups, cards, setCards }: MainPageProps) => {
 		setCurrentGroup(newGroups[0]);
 		let newCards = cards.filter(card => card.groupId !== group.id);
 		setCards(newCards);
-		setSelectedCard(null);
+		dispatch(setSelectedCard(null));
 	}
 
 	const onClickAddCard = () => {
@@ -65,7 +67,7 @@ const MainPage = ({groups, setGroups, cards, setCards }: MainPageProps) => {
 
 		setAddingCard(true);
 		let newCard = createNewCard(currentGroup.id);
-		setSelectedCard(newCard);
+		dispatch(setSelectedCard(newCard));
 		addCard(newCard);
 	}
 
@@ -82,12 +84,12 @@ const MainPage = ({groups, setGroups, cards, setCards }: MainPageProps) => {
 	const onDeleteCard = (card: Card) => {
 		let newCards = removeFromArray(card, cards);
 		setCards(newCards);
-		if (selectedCard) setSelectedCard(null);
+		if (selectedCard) dispatch(setSelectedCard(null));
 		setAddingCard(false);
 	}
 
 	const onCorrectAnswer = (card: Card) => {
-		setSelectedCard(null);
+		dispatch(setSelectedCard(null));
 		setAddingCard(false);
 		correctCardAdjustment(card, cards, setCards);		
 	}
@@ -96,13 +98,13 @@ const MainPage = ({groups, setGroups, cards, setCards }: MainPageProps) => {
 		let lastChecked = new Date().getTime()
 		let newCards = editInArray({...card, points: 0, lastChecked, lastCheckingPeriod: '1 Hour'}, cards);
 		setCards(newCards);
-		setSelectedCard(null);
+		dispatch(setSelectedCard(null));
 		setAddingCard(false);
 	}
 
 	const onSelectCard = (card: Card) => {
 		setAddingCard(false);
-		setSelectedCard(card);
+		dispatch(setSelectedCard(card));
 	}
 
 	let filteredCards = [] as Card[];
@@ -131,7 +133,7 @@ const MainPage = ({groups, setGroups, cards, setCards }: MainPageProps) => {
 			{ viewingShared ? <ImportMenu cards={cards} groups={groups} currentGroup={currentGroup}/> : null }
 			<GroupSelect groups={groups} cards={cards} currentGroup={currentGroup} {...groupfunctions}/>
 			{ viewingShared ? null : <Button value='New Card' onClick={onClickAddCard}/> }
-			<GridSorter currentGroup={currentGroup} cards={filteredCards} selectedCard={selectedCard} cardFunctions={cardFunctions} addingCard={addingCard}/>
+			<GridSorter currentGroup={currentGroup} cards={filteredCards} cardFunctions={cardFunctions} addingCard={addingCard}/>
 		</StyledMainPage>
 	);
 }

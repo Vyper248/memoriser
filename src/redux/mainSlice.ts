@@ -28,10 +28,10 @@ export const mainSlice = createSlice({
         setViewingShared: (state, action: PayloadAction<boolean>) => {
             state.viewingShared = action.payload;
         },
-        setSelectedCard: (state, action: PayloadAction<Card>) => {
+        setSelectedCard: (state, action: PayloadAction<Card | null>) => {
             state.selectedCard = action.payload;
         },
-        setFlippedCard: (state, action: PayloadAction<Card>) => {
+        setFlippedCard: (state, action: PayloadAction<Card | null>) => {
             state.flippedCard = action.payload;
         },
     }
