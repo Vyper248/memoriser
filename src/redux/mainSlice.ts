@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 import { editInArray, removeFromArray } from "../utils/array.utils";
+import { createNewCard } from "../utils/general.utils";
 
 import type { Card, Group } from "../types";
 
@@ -49,24 +50,6 @@ export const mainSlice = createSlice({
     name: 'main',
     initialState,
     reducers: {
-        setCards: (state, action: PayloadAction<Card[]>) => {
-            state.cards = action.payload;
-
-            //if not viewing shared cards, save to local storage
-            if (state.viewingShared === false) {
-                let string = JSON.stringify(action.payload);
-                localStorage.setItem(`memoriser-data-cards`, string);
-            }
-        },
-        setGroups: (state, action: PayloadAction<Group[]>) => {
-            state.groups = action.payload;
-
-            //if not viewing shared cards, save to local storage
-            if (state.viewingShared === false) {
-                let string = JSON.stringify(action.payload);
-                localStorage.setItem(`memoriser-data-groups`, string);
-            }
-        },
         setViewingShared: (state, action: PayloadAction<boolean>) => {
             state.viewingShared = action.payload;
         },
@@ -77,11 +60,21 @@ export const mainSlice = createSlice({
             state.flippedCard = action.payload;
         },
         setSelectedGroup: (state, action: PayloadAction<Group | null>) => {
-            state.selectedGroup = action.payload;
             state.selectedCard = null;
+            state.selectedGroup = action.payload;
         },
         setAddingCard: (state, action: PayloadAction<boolean>) => {
             state.addingCard = action.payload;
+        },
+        //Group Functions ===============================================================
+        setGroups: (state, action: PayloadAction<Group[]>) => {
+            state.groups = action.payload;
+
+            //if not viewing shared cards, save to local storage
+            if (state.viewingShared === false) {
+                let string = JSON.stringify(action.payload);
+                localStorage.setItem(`memoriser-data-groups`, string);
+            }
         },
         addGroup: (state, action: PayloadAction<Group>) => {
             let newGroups = [...state.groups, action.payload];
@@ -93,22 +86,47 @@ export const mainSlice = createSlice({
             state.groups = newGroups;
             state.selectedGroup = action.payload;
         },
-        changeGroup: (state, action: PayloadAction<string>) => {
-            const newGroup = state.groups.find(group => group.id === action.payload);
-            if (newGroup) state.selectedGroup = newGroup;
-        },
         deleteGroup: (state, action: PayloadAction<Group>) => {
             let newGroups = removeFromArray(action.payload, state.groups);
             state.groups = newGroups;
             state.selectedGroup = newGroups[0];
             let newCards = state.cards.filter(card => card.groupId !== action.payload.id);
             state.cards = newCards;
-        }
+        },
+        //Card Functions ===============================================================
+        setCards: (state, action: PayloadAction<Card[]>) => {
+            state.cards = action.payload;
+
+            //if not viewing shared cards, save to local storage
+            if (state.viewingShared === false) {
+                let string = JSON.stringify(action.payload);
+                localStorage.setItem(`memoriser-data-cards`, string);
+            }
+        },
+        addCard: (state) => {
+            if (state.selectedGroup === null) return;
+
+            let newCard = createNewCard(state.selectedGroup.id);
+            state.addingCard = true;
+            state.selectedCard = newCard;
+            state.cards = [...state.cards, newCard];
+        },
+        editCard: (state, action: PayloadAction<Card>) => {
+            let newCards = editInArray(action.payload, state.cards);
+            state.cards = newCards;
+        },
+        deleteCard: (state, action: PayloadAction<Card>) => {
+            let newCards = removeFromArray(action.payload, state.cards);
+            state.cards = newCards;
+            state.selectedCard = null;
+            state.addingCard = false;
+        },
     }
 });
 
 export const {  setCards, setGroups, 
                 setViewingShared, setSelectedCard, setFlippedCard, setSelectedGroup, setAddingCard, 
-                addGroup, editGroup, changeGroup, deleteGroup } = mainSlice.actions;
+                addGroup, editGroup, deleteGroup,
+                addCard, editCard, deleteCard } = mainSlice.actions;
 
 export default mainSlice.reducer;

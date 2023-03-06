@@ -5,7 +5,8 @@ import { MdEdit } from 'react-icons/md';
 import type { Card } from '../../types';
 
 import { getTimeTillNextPoint } from '../../utils/date.utils';
-import { useAppSelector } from '../../redux/hooks';
+import { useAppSelector, useAppDispatch } from '../../redux/hooks';
+import { editCard, deleteCard, setAddingCard, setSelectedCard } from '../../redux/mainSlice';
 
 import Button from '../Button/Button';
 import ConfirmationButton from '../ConfirmationButton/ConfirmationButton';
@@ -20,19 +21,16 @@ type FlipCardProps = {
     size?: string;
     onCorrect: (card:Card)=>void;
     onFail: (card:Card)=>void;
-    onEdit: (card:Card)=>void;
-    onDelete: (card:Card)=>void;
-    onSelect: (card:Card)=>void;
 }
 
 type EditMenuProps = {
     card: Card;
     onSave: (card: Card)=>void;
     onCancel: ()=>void;
-    onDelete: ()=>void;
 }
 
-const EditMenu = ({ card, onSave, onCancel, onDelete }: EditMenuProps) => {
+const EditMenu = ({ card, onSave, onCancel }: EditMenuProps) => {
+    const dispatch = useAppDispatch();
     const [newCard, setNewCard] = useState({...card});
     
     const onSaveCard = useCallback((e: React.SyntheticEvent) => {
@@ -44,6 +42,10 @@ const EditMenu = ({ card, onSave, onCancel, onDelete }: EditMenuProps) => {
         setNewCard({...newCard, [e.currentTarget.name]: e.currentTarget.value});
     }
 
+    const onClickDelete = () => {
+        dispatch(deleteCard(card));
+    }
+
     return (
         <div>
             <form onSubmit={onSaveCard}>
@@ -52,14 +54,15 @@ const EditMenu = ({ card, onSave, onCancel, onDelete }: EditMenuProps) => {
                 <div>
                     <Button value='Save' type='submit' onClick={onSaveCard}/>&nbsp;
                     <Button value='Cancel' type='button' onClick={onCancel}/>&nbsp;
-                    <ConfirmationButton value='Delete' type='button' onClick={onDelete}/>
+                    <ConfirmationButton value='Delete' type='button' onClick={onClickDelete}/>
                 </div>
             </form>
         </div>
     );
 }
 
-const FlipCard = ({ speed=0.5, width='100%', height='100%', startInEditMode=false, card, size='large', onCorrect, onFail, onEdit, onDelete, onSelect }: FlipCardProps) => {
+const FlipCard = ({ speed=0.5, width='100%', height='100%', startInEditMode=false, card, size='large', onCorrect, onFail }: FlipCardProps) => {
+    const dispatch = useAppDispatch();
     const [flipped, setFlipped] = useState<boolean | undefined>(false);
     const [editMode, setEditMode] = useState(startInEditMode);
     const [timeToPoint, setTimeToPoint] = useState(getTimeTillNextPoint(card.lastChecked, card.lastCheckingPeriod));
@@ -83,7 +86,8 @@ const FlipCard = ({ speed=0.5, width='100%', height='100%', startInEditMode=fals
     const onClick = () => {
         //if not a large card, move to top instead
         if (size === 'small' || size === 'medium') {
-            onSelect(card); //can do something else here later
+            dispatch(setAddingCard(false));
+		    dispatch(setSelectedCard(card));
             return;
         }
         setFlipped(true);
@@ -91,7 +95,8 @@ const FlipCard = ({ speed=0.5, width='100%', height='100%', startInEditMode=fals
 
     const onClickHidden = () => {
         if (size !== 'large') {
-            onSelect(card);
+            dispatch(setAddingCard(false));
+            dispatch(setSelectedCard(card));
         }
     }
 
@@ -106,7 +111,7 @@ const FlipCard = ({ speed=0.5, width='100%', height='100%', startInEditMode=fals
     }
 
     const onSaveCard = (card: Card) => {
-        onEdit(card);
+        dispatch(editCard(card));
         setEditMode(false);
         setFlipped(true);
     }
@@ -114,10 +119,6 @@ const FlipCard = ({ speed=0.5, width='100%', height='100%', startInEditMode=fals
     const onCancelEdit = () => {
         setEditMode(false);
         setFlipped(true);
-    }
-
-    const onDeleteCard = () => {
-        onDelete(card);
     }
 
     const onClickEdit = () => {
@@ -149,7 +150,7 @@ const FlipCard = ({ speed=0.5, width='100%', height='100%', startInEditMode=fals
             </StyledInner>
             <StyledInner className='hidden' onClick={onClickHidden} {...styledProps}>
                 { editMode 
-                    ? <EditMenu card={card} onSave={onSaveCard} onCancel={onCancelEdit} onDelete={onDeleteCard}/> 
+                    ? <EditMenu card={card} onSave={onSaveCard} onCancel={onCancelEdit}/> 
                     : ( <div id='answer'>
                             <div>{card.answer}</div>
                             { viewingShared ? <Button value='Cancel' onClick={()=>setFlipped(false)}/> : (<div>

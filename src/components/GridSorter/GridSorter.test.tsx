@@ -19,9 +19,6 @@ describe('Tests GridSorter component', () => {
     const mockFunctions = {
         onCorrect: (card:Card)=>{},
         onFail: (card: Card)=>{},
-        onEdit: (card: Card)=>{},
-        onDelete: (card: Card)=>{},
-        onSelect: (card: Card)=>{},
     }
 
     it('Renders without crashing', () => {

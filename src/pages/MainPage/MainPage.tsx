@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 import StyledMainPage from './MainPage.style';
 
-import type { Group, Card } from '../../types';
+import type { Card } from '../../types';
 
-import { addToArray, removeFromArray, editInArray, filterArrayByGroupId } from '../../utils/array.utils';
-import { correctCardAdjustment, createNewCard } from '../../utils/general.utils';
+import { editInArray, filterArrayByGroupId } from '../../utils/array.utils';
+import { correctCardAdjustment } from '../../utils/general.utils';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { setSelectedCard, setSelectedGroup, setCards, setGroups, setAddingCard } from '../../redux/mainSlice';
+import { setSelectedCard, setSelectedGroup, setCards, setAddingCard, addCard } from '../../redux/mainSlice';
 
 import Button from '../../components/Button/Button';
 import GroupSelect from '../../components/GroupSelect/GroupSelect';
@@ -17,7 +17,6 @@ import ImportMenu from '../../components/ImportMenu/ImportMenu';
 const MainPage = () => {
 	const dispatch = useAppDispatch();
 	const viewingShared = useAppSelector(state => state.main.viewingShared);
-	const selectedCard = useAppSelector(state => state.main.selectedCard);
 	const selectedGroup = useAppSelector(state => state.main.selectedGroup);
 	const cards = useAppSelector(state => state.main.cards);
 	const groups = useAppSelector(state => state.main.groups);
@@ -29,29 +28,7 @@ const MainPage = () => {
     }, [groups, selectedGroup, dispatch]);
 
 	const onClickAddCard = () => {
-		if (!selectedGroup) return;
-
-		dispatch(setAddingCard(true));
-		let newCard = createNewCard(selectedGroup.id);
-		dispatch(setSelectedCard(newCard));
-		addCard(newCard);
-	}
-
-	const addCard = (card: Card) => {
-		let newCards = addToArray(card, cards);
-		dispatch(setCards(newCards));
-	}
-
-	const onEditCard = (card: Card) => {
-		let newCards = editInArray(card, cards);
-		dispatch(setCards(newCards));
-	}
-
-	const onDeleteCard = (card: Card) => {
-		let newCards = removeFromArray(card, cards);
-		dispatch(setCards(newCards));
-		if (selectedCard) dispatch(setSelectedCard(null));
-		dispatch(setAddingCard(false));
+		dispatch(addCard());
 	}
 
 	const onCorrectAnswer = (card: Card) => {
@@ -69,11 +46,6 @@ const MainPage = () => {
 		dispatch(setAddingCard(false));
 	}
 
-	const onSelectCard = (card: Card) => {
-		dispatch(setAddingCard(false));
-		dispatch(setSelectedCard(card));
-	}
-
 	let filteredCards = [] as Card[];
 	if (selectedGroup) {
 		filteredCards = filterArrayByGroupId(selectedGroup.id, cards);
@@ -82,9 +54,6 @@ const MainPage = () => {
 	const cardFunctions = {
 		onCorrect: onCorrectAnswer,
 		onFail: onIncorrectAnswer,
-		onEdit: onEditCard,
-		onDelete: onDeleteCard,
-		onSelect: onSelectCard
 	}
 
 	return (

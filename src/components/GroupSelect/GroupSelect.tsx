@@ -4,7 +4,7 @@ import StyledGroupSelect from './GroupSelect.style';
 import type { Group } from '../../types';
 
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { addGroup, editGroup, changeGroup, deleteGroup } from '../../redux/mainSlice';
+import { addGroup, editGroup, deleteGroup, setSelectedGroup } from '../../redux/mainSlice';
 
 import Modal from '../Modal/Modal';
 import Button from '../Button/Button';
@@ -88,7 +88,8 @@ const GroupSelect = () => {
     }
 
     const onChangeGroup = (value: string) => {
-        dispatch(changeGroup(value));
+        const newGroup = groups.find(group => group.id === value);
+        if (newGroup) dispatch(setSelectedGroup(newGroup));
     }
 
     const onClickAddGroup = () => {

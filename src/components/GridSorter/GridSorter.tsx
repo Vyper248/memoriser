@@ -14,9 +14,6 @@ type GridSorterProps = {
     cardFunctions: { 
         onCorrect: (card:Card)=>void;
         onFail: (card: Card)=>void;
-        onEdit: (card: Card)=>void;
-        onDelete: (card: Card)=>void;
-        onSelect: (card: Card)=>void;
     };
 }
 
