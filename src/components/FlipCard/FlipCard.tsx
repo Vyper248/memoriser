@@ -109,7 +109,7 @@ const FlipCard = ({ speed=0.5, width='100%', height='100%', startInEditMode=fals
             return;
         }
 
-        //if not a large card, move to top instead
+        //if not a large card, make selected and enlarge in place
         if (size === 'small' || size === 'medium') {
             dispatch(setAddingCard(false));
 		    dispatch(setSelectedCard(card));
