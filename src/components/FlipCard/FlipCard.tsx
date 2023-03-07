@@ -6,7 +6,7 @@ import type { Card } from '../../types';
 
 import { getTimeTillNextPoint } from '../../utils/date.utils';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { editCard, deleteCard, setAddingCard, setSelectedCard } from '../../redux/mainSlice';
+import { editCard, deleteCard, setAddingCard, setSelectedCard, cardCorrect, cardIncorrect } from '../../redux/mainSlice';
 
 import Button from '../Button/Button';
 import ConfirmationButton from '../ConfirmationButton/ConfirmationButton';
@@ -19,8 +19,6 @@ type FlipCardProps = {
     startInEditMode?: boolean;
     card: Card;
     size?: string;
-    onCorrect: (card:Card)=>void;
-    onFail: (card:Card)=>void;
 }
 
 type EditMenuProps = {
@@ -61,7 +59,7 @@ const EditMenu = ({ card, onSave, onCancel }: EditMenuProps) => {
     );
 }
 
-const FlipCard = ({ speed=0.5, width='100%', height='100%', startInEditMode=false, card, size='large', onCorrect, onFail }: FlipCardProps) => {
+const FlipCard = ({ speed=0.5, width='100%', height='100%', startInEditMode=false, card, size='large' }: FlipCardProps) => {
     const dispatch = useAppDispatch();
     const [flipped, setFlipped] = useState<boolean | undefined>(false);
     const [editMode, setEditMode] = useState(startInEditMode);
@@ -101,12 +99,12 @@ const FlipCard = ({ speed=0.5, width='100%', height='100%', startInEditMode=fals
     }
 
     const onClickCorrect = () => {
-        onCorrect(card);
+        dispatch(cardCorrect(card));
         setFlipped(false);
     }
 
     const onClickIncorrect = () => {
-        onFail(card);
+        dispatch(cardIncorrect(card));
         setFlipped(false);
     }
 

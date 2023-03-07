@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 import { editInArray, removeFromArray } from "../utils/array.utils";
-import { createNewCard } from "../utils/general.utils";
+import { correctCardAdjustment, createNewCard } from "../utils/general.utils";
 
 import type { Card, Group } from "../types";
 
@@ -121,12 +121,26 @@ export const mainSlice = createSlice({
             state.selectedCard = null;
             state.addingCard = false;
         },
+        //Card Correct / Fail ==========================================================
+        cardCorrect: (state, action: PayloadAction<Card>) => {
+            state.selectedCard = null;
+            state.addingCard = false;
+            let newCardArray = correctCardAdjustment(action.payload, state.cards);
+            state.cards = newCardArray;
+        },
+        cardIncorrect: (state, action: PayloadAction<Card>) => {
+            let lastChecked = new Date().getTime();
+            let newCards = editInArray({...action.payload, points: 0, lastChecked, lastCheckingPeriod: '1 Hour'}, state.cards);
+            state.cards = newCards;
+            state.selectedCard = null;
+            state.addingCard = false;
+        }
     }
 });
 
 export const {  setCards, setGroups, 
                 setViewingShared, setSelectedCard, setFlippedCard, setSelectedGroup, setAddingCard, 
                 addGroup, editGroup, deleteGroup,
-                addCard, editCard, deleteCard } = mainSlice.actions;
+                addCard, editCard, deleteCard, cardCorrect, cardIncorrect } = mainSlice.actions;
 
 export default mainSlice.reducer;

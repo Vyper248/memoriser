@@ -27,7 +27,7 @@ const checkingPeriods = [
 ];
 
 
-export const correctCardAdjustment = (card: Card, cards: Card[], setCards: (cards:Card[])=>void) => {
+export const correctCardAdjustment = (card: Card, cards: Card[]) => {
     let adjustTimes = timeSinceLastChecked(card.lastChecked, card.lastCheckingPeriod);
     // let beenAnHour = hourPassed(card.lastChecked);
 
@@ -47,7 +47,6 @@ export const correctCardAdjustment = (card: Card, cards: Card[], setCards: (card
         newCards = editInArray({...card, lastChecked}, cards);
     }
 
-    setCards(newCards);
     return newCards;
 }
 

@@ -25,9 +25,7 @@ describe('Testing the createNewCard function', () => {
 });
 
 describe('Testing the correctCardAdjustment function', () => {
-    it('Adjusts card points based on last checked time and period', () => {
-        const mockSetState = jest.fn();
-    
+    it('Adjusts card points based on last checked time and period', () => {    
         let newId = new Date().getTime();
     
         let mockCard = {
@@ -40,11 +38,8 @@ describe('Testing the correctCardAdjustment function', () => {
             lastCheckingPeriod: '1 Hour',
         }
     
-        correctCardAdjustment(mockCard, [mockCard], mockSetState);
-        expect(mockSetState).toBeCalled();
-    
         //hasn't been an hour, so don't update points
-        expect(correctCardAdjustment(mockCard, [mockCard], mockSetState)[0].points).toBe(1);
+        expect(correctCardAdjustment(mockCard, [mockCard])[0].points).toBe(1);
     
         //newly created card with 0 points, so should update to 1 point and add lastChecked/lastCheckingPeriod
         let mockCard2 = {
@@ -55,29 +50,29 @@ describe('Testing the correctCardAdjustment function', () => {
             points: 0
         }
     
-        expect(correctCardAdjustment(mockCard2, [mockCard2], mockSetState)[0].points).toBe(1);
-        expect(correctCardAdjustment(mockCard2, [mockCard2], mockSetState)[0].lastChecked).not.toBe(undefined);
-        expect(correctCardAdjustment(mockCard2, [mockCard2], mockSetState)[0].lastCheckingPeriod).toBe('1 Hour');
+        expect(correctCardAdjustment(mockCard2, [mockCard2])[0].points).toBe(1);
+        expect(correctCardAdjustment(mockCard2, [mockCard2])[0].lastChecked).not.toBe(undefined);
+        expect(correctCardAdjustment(mockCard2, [mockCard2])[0].lastCheckingPeriod).toBe('1 Hour');
     
         //last checked over an hour ago, which matches lastCheckingPeriod, so increase to 2 points
         mockCard.lastChecked = newId-3700000;
         mockCard.lastCheckingPeriod = '1 Hour';
-        expect(correctCardAdjustment(mockCard, [mockCard], mockSetState)[0].points).toBe(2);
-        expect(correctCardAdjustment(mockCard, [mockCard], mockSetState)[0].lastChecked).not.toBe(newId-3700000);
-        expect(correctCardAdjustment(mockCard, [mockCard], mockSetState)[0].lastCheckingPeriod).toBe('2 Hours');
+        expect(correctCardAdjustment(mockCard, [mockCard])[0].points).toBe(2);
+        expect(correctCardAdjustment(mockCard, [mockCard])[0].lastChecked).not.toBe(newId-3700000);
+        expect(correctCardAdjustment(mockCard, [mockCard])[0].lastCheckingPeriod).toBe('2 Hours');
     
         //last checked less than an hour ago, so don't increase, but do change lastChecked
         mockCard.lastChecked = newId-100000;
         mockCard.lastCheckingPeriod = '1 Hour';
-        expect(correctCardAdjustment(mockCard, [mockCard], mockSetState)[0].points).toBe(1);
-        expect(correctCardAdjustment(mockCard, [mockCard], mockSetState)[0].lastChecked).not.toBe(newId-100000);
+        expect(correctCardAdjustment(mockCard, [mockCard])[0].points).toBe(1);
+        expect(correctCardAdjustment(mockCard, [mockCard])[0].lastChecked).not.toBe(newId-100000);
     
         //last checked over an hour ago, but doesn't match lastCheckingPeriod, so don't change lastChecking Period
         mockCard.lastChecked = newId-3700000;
         mockCard.lastCheckingPeriod = '2 Hours';
-        expect(correctCardAdjustment(mockCard, [mockCard], mockSetState)[0].points).toBe(1);
-        expect(correctCardAdjustment(mockCard, [mockCard], mockSetState)[0].lastChecked).not.toBe(newId-3700000);
-        expect(correctCardAdjustment(mockCard, [mockCard], mockSetState)[0].lastCheckingPeriod).toBe('2 Hours');
+        expect(correctCardAdjustment(mockCard, [mockCard])[0].points).toBe(1);
+        expect(correctCardAdjustment(mockCard, [mockCard])[0].lastChecked).not.toBe(newId-3700000);
+        expect(correctCardAdjustment(mockCard, [mockCard])[0].lastCheckingPeriod).toBe('2 Hours');
     });
 });
 

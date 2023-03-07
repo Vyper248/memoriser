@@ -11,10 +11,6 @@ import FlipCard from '../FlipCard/FlipCard';
 
 type GridSorterProps = {
     cards: Card[];
-    cardFunctions: { 
-        onCorrect: (card:Card)=>void;
-        onFail: (card: Card)=>void;
-    };
 }
 
 interface PositionedCardExtra {
@@ -51,7 +47,7 @@ const GridSquare = ({x=0, y=0, size, first=false, children}: GridSquareProps) =>
     );
 };
 
-const GridSorter = ({cards, cardFunctions}: GridSorterProps) => {
+const GridSorter = ({cards}: GridSorterProps) => {
     const [, updateLayout] = useState(0);
     const [scrollPos, setScrollPos] = useState(window.scrollY + window.innerHeight - 450);
     const [scrollSet, setScrollSet] = useState(new Set());
@@ -109,7 +105,7 @@ const GridSorter = ({cards, cardFunctions}: GridSorterProps) => {
                 newCards.map((card, i) => {
                     if (checkCardPos(card) === false) return null;
                     return <GridSquare key={card.id} x={card.x} y={card.y} size={card.size} first={card.first}>
-                                <FlipCard card={card} size={card.size} startInEditMode={addingCard} {...cardFunctions}/>
+                                <FlipCard card={card} size={card.size} startInEditMode={addingCard}/>
                             </GridSquare>
                 })
             }

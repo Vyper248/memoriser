@@ -3,10 +3,9 @@ import StyledMainPage from './MainPage.style';
 
 import type { Card } from '../../types';
 
-import { editInArray, filterArrayByGroupId } from '../../utils/array.utils';
-import { correctCardAdjustment } from '../../utils/general.utils';
+import { filterArrayByGroupId } from '../../utils/array.utils';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { setSelectedCard, setSelectedGroup, setCards, setAddingCard, addCard } from '../../redux/mainSlice';
+import { setSelectedGroup, addCard } from '../../redux/mainSlice';
 
 import Button from '../../components/Button/Button';
 import GroupSelect from '../../components/GroupSelect/GroupSelect';
@@ -31,29 +30,9 @@ const MainPage = () => {
 		dispatch(addCard());
 	}
 
-	const onCorrectAnswer = (card: Card) => {
-		dispatch(setSelectedCard(null));
-		dispatch(setAddingCard(false));
-		const setCardsFunction = (cards: Card[]) => dispatch(setCards(cards));
-		correctCardAdjustment(card, cards, setCardsFunction);		
-	}
-
-	const onIncorrectAnswer = (card: Card) => {
-		let lastChecked = new Date().getTime()
-		let newCards = editInArray({...card, points: 0, lastChecked, lastCheckingPeriod: '1 Hour'}, cards);
-		dispatch(setCards(newCards));
-		dispatch(setSelectedCard(null));
-		dispatch(setAddingCard(false));
-	}
-
 	let filteredCards = [] as Card[];
 	if (selectedGroup) {
 		filteredCards = filterArrayByGroupId(selectedGroup.id, cards);
-	}
-
-	const cardFunctions = {
-		onCorrect: onCorrectAnswer,
-		onFail: onIncorrectAnswer,
 	}
 
 	return (
@@ -62,7 +41,7 @@ const MainPage = () => {
 			{ viewingShared ? <ImportMenu/> : null }
 			<GroupSelect/>
 			{ viewingShared ? null : <Button value='New Card' onClick={onClickAddCard}/> }
-			<GridSorter cards={filteredCards} cardFunctions={cardFunctions}/>
+			<GridSorter cards={filteredCards}/>
 		</StyledMainPage>
 	);
 }
