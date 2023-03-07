@@ -70,11 +70,16 @@ export const getTimeString = (time: number) => {
 }
 
 export const getTimeTillNextPoint = (lastChecked: number | undefined, lastCheckingPeriod: string | undefined) => {
-    if (lastChecked === undefined || lastCheckingPeriod === undefined) return 'Ready';
+    if (lastChecked === undefined || lastCheckingPeriod === undefined) return -1;
     let currentDate = new Date().getTime();
     let timeToNext = getCheckingPeriodAsTime(lastCheckingPeriod);
     let nextCheckTime = lastChecked + timeToNext;
     let difference = nextCheckTime - currentDate;
+    return difference;
+}
+
+export const getTimeStringTillNextPoint = (lastChecked: number | undefined, lastCheckingPeriod: string | undefined) => {
+    let difference = getTimeTillNextPoint(lastChecked, lastCheckingPeriod);
     let timeString = getTimeString(difference);
     return timeString;
 }

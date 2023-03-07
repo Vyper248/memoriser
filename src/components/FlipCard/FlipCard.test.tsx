@@ -73,6 +73,22 @@ describe('Testing FlipCard component', () => {
         let points = screen.queryByText('Check now for another point!');
         expect(points).toBeFalsy();
     });
+
+    it('Doesnt allow clicking if another card is flipped and runs shake animation', () => {
+        let mockState = getBasicMockState({flippedCard: {id: '4', groupId: '1', question: 'Another', answer: 'Card'}});
+        render(<FlipCard size='large' card={mockCard}/>, mockState);
+    
+        let card = screen.getByText('Hello?');
+
+        const styleBefore = window.getComputedStyle(card);
+        expect(styleBefore.animation).toBe('');
+        expect(styleBefore.borderColor).toBe('grey');
+
+        fireEvent.click(card);
+
+        const styleAfter = window.getComputedStyle(card);
+        expect(styleAfter.animation).toBe('shake 0.3s linear');
+    });
     
     it('Displays text to check for another point if ready', () => {
         let time = new Date().getTime() - 3800000;

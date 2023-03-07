@@ -55,6 +55,7 @@ export const mainSlice = createSlice({
         },
         setSelectedCard: (state, action: PayloadAction<Card | null>) => {
             state.selectedCard = action.payload;
+            state.flippedCard = null;
         },
         setFlippedCard: (state, action: PayloadAction<Card | null>) => {
             state.flippedCard = action.payload;
@@ -62,6 +63,7 @@ export const mainSlice = createSlice({
         setSelectedGroup: (state, action: PayloadAction<Group | null>) => {
             state.selectedCard = null;
             state.selectedGroup = action.payload;
+            state.flippedCard = null;
         },
         setAddingCard: (state, action: PayloadAction<boolean>) => {
             state.addingCard = action.payload;

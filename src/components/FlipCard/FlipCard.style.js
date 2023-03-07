@@ -30,6 +30,7 @@ export const StyledInner = styled.div.attrs((props) => {
     let borderColor = 'red';
     if (props.points > 0) { borderColor = 'orange'; }
     if (props.points > 4) { borderColor = 'green'; }
+    if (props.disabled) { borderColor = 'grey'; }
 
     let borderRadius = '10px';
     let borderWidth = '1px';
@@ -59,12 +60,13 @@ export const StyledInner = styled.div.attrs((props) => {
     overflow: scroll;
     padding: 10px;
     text-align: center;
-    transition: border-radius 0.6s, border-width 0.6s, box-shadow 0.3s linear;
+    transition: border-radius 0.6s, border-width 0.6s, box-shadow 0.3s linear, border-color 0.3s;
 
     &.visible {
         cursor: pointer;
         transform: rotateY(0deg);
         ${props => props.flipped === true ? `animation: hide ${props.speed}s linear;` : ''}
+        ${props => props.shake ? 'animation: shake 0.3s linear;' : ''}
         animation-fill-mode: both;
     }
 
@@ -96,6 +98,13 @@ export const StyledInner = styled.div.attrs((props) => {
         0% { transform: rotateY(0deg); }
         50% { transform: rotateY(-90deg); }
         100% { transform: rotateY(-90deg); }
+    }
+
+    @keyframes shake {
+        0% { transform: translate(0px); }
+        33% { transform: translate(-5px); }
+        66% { transform: translate(5px); }
+        100% { transform: translate(0px); }
     }
 `;
 

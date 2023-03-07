@@ -1,4 +1,4 @@
-import { timeSinceLastChecked, hourPassed, getCheckingPeriodAsTime, getTimeString, getTimeTillNextPoint } from "./date.utils";
+import { timeSinceLastChecked, hourPassed, getCheckingPeriodAsTime, getTimeString, getTimeTillNextPoint, getTimeStringTillNextPoint } from "./date.utils";
 
 describe('Testing timeSinceLastChecked function', () => {
     it('Checks if enough time has passed since last checking time', () => {
@@ -108,29 +108,56 @@ describe('Testing getTimeString function', () => {
     });
 });
 
-describe('Testing getTimeTillNextPoint function', () => {
+describe('Testing getTimeStringTillNextPoint function', () => {
     it('Returns a time string based on time to next check', () => {
         let lastChecked = new Date().getTime();
         let lastCheckingPeriod = '1 Hour';
-        let string = getTimeTillNextPoint(lastChecked, lastCheckingPeriod);
+        let string = getTimeStringTillNextPoint(lastChecked, lastCheckingPeriod);
         expect(string).toBe('1h:00m');
 
         lastChecked = new Date().getTime();
         lastCheckingPeriod = '2 Hours';
-        string = getTimeTillNextPoint(lastChecked, lastCheckingPeriod);
+        string = getTimeStringTillNextPoint(lastChecked, lastCheckingPeriod);
         expect(string).toBe('2h:00m');
 
         lastChecked = new Date().getTime() - 3600000;
         lastCheckingPeriod = '1 Hour';
-        string = getTimeTillNextPoint(lastChecked, lastCheckingPeriod);
+        string = getTimeStringTillNextPoint(lastChecked, lastCheckingPeriod);
         expect(string).toBe('00m');
 
         lastChecked = new Date().getTime() - 3700000;
         lastCheckingPeriod = '1 Hour';
-        string = getTimeTillNextPoint(lastChecked, lastCheckingPeriod);
+        string = getTimeStringTillNextPoint(lastChecked, lastCheckingPeriod);
         expect(string).toBe('Ready');
 
-        string = getTimeTillNextPoint(undefined, undefined);
+        string = getTimeStringTillNextPoint(undefined, undefined);
         expect(string).toBe('Ready');
+    });
+});
+
+describe('Testing getTimeTillNextPoint function', () => {
+    it('Returns a time based on time to next check', () => {
+        let lastChecked = new Date().getTime();
+        let lastCheckingPeriod = '1 Hour';
+        let milliseconds = getTimeTillNextPoint(lastChecked, lastCheckingPeriod);
+        expect(milliseconds).toBe(3600000);
+
+        lastChecked = new Date().getTime();
+        lastCheckingPeriod = '2 Hours';
+        milliseconds = getTimeTillNextPoint(lastChecked, lastCheckingPeriod);
+        expect(milliseconds).toBe(7200000);
+
+        lastChecked = new Date().getTime() - 3600000;
+        lastCheckingPeriod = '1 Hour';
+        milliseconds = getTimeTillNextPoint(lastChecked, lastCheckingPeriod);
+        expect(milliseconds).toBe(0);
+
+        lastChecked = new Date().getTime() - 3700000;
+        lastCheckingPeriod = '1 Hour';
+        milliseconds = getTimeTillNextPoint(lastChecked, lastCheckingPeriod);
+        expect(milliseconds).toBe(-100000);
+
+        milliseconds = getTimeTillNextPoint(undefined, undefined);
+        expect(milliseconds).toBe(-1);
     });
 });

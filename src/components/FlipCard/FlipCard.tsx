@@ -4,9 +4,9 @@ import { MdEdit } from 'react-icons/md';
 
 import type { Card } from '../../types';
 
-import { getTimeTillNextPoint } from '../../utils/date.utils';
+import { getTimeStringTillNextPoint } from '../../utils/date.utils';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { editCard, deleteCard, setAddingCard, setSelectedCard, cardCorrect, cardIncorrect } from '../../redux/mainSlice';
+import { editCard, deleteCard, setAddingCard, setSelectedCard, cardCorrect, cardIncorrect, setFlippedCard } from '../../redux/mainSlice';
 
 import Button from '../Button/Button';
 import ConfirmationButton from '../ConfirmationButton/ConfirmationButton';
@@ -61,18 +61,20 @@ const EditMenu = ({ card, onSave, onCancel }: EditMenuProps) => {
 
 const FlipCard = ({ speed=0.5, width='100%', height='100%', startInEditMode=false, card, size='large' }: FlipCardProps) => {
     const dispatch = useAppDispatch();
-    const [flipped, setFlipped] = useState<boolean | undefined>(false);
+    const [flipped, setFlipped] = useState(false);
+    const [shake, setShake] = useState(false);
     const [editMode, setEditMode] = useState(startInEditMode);
-    const [timeToPoint, setTimeToPoint] = useState(getTimeTillNextPoint(card.lastChecked, card.lastCheckingPeriod));
+    const [timeToPoint, setTimeToPoint] = useState(getTimeStringTillNextPoint(card.lastChecked, card.lastCheckingPeriod));
     const viewingShared = useAppSelector(state => state.main.viewingShared);
+    const flippedCard = useAppSelector(state => state.main.flippedCard);
 
     //update times for this card every minute
     useEffect(() => {
-        setTimeToPoint(getTimeTillNextPoint(card.lastChecked, card.lastCheckingPeriod));
+        setTimeToPoint(getTimeStringTillNextPoint(card.lastChecked, card.lastCheckingPeriod));
         if (size === 'large') {
 
             let interval = setInterval(() => {
-                setTimeToPoint(getTimeTillNextPoint(card.lastChecked, card.lastCheckingPeriod));
+                setTimeToPoint(getTimeStringTillNextPoint(card.lastChecked, card.lastCheckingPeriod));
             }, 60000);
     
             return () => {
@@ -81,42 +83,59 @@ const FlipCard = ({ speed=0.5, width='100%', height='100%', startInEditMode=fals
         }
     }, [size, card.lastChecked, card.lastCheckingPeriod]);
 
+    //if shake has been enabled, then disable after timer
+    useEffect(() => {
+        if (shake === true) {
+            let timeout = setTimeout(() => setShake(false), 300);
+            return () => clearTimeout(timeout);
+        }
+    }, [shake]);
+
+    const flipCard = () => {
+        setFlipped(true);
+        if (viewingShared === false) dispatch(setFlippedCard(card));
+    }
+
+    const unFlipCard = () => {
+        setFlipped(false);
+        dispatch(setFlippedCard(null));
+    }
+
     const onClick = () => {
+        //disable flipping any other card if one is already flipped
+        if (flippedCard !== null && flippedCard.id !== card.id) {
+            //animate to show can't be flipped
+            setShake(true);
+            return;
+        }
+
         //if not a large card, move to top instead
         if (size === 'small' || size === 'medium') {
             dispatch(setAddingCard(false));
 		    dispatch(setSelectedCard(card));
             return;
         }
-        setFlipped(true);
-    }
 
-    const onClickHidden = () => {
-        if (size !== 'large') {
-            dispatch(setAddingCard(false));
-            dispatch(setSelectedCard(card));
-        }
+        flipCard();
     }
 
     const onClickCorrect = () => {
         dispatch(cardCorrect(card));
-        setFlipped(false);
+        unFlipCard();
     }
 
     const onClickIncorrect = () => {
         dispatch(cardIncorrect(card));
-        setFlipped(false);
+        unFlipCard();
     }
 
     const onSaveCard = (card: Card) => {
         dispatch(editCard(card));
         setEditMode(false);
-        setFlipped(true);
     }
 
     const onCancelEdit = () => {
         setEditMode(false);
-        setFlipped(true);
     }
 
     const onClickEdit = () => {
@@ -134,9 +153,11 @@ const FlipCard = ({ speed=0.5, width='100%', height='100%', startInEditMode=fals
     const styledProps = {
         timeToPoint,
         size,
-        flipped: editMode ? true : flipped,
+        speed,
+        shake,
         points: card.points,
-        speed
+        flipped: editMode ? true : flipped,
+        disabled: flippedCard && flippedCard.id !== card.id,
     }
 
     return (
@@ -146,12 +167,12 @@ const FlipCard = ({ speed=0.5, width='100%', height='100%', startInEditMode=fals
                 {card.question}
                 { !viewingShared ? <StyledTimer>{ getTimeText() }</StyledTimer> : null }
             </StyledInner>
-            <StyledInner className='hidden' onClick={onClickHidden} {...styledProps}>
+            <StyledInner className='hidden' {...styledProps}>
                 { editMode 
                     ? <EditMenu card={card} onSave={onSaveCard} onCancel={onCancelEdit}/> 
                     : ( <div id='answer'>
                             <div>{card.answer}</div>
-                            { viewingShared ? <Button value='Cancel' onClick={()=>setFlipped(false)}/> : (<div>
+                            { viewingShared ? <Button value='Cancel' onClick={unFlipCard}/> : (<div>
                                 <Button value='Correct' onClick={onClickCorrect}/>&nbsp;
                                 <Button value='Incorrect' onClick={onClickIncorrect}/>&nbsp;
                                 <Button className='flipCardEditBtn' title='Edit' aria-label='Edit Flip Card' value={<MdEdit/>} onClick={onClickEdit}/>
