@@ -14,7 +14,9 @@ const ImportMenu = () => {
 	const selectedGroup = useAppSelector(state => state.main.selectedGroup);
 	const cards = useAppSelector(state => state.main.cards);
 	const groups = useAppSelector(state => state.main.groups);
-	const [mergeGroup, setMergeGroup] = useState('');
+
+	let { localDataGroups } = getLocalData();
+	const [mergeGroup, setMergeGroup] = useState(localDataGroups[0]?.id || '');
 
 	const onCancelShare = () => {
 		window.location.hash = '';
@@ -40,9 +42,7 @@ const ImportMenu = () => {
 
 	const onChangeMergeGroup = (value: string) => {
 		setMergeGroup(value);
-	}	
-
-	let { localDataGroups } = getLocalData();	
+	}
 
 	return (
 		<StyledImportMenu>

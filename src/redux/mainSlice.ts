@@ -69,12 +69,6 @@ export const mainSlice = createSlice({
         //Group Functions ===============================================================
         setGroups: (state, action: PayloadAction<Group[]>) => {
             state.groups = action.payload;
-
-            //if not viewing shared cards, save to local storage
-            if (state.viewingShared === false) {
-                let string = JSON.stringify(action.payload);
-                localStorage.setItem(`memoriser-data-groups`, string);
-            }
         },
         addGroup: (state, action: PayloadAction<Group>) => {
             let newGroups = [...state.groups, action.payload];
@@ -96,12 +90,6 @@ export const mainSlice = createSlice({
         //Card Functions ===============================================================
         setCards: (state, action: PayloadAction<Card[]>) => {
             state.cards = action.payload;
-
-            //if not viewing shared cards, save to local storage
-            if (state.viewingShared === false) {
-                let string = JSON.stringify(action.payload);
-                localStorage.setItem(`memoriser-data-cards`, string);
-            }
         },
         addCard: (state) => {
             if (state.selectedGroup === null) return;
