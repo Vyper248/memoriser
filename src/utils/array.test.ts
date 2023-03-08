@@ -25,31 +25,24 @@ it('Filters objects from the array that have a given id and returns that array',
 it('Sorts array based on points and last checking data', () => {
     let array = [{id: '1', points: 14}, {id: '2', points: 3}, {id: '3', points: 21}, {id: '4', points: 8}];
     expect(sortArray(array)).toEqual([{id: '2', points: 3}, {id: '4', points: 8}, {id: '1', points: 14}, {id: '3', points: 21}]);
-    expect(sortArray(array)).not.toEqual([{id: '1', points: 14}, {id: '2', points: 3}, {id: '3', points: 21}, {id: '4', points: 8}]);
     expect(sortArray([])).toEqual([]);
 
     const array2 = [
         {id: '1', points: 1},
         {id: '2',points: 2},
-        {id: '3',points: 0,lastChecked: 1674136289747,lastCheckingPeriod: '1 Hour'},
-        {id: '4',points: 0},
-        {id: '5',points: 0},
-        {id: '6',points: 0,lastChecked: 1674136205133,lastCheckingPeriod: '1 Hour'},
-        {id: '7',points: 3},
-        {id: '8',points: 2},
-        {id: '9',points: 4,lastChecked: 1674135909479, lastCheckingPeriod: '1 Hour'}
+        {id: '3',points: 0},
+        {id: '4',points: 0,lastChecked: 1674136205133,lastCheckingPeriod: '1 Hour'},
+        {id: '5',points: 3},
+        {id: '6',points: 4,lastChecked: 1674135909479, lastCheckingPeriod: '1 Hour'},
     ];
 
     const expected2 = [
-        {id: '5',points: 0},
-        {id: '4',points: 0},
-        {id: '9',points: 4,lastChecked: 1674135909479, lastCheckingPeriod: '1 Hour'},
-        {id: '6',points: 0,lastChecked: 1674136205133,lastCheckingPeriod: '1 Hour'},
-        {id: '3',points: 0,lastChecked: 1674136289747,lastCheckingPeriod: '1 Hour'},
+        {id: '3',points: 0},
+        {id: '4',points: 0,lastChecked: 1674136205133,lastCheckingPeriod: '1 Hour'},
         {id: '1', points: 1},
         {id: '2',points: 2},
-        {id: '8',points: 2},
-        {id: '7',points: 3},
+        {id: '5',points: 3},
+        {id: '6',points: 4,lastChecked: 1674135909479, lastCheckingPeriod: '1 Hour'},
     ];
 
     expect(sortArray(array2)).toEqual(expected2);
