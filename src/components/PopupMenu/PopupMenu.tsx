@@ -12,9 +12,10 @@ type PopupMenuProps = {
     children: ReactNode | ReactNode[];
     width?: string;
     icon?: ReactElement<IconType>;
+    iconSize?: string;
 }
 
-const PopupMenu = ({ children, width='130px', icon=<MdMenu/> }: PopupMenuProps) => {
+const PopupMenu = ({ children, width='130px', iconSize='1.5em', icon=<MdMenu/> }: PopupMenuProps) => {
     const [open, setOpen] = useState(false);
     const ref = useClickOutside(() => {setOpen(false)}, open);
 
@@ -23,7 +24,7 @@ const PopupMenu = ({ children, width='130px', icon=<MdMenu/> }: PopupMenuProps) 
     }
 
     return (
-        <StyledPopupMenu open={open} ref={ref} width={width}>
+        <StyledPopupMenu open={open} ref={ref} width={width} iconSize={iconSize}>
             <div id='icon' onClick={onClickMenu}>{icon}</div>
             <div id='menu'>
                 { children }

@@ -4,7 +4,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { editInArray, removeFromArray } from "../utils/array.utils";
 import { correctCardAdjustment, createNewCard } from "../utils/general.utils";
 
-import type { Card, Group } from "../types";
+import type { Card, Group, FilterObject } from "../types";
 
 export type MainSlice = {
     cards: Card[];
@@ -14,6 +14,7 @@ export type MainSlice = {
     selectedGroup: Group | null;
     addingCard: boolean;
     viewingShared: boolean;
+    filter: FilterObject;
 };
 
 export const initialState: MainSlice = {
@@ -43,7 +44,8 @@ export const initialState: MainSlice = {
     flippedCard: null,
     selectedGroup: null,
     addingCard: false,
-    viewingShared: false
+    viewingShared: false,
+    filter: { type: 'none' }
 };
 
 export const mainSlice = createSlice({
@@ -67,6 +69,9 @@ export const mainSlice = createSlice({
         },
         setAddingCard: (state, action: PayloadAction<boolean>) => {
             state.addingCard = action.payload;
+        },
+        setFilter: (state, action: PayloadAction<FilterObject>) => {
+            state.filter = action.payload;
         },
         //Group Functions ===============================================================
         setGroups: (state, action: PayloadAction<Group[]>) => {
@@ -129,7 +134,7 @@ export const mainSlice = createSlice({
 });
 
 export const {  setCards, setGroups, 
-                setViewingShared, setSelectedCard, setFlippedCard, setSelectedGroup, setAddingCard, 
+                setViewingShared, setSelectedCard, setFlippedCard, setSelectedGroup, setAddingCard, setFilter, 
                 addGroup, editGroup, deleteGroup,
                 addCard, editCard, deleteCard, cardCorrect, cardIncorrect } = mainSlice.actions;
 

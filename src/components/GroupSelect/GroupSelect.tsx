@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import StyledGroupSelect from './GroupSelect.style';
+import { FaFilter } from 'react-icons/fa';
 
 import type { Group } from '../../types';
 
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { addGroup, editGroup, deleteGroup, setSelectedGroup } from '../../redux/mainSlice';
+import { generateURL, onClearHash } from '../../utils/general.utils';
 
 import Modal from '../Modal/Modal';
 import Button from '../Button/Button';
@@ -14,7 +16,7 @@ import LabelledInput from '../LabelledInput/LabelledInput';
 import LinkedBorders from '../LinkedBorders/LinkedBorders';
 import Dropdown from '../Dropdown/Dropdown';
 import Label from '../Label/Label';
-import { generateURL, onClearHash } from '../../utils/general.utils';
+import FilterMenu from '../FilterMenu/FilterMenu';
 
 type NewGroupMenuProps = {
     initialName?: string;
@@ -155,6 +157,9 @@ const GroupSelect = () => {
                     <Button value='Share All' onClick={onClickShareAll}/>
                     { selectedGroup ? <Button value='Share Selected Group' onClick={onClickShareSelected}/> : null }
                     { copyText.length > 0 ? <p id='copyText'>{copyText}</p> : null }
+                </PopupMenu>) }
+                { viewingShared ? null : (<PopupMenu icon={<FaFilter/>} iconSize='1em'>
+                    <FilterMenu/>
                 </PopupMenu>) }
             </LinkedBorders>
             { invalidShareLink ? <p id='warning' onClick={onClearHash}>Warning: Shared link is invalid, click here to clear.</p> : null }

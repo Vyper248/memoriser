@@ -1,21 +1,24 @@
 import styled from 'styled-components';
 
 const StyledPopupMenu = styled.div`
-    display: inline-block;
+    display: inline-flex;
     position: relative;
-    /* margin: 5px; */
+    width: 40px;
+    padding: 0px;
 
     & > #icon {
         display: flex;
+        padding: 0px;
+        width: 100%;
+        height: 100%;
         align-items: center;
+        justify-content: center;
         cursor: pointer;
-        font-size: 1.5em;
+        font-size: ${props => props.iconSize};
 
-        svg {
-            :hover {
-                background-color: #EEE;
-            }  
-        }
+        :hover {
+            background-color: #EEE;
+        }  
     }
 
     & > #menu {

@@ -3,6 +3,7 @@ import styled from "styled-components";
 const StyledDropdown = styled.div`
     position: relative;
     padding: 0px;
+    height: 35px;
     border: 1px solid #DDD;
 
     & > select {

@@ -19,6 +19,7 @@ const MainPage = () => {
 	const selectedGroup = useAppSelector(state => state.main.selectedGroup);
 	const cards = useAppSelector(state => state.main.cards);
 	const groups = useAppSelector(state => state.main.groups);
+	const filter = useAppSelector(state => state.main.filter);
 
     //make sure current group is correct after loading data from local storage
     useEffect(() => {
@@ -33,6 +34,13 @@ const MainPage = () => {
 	let filteredCards = [] as Card[];
 	if (selectedGroup) {
 		filteredCards = filterArrayByGroupId(selectedGroup.id, cards);
+	}
+
+	if (filter.type === 'color') {
+		let color = filter.color;
+		if (color === 'red') filteredCards = filteredCards.filter(card => card.points === 0 || card.points === undefined);
+		if (color === 'green') filteredCards = filteredCards.filter(card => card.points && card.points > 4);
+		if (color === 'orange') filteredCards = filteredCards.filter(card => card.points && card.points > 0 && card.points <= 4);
 	}
 
 	return (
