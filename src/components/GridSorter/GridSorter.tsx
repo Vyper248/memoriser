@@ -105,7 +105,7 @@ const GridSorter = ({cards}: GridSorterProps) => {
                 newCards.map((card, i) => {
                     if (checkCardPos(card) === false) return null;
                     return <GridSquare key={card.id} x={card.x} y={card.y} size={card.size} first={card.first}>
-                                <FlipCard card={card} size={card.size} startInEditMode={addingCard}/>
+                                <FlipCard card={card} size={card.size} startInEditMode={addingCard} first={card.first}/>
                             </GridSquare>
                 })
             }

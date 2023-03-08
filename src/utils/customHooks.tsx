@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { Card } from "../types";
 
 export const useClickOutside = <T extends HTMLElement>(callback: ()=>void, open: boolean) => {
     const ref = useRef<T>(null);
@@ -47,4 +48,36 @@ export const useScrollListener = (callback: ()=>void) => {
 
         return () => document.removeEventListener('scroll', scrollEvent);
     }, [callback]);
+}
+
+export const useKeyboardControls = (first: boolean, flippedCard: Card | null, flipped: boolean, flipCard: ()=>void, onClickCorrect: ()=>void, onClickIncorrect: ()=>void) => {
+    useEffect(() => {
+        if (first && flippedCard === null) {
+            let listener = (e: KeyboardEvent) => {
+                if (e.key === 'Enter' && flipped === false) {
+                    flipCard();
+                }
+            }
+
+            window.addEventListener('keypress', listener);
+
+            return () => {
+                window.removeEventListener('keypress', listener);
+            }
+        } else if (flipped) {
+            let listener = (e: KeyboardEvent) => {
+                if ((e.key === 'Enter' || e.key === 'c' || e.key === 'y') && flipped === true) {
+                    onClickCorrect();
+                } else if ((e.key === 'i' || e.key === 'n') && flipped === true) {
+                    onClickIncorrect();
+                }
+            }
+
+            window.addEventListener('keypress', listener);
+
+            return () => {
+                window.removeEventListener('keypress', listener);
+            }
+        }
+    }, [first, flipped, flippedCard, flipCard, onClickCorrect, onClickIncorrect]);
 }

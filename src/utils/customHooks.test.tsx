@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import { useClickOutside, useResizeListener, useScrollListener } from "./customHooks";
+import { useClickOutside, useResizeListener, useScrollListener, useKeyboardControls } from "./customHooks";
+import { Card } from '../types';
 
 let mockCallback = jest.fn();
 
@@ -77,5 +78,92 @@ describe('Testing useScrollListener hook', () => {
         fireEvent.scroll(document, {target: { scrollY: 400 }});
 
         expect(mockFn).toBeCalled();
+    });
+});
+
+describe('Testing useKeyboardControls hook', () => {
+    const mockFlip = jest.fn();
+    const mockCorrect = jest.fn();
+    const mockIncorrect = jest.fn();
+
+    it('Flips when first card and nothing else is flipped', () => {
+        const MockComponent = () => {
+            useKeyboardControls(true, null, false, mockFlip, mockCorrect, mockIncorrect);
+            return <div>Component</div>;
+        }
+    
+        render(<MockComponent/>);
+    
+        let component = screen.getByText('Component');
+    
+        fireEvent.keyPress(component, { key: 'Enter' });
+        expect(mockFlip).toBeCalled();
+
+        //Other keys shouldn't work
+        fireEvent.keyPress(component, { key: 'A' });
+        expect(mockFlip).toBeCalledTimes(1);
+    });
+
+    it('Doesnt flip when another card is already flipped', () => {
+        const MockComponent = () => {
+            useKeyboardControls(true, {id: '1'} as Card, false, mockFlip, mockCorrect, mockIncorrect);
+            return <div>Component</div>;
+        }
+    
+        render(<MockComponent/>);
+    
+        let component = screen.getByText('Component');
+    
+        fireEvent.keyPress(component, { key: 'Enter' });
+        expect(mockFlip).not.toBeCalled();
+    });
+
+    it('Allows user to press Enter, y or c to mark as correct if card is flipped', () => {
+        const MockComponent = () => {
+            useKeyboardControls(true, {id: '1'} as Card, true, mockFlip, mockCorrect, mockIncorrect);
+            return <div>Component</div>;
+        }
+    
+        render(<MockComponent/>);
+    
+        let component = screen.getByText('Component');
+    
+        fireEvent.keyPress(component, { key: 'Enter' });
+        expect(mockCorrect).toBeCalledTimes(1);
+
+        fireEvent.keyPress(component, { key: 'y' });
+        expect(mockCorrect).toBeCalledTimes(2);
+
+        fireEvent.keyPress(component, { key: 'c' });
+        expect(mockCorrect).toBeCalledTimes(3);
+
+        fireEvent.keyPress(component, { key: 't' });
+        expect(mockCorrect).toBeCalledTimes(3);
+
+        expect(mockIncorrect).not.toBeCalled();
+        expect(mockFlip).not.toBeCalled();
+    });
+
+    it('Allows user to press n or i to mark as incorrect if card is flipped', () => {
+        const MockComponent = () => {
+            useKeyboardControls(true, {id: '1'} as Card, true, mockFlip, mockCorrect, mockIncorrect);
+            return <div>Component</div>;
+        }
+    
+        render(<MockComponent/>);
+    
+        let component = screen.getByText('Component');
+    
+        fireEvent.keyPress(component, { key: 'n' });
+        expect(mockIncorrect).toBeCalledTimes(1);
+
+        fireEvent.keyPress(component, { key: 'i' });
+        expect(mockIncorrect).toBeCalledTimes(2);
+
+        fireEvent.keyPress(component, { key: 'b' });
+        expect(mockIncorrect).toBeCalledTimes(2);
+
+        expect(mockCorrect).not.toBeCalled();
+        expect(mockFlip).not.toBeCalled();
     });
 });

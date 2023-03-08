@@ -5,6 +5,7 @@ import { MdEdit } from 'react-icons/md';
 import type { Card } from '../../types';
 
 import { getTimeStringTillNextPoint } from '../../utils/date.utils';
+import { useKeyboardControls } from '../../utils/customHooks';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { editCard, deleteCard, setAddingCard, setSelectedCard, cardCorrect, cardIncorrect, setFlippedCard } from '../../redux/mainSlice';
 
@@ -19,6 +20,7 @@ type FlipCardProps = {
     startInEditMode?: boolean;
     card: Card;
     size?: string;
+    first?: boolean;
 }
 
 type EditMenuProps = {
@@ -59,7 +61,7 @@ const EditMenu = ({ card, onSave, onCancel }: EditMenuProps) => {
     );
 }
 
-const FlipCard = ({ speed=0.5, width='100%', height='100%', startInEditMode=false, card, size='large' }: FlipCardProps) => {
+const FlipCard = ({ speed=0.5, width='100%', height='100%', startInEditMode=false, card, size='large', first=false }: FlipCardProps) => {
     const dispatch = useAppDispatch();
     const [flipped, setFlipped] = useState(false);
     const [shake, setShake] = useState(false);
@@ -149,6 +151,9 @@ const FlipCard = ({ speed=0.5, width='100%', height='100%', startInEditMode=fals
             else return `Check after ${timeToPoint} for another point`
         } else return '';
     }
+
+    //enable user to use keyboard for flipping top card, or answering any flipped card
+    useKeyboardControls(first, flippedCard, flipped, flipCard, onClickCorrect, onClickIncorrect);
 
     const styledProps = {
         timeToPoint,
