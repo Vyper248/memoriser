@@ -8,6 +8,7 @@ export const timeSinceLastChecked = (lastChecked: number | undefined, lastChecki
     const hour = 3600000;
 
     switch(lastCheckingPeriod) {
+        case '10 Minutes': return difference >= 600000;
         case '1 Hour': return difference >= hour;
         case '2 Hours': return difference >= hour*2;
         case '4 Hours': return difference >= hour*4;
@@ -40,6 +41,7 @@ export const getCheckingPeriodAsTime = (lastCheckingPeriod: string | undefined) 
 
     const hour = 3600000;
     switch(lastCheckingPeriod) {
+        case '10 Minutes': return 600000;
         case '1 Hour': return hour;
         case '2 Hours': return hour*2;
         case '4 Hours': return hour*4;

@@ -20,6 +20,7 @@ export const getSize = (card: BasicCard): 'small' | 'medium' | 'large' => {
 }
 
 const checkingPeriods = [
+    '10 Minutes',
 	'1 Hour', '2 Hours', '4 Hours', '8 Hours',
 	'1 Day', '2 Days', '4 Days',
 	'1 Week', '2 Weeks',

@@ -125,7 +125,7 @@ export const mainSlice = createSlice({
         },
         cardIncorrect: (state, action: PayloadAction<Card>) => {
             let lastChecked = new Date().getTime();
-            let newCards = editInArray({...action.payload, points: 0, lastChecked, lastCheckingPeriod: '1 Hour'}, state.cards);
+            let newCards = editInArray({...action.payload, points: 0, lastChecked, lastCheckingPeriod: '10 Minutes'}, state.cards);
             state.cards = newCards;
             state.selectedCard = null;
             state.addingCard = false;
