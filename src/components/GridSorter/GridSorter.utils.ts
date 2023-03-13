@@ -1,7 +1,8 @@
 import type { CardObj, LocationObj, PositionedCard } from "./GridSorter";
 import { sortArray } from "../../utils/array.utils";
+import { checkFilter } from "../../utils/general.utils";
 
-import type { Card } from "../../types";
+import type { Card, FilterObject } from "../../types";
 
 export const getGridValues = () => {
     let screenWidth = window.innerWidth - 100;
@@ -14,7 +15,7 @@ export const getGridValues = () => {
     return { gridSize, maxGrid, leftover };
 }
 
-export const fillPositions = (x: number, y: number, size: number, obj: {[key: string] : boolean}) => {
+export const fillPositions = (x: number, y: number, size: number, obj: LocationObj) => {
     const positions = getPositions(x, y, size);
     positions.forEach(position => obj[position] = true);
 }
@@ -27,12 +28,12 @@ export const getPositions = (x: number, y: number, size: number) => {
     });
 }
 
-export const getNextLocation = (size: 'small' | 'medium' | 'large', takenLocations: {[key: string] : boolean}) => {
+export const getNextLocation = (size: 'small' | 'medium' | 'large', takenLocations: LocationObj) => {
     const { maxGrid } = getGridValues();
     const checks = size === 'medium' ? 2 : size === 'large' ? 3 : 1;
 
-    let x = 0;
-    let y = 0;
+    let x = takenLocations.startX || 0;
+    let y = takenLocations.startY || 0;
 
     for (let i = 0; i < 2000; i++) {
         //if going off edge of grid, move to next level
@@ -52,6 +53,10 @@ export const getNextLocation = (size: 'small' | 'medium' | 'large', takenLocatio
 
         //once position is found, fill in taken locations
         positions.forEach(position => takenLocations[position] = true);
+        if (checks === 1) {
+            takenLocations.startX = x;
+            takenLocations.startY = y;
+        }
         return { x, y };
     }
 
@@ -126,7 +131,24 @@ export const addPositionToCard = (card: PositionedCard, i: number, newCardObj: C
     else return y+2;
 }
 
-export const getCardArray = (cards: Card[], addingCard: boolean, selectedCard: Card | null) => {
+export const filterCards = (cards: PositionedCard[], filter: FilterObject) => {
+    const { maxGrid } = getGridValues();
+
+    let filteredCards = cards.filter((card, i) => {
+        if (checkFilter(card, filter) === false) {
+            let horizontal = i % 2;
+            card.x = horizontal === 0 ? -10 : maxGrid+10;
+            card.y = Math.round(Math.random()*5);
+            return false;
+        }
+        
+        return true;
+    });
+
+    return filteredCards;
+}
+
+export const getCardArray = (cards: Card[], addingCard: boolean, selectedCard: Card | null, filter: FilterObject) => {
     let newCards = structuredClone(cards) as PositionedCard[];
 
     //make the original index of each card quickl accessible
@@ -139,8 +161,11 @@ export const getCardArray = (cards: Card[], addingCard: boolean, selectedCard: C
     //create obj to store locations of cards
     const takenLocations = {} as LocationObj;
 
+    //filter out cards if a filter is selected
+    let filteredCards = filterCards(newCards, filter);
+
     //get sorted card array
-    let sortedCards = sortArray(newCards);
+    let sortedCards = sortArray(filteredCards);
 
     if (addingCard && selectedCard !== null) {
         //filter out that card from sorted cards

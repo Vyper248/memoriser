@@ -27,7 +27,7 @@ interface GridSquareProps extends PositionedCardExtra {
 }
 
 export type CardObj = { [key: string]: PositionedCard };
-export type LocationObj = { [key: string]: boolean };
+export type LocationObj = { [key: string]: boolean | number, startX: number, startY: number };
 
 const GridSquare = ({x=0, y=0, size, first=false, children}: GridSquareProps) => {
     const { gridSize, leftover } = getGridValues();
@@ -48,14 +48,23 @@ const GridSquare = ({x=0, y=0, size, first=false, children}: GridSquareProps) =>
 };
 
 const GridSorter = ({cards}: GridSorterProps) => {
-    const [, updateLayout] = useState(0);
+    const [resized, updateLayout] = useState(0);
     const [scrollPos, setScrollPos] = useState(window.scrollY + window.innerHeight - 450);
     const [scrollSet, setScrollSet] = useState(new Set());
+    const [highestY, setHighestY] = useState(0);
+    const [newCards, setNewCards] = useState<PositionedCard[]>([]);
     const selectedCard = useAppSelector(state => state.main.selectedCard);
     const selectedGroup = useAppSelector(state => state.main.selectedGroup);
     const addingCard = useAppSelector(state => state.main.addingCard);
+    const filter = useAppSelector(state => state.main.filter);
 
     const { gridSize } = getGridValues();
+
+    useEffect(() => {
+        const { newCards, highestY } = getCardArray(cards, addingCard, selectedCard, filter);
+        setHighestY(highestY);
+        setNewCards(newCards);
+    }, [cards, addingCard, selectedCard, filter, resized]);
 
     //if screen is resized, update grid layout and set new scroll position
     useResizeListener(() => {
@@ -96,8 +105,6 @@ const GridSorter = ({cards}: GridSorterProps) => {
         }
         return true;
     }
-
-    const { newCards, highestY } = getCardArray(cards, addingCard, selectedCard);
 
     return (
         <StyledGridSorter y={highestY} gridSize={gridSize}>

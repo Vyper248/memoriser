@@ -72,6 +72,9 @@ export const mainSlice = createSlice({
         },
         setFilter: (state, action: PayloadAction<FilterObject>) => {
             state.filter = action.payload;
+            state.flippedCard = null;
+            state.selectedCard = null;
+            state.addingCard = false;
         },
         //Group Functions ===============================================================
         setGroups: (state, action: PayloadAction<Group[]>) => {
@@ -104,17 +107,20 @@ export const mainSlice = createSlice({
             let newCard = createNewCard(state.selectedGroup.id);
             state.addingCard = true;
             state.selectedCard = newCard;
+            state.flippedCard = newCard;
             state.cards = [...state.cards, newCard];
         },
         editCard: (state, action: PayloadAction<Card>) => {
             let newCards = editInArray(action.payload, state.cards);
             state.cards = newCards;
+            state.flippedCard = null;
         },
         deleteCard: (state, action: PayloadAction<Card>) => {
             let newCards = removeFromArray(action.payload, state.cards);
             state.cards = newCards;
             state.selectedCard = null;
             state.addingCard = false;
+            state.flippedCard = null;
         },
         //Card Correct / Fail ==========================================================
         cardCorrect: (state, action: PayloadAction<Card>) => {

@@ -2,7 +2,7 @@ import { timeSinceLastChecked } from "./date.utils";
 import { editInArray, getNextValue } from "./array.utils";
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from "lz-string";
 
-import type { Card, Group } from "../types";
+import type { Card, FilterObject, Group } from "../types";
 
 type BasicCard = {
     points?: number | undefined;
@@ -113,4 +113,20 @@ export const getLocalData = () => {
     if (localDataGroupsJson) localDataGroups = JSON.parse(localDataGroupsJson);
 
     return { localDataCards, localDataGroups };
+}
+
+export const checkFilter = (card: Card, filter: FilterObject) => {
+    if (filter.type === 'color') {
+		if (filter.color === 'red') return Boolean(card.points === 0 || card.points === undefined);
+		if (filter.color === 'green') return Boolean(card.points && card.points > 4);
+		if (filter.color === 'orange') return Boolean(card.points && card.points > 0 && card.points <= 4);
+	}
+
+    if (filter.type === 'points') {
+        if (card.points && card.points <= filter.points) return true;
+        else if (card.points === undefined) return true;
+        else return false;
+    }
+
+    return true;
 }

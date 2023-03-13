@@ -68,28 +68,28 @@ describe('Testing the getGridValues function', ()=>{
 
 describe('Testing the getNextLocation function', () => {
     it('Gets the first location when nothing taken', () => {
-        let mockTaken = {} as {[key: string] : boolean};
+        let mockTaken = {} as LocationObj;
         let { x, y } = getNextLocation('small', mockTaken);
         expect(x).toEqual(0);
         expect(y).toEqual(0);
     });
 
     it('Gets the second location when first is taken', () => {
-        let mockTaken = {'0-0': true} as {[key: string] : boolean};
+        let mockTaken = { '0-0': true, startX: 0, startY: 0 } as LocationObj;
         let { x, y } = getNextLocation('small', mockTaken);
         expect(x).toEqual(1);
         expect(y).toEqual(0);
     });
 
     it('Gets the third location', () => {
-        let mockTaken = {'0-0': true, '1-1': true} as {[key: string] : boolean};
+        let mockTaken = {'0-0': true, '1-1': true, startX: 0, startY: 0} as LocationObj;
         let { x, y } = getNextLocation('medium', mockTaken);
         expect(x).toEqual(2);
         expect(y).toEqual(0);
     });
 
     it('Skips the location if size is too big and others are taken', () => {
-        let mockTaken = {'1-0': true, '2-1': true, '3-0': true} as {[key: string] : boolean};
+        let mockTaken = {'1-0': true, '2-1': true, '3-0': true, startX: 0, startY: 0} as LocationObj;
         let { x, y } = getNextLocation('medium', mockTaken);
         expect(x).toEqual(4);
         expect(y).toEqual(0);
@@ -170,7 +170,7 @@ describe('Testing the addPositionToCard function', () => {
         let mockCard = {id: '1', x: 0, y: 0, size: 'small', points: 3} as PositionedCard;
         let mockCardObj =  {'1': mockCard } as CardObj;
         let index = 6;
-        let mockTakenLocations = {'0-0': true} as LocationObj;
+        let mockTakenLocations = { '0-0': true, startX: 0, startY: 0 } as LocationObj;
 
         addPositionToCard(mockCard, index, mockCardObj, mockTakenLocations, {'1': 7});
 
@@ -257,7 +257,7 @@ describe('Testing getCardArray function', () => {
     ] as Card[];
 
     it('Returns an array of cards with x,y,size values added', () => {
-        let { newCards, highestY } = getCardArray(mockCards, false, null);
+        let { newCards, highestY } = getCardArray(mockCards, false, null, {type: 'none'});
 
         expect(newCards[0].x).toBe(3);
         expect(newCards[1].x).toBe(0);

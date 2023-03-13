@@ -3,11 +3,7 @@ import { setFilter } from "../../redux/mainSlice";
 
 import Button from "../Button/Button";
 
-type FilterMenuProps = {
-
-}
-
-const FilterMenu = ({}: FilterMenuProps) => {
+const FilterMenu = () => {
 	const dispatch = useAppDispatch();
 
 	const onClickClear = () => {

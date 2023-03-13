@@ -85,6 +85,13 @@ const FlipCard = ({ speed=0.5, width='100%', height='100%', startInEditMode=fals
         }
     }, [size, card.lastChecked, card.lastCheckingPeriod]);
 
+    useEffect(() => {
+        if ((flippedCard === null || flippedCard.id !== card.id) && (flipped === true || editMode === true)) {
+            setFlipped(false);
+            setEditMode(false);
+        }
+    }, [flippedCard, card, flipped, editMode]);
+
     //if shake has been enabled, then disable after timer
     useEffect(() => {
         if (shake === true) {
