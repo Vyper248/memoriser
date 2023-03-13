@@ -30,9 +30,9 @@ const MainPage = () => {
 		dispatch(addCard());
 	}
 
-	let filteredCards = [] as Card[];
+	let cardsInGroup = [] as Card[];
 	if (selectedGroup) {
-		filteredCards = filterArrayByGroupId(selectedGroup.id, cards);
+		cardsInGroup = filterArrayByGroupId(selectedGroup.id, cards);
 	}
 
 	return (
@@ -41,7 +41,7 @@ const MainPage = () => {
 			{ viewingShared ? <ImportMenu/> : null }
 			<GroupSelect/>
 			{ viewingShared ? null : <Button value='New Card' onClick={onClickAddCard}/> }
-			<GridSorter cards={filteredCards}/>
+			<GridSorter cards={cardsInGroup}/>
 		</StyledMainPage>
 	);
 }
