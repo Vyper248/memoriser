@@ -99,7 +99,8 @@ describe('Testing FlipCard component', () => {
     });
     
     it('Displays the edit menu when clicking the edit button', () => {    
-        render(<FlipCard size='large' card={mockCard}/>);
+        const state = getBasicMockState({flippedCard: mockCard});
+        render(<FlipCard size='large' card={mockCard}/>, state);
     
         let editButton = screen.getByTitle('Edit');
         fireEvent.click(editButton);
@@ -139,7 +140,8 @@ describe('Testing redux dispatch functions', () => {
     });
 
     it('Calls the delete function when pressing the confirm delete button', () => {    
-        render(<FlipCard size='large' card={mockCard}/>);
+        const state = getBasicMockState({flippedCard: mockCard});
+        render(<FlipCard size='large' card={mockCard}/>, state);
     
         let editButton = screen.getByTitle('Edit');
         fireEvent.click(editButton);
@@ -150,8 +152,9 @@ describe('Testing redux dispatch functions', () => {
         expect(mockDispatchFn).toHaveBeenCalledWith(deleteCard(mockCard));
     });
     
-    it('Calls the save function when pressing the save button', () => {    
-        render(<FlipCard size='large' card={mockCard}/>);
+    it('Calls the save function when pressing the save button', () => {  
+        const state = getBasicMockState({flippedCard: mockCard});
+        render(<FlipCard size='large' card={mockCard}/>, state);
         
         let editButton = screen.getByTitle('Edit');
         fireEvent.click(editButton);
