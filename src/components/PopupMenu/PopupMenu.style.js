@@ -4,6 +4,7 @@ const StyledPopupMenu = styled.div`
     display: inline-flex;
     position: relative;
     width: 40px;
+    height: 35px;
     padding: 0px;
 
     & > #icon {
