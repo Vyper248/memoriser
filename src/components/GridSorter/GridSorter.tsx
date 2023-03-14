@@ -40,6 +40,9 @@ const GridSquare = ({x=0, y=0, size, first=false, children}: GridSquareProps) =>
     left += leftover;
     if (first) left = window.innerWidth/2 - 150;
 
+    //move all cards down
+    y += 4;
+
     return (
         <StyledGridSquare size={widthHeight} style={{transform: `translate(${left}px, ${y*gridSize}px)`}}>
             { children }
@@ -49,17 +52,26 @@ const GridSquare = ({x=0, y=0, size, first=false, children}: GridSquareProps) =>
 
 const GridSorter = ({cards}: GridSorterProps) => {
     const [resized, updateLayout] = useState(0);
-    const [scrollPos, setScrollPos] = useState(window.scrollY + window.innerHeight - 450);
-    const [scrollSet, setScrollSet] = useState(new Set());
+    const [scrollPos, setScrollPos] = useState(window.scrollY + window.innerHeight);
     const [highestY, setHighestY] = useState(0);
+    const [savedCardId, setSavedCardId] = useState('');
     const [newCards, setNewCards] = useState<PositionedCard[]>([]);
     const selectedCard = useAppSelector(state => state.main.selectedCard);
     const selectedGroup = useAppSelector(state => state.main.selectedGroup);
     const addingCard = useAppSelector(state => state.main.addingCard);
     const filter = useAppSelector(state => state.main.filter);
+    const flippedCard = useAppSelector(state => state.main.flippedCard);
 
     const { gridSize } = getGridValues();
 
+    //If a card is flipped, add it to a scrollSet so it doesn't disappear when it goes offscreen (even after no longer flipped).
+    useEffect(() => {
+        if (flippedCard) {
+            setSavedCardId(flippedCard.id);
+        }
+    }, [flippedCard]);
+
+    //get card array, with position information
     useEffect(() => {
         const { newCards, highestY } = getCardArray(cards, addingCard, selectedCard, filter);
         setHighestY(highestY);
@@ -69,47 +81,34 @@ const GridSorter = ({cards}: GridSorterProps) => {
     //if screen is resized, update grid layout and set new scroll position
     useResizeListener(() => {
         updateLayout(reset => reset+1);
-        setScrollPos(window.scrollY + window.innerHeight - 450);
+        setScrollPos(window.scrollY + window.innerHeight);
     }, 200);
 
     //if scrolling, update scroll position
     useScrollListener(() => {
-        let divPosition = 450;
-        let scrollY = window.scrollY;
-        let height = window.innerHeight;
-        let bottom = scrollY + height - divPosition;
-
-        setScrollPos(scrollPos => {
-            if (bottom > scrollPos) return bottom;
-            return scrollPos;
-        });
+        setScrollPos(window.scrollY + window.innerHeight);
     });
 
     //if changing groups, reset scroll position and Set
     useEffect(() => {
-        setScrollPos(window.scrollY + window.innerHeight - 450);
-        setScrollSet(new Set());
+        setScrollPos(window.scrollY + window.innerHeight);
+        setSavedCardId('');
     }, [selectedGroup]);
 
     //Check card position. If offscreen and not in the Set, don't display it.
     //If onscreen, add to set and display
     //Set allows cards that are in display to remain in display even if they move offscreen, preserving the movement animation
     const checkCardPos = (card: PositionedCard) => {
-        let cardPos = card.y * gridSize;
-        if (cardPos > scrollPos && scrollSet.has(card.id) === false) return false;
-        if (scrollSet.has(card.id) === false) {
-            setScrollSet(scrollSet => {
-                scrollSet.add(card.id);
-                return scrollSet;
-            });
-        }
+        let cardPos = ((card.y + 3) * gridSize); // +150 for actual position
+        if (cardPos > scrollPos && card.id !== savedCardId) return false;
+        if (cardPos + 150 + 300 < window.scrollY) return false;
         return true;
     }
 
     return (
         <StyledGridSorter y={highestY} gridSize={gridSize}>
             {
-                newCards.map((card, i) => {
+                newCards.map(card => {
                     if (checkCardPos(card) === false) return null;
                     return <GridSquare key={card.id} x={card.x} y={card.y} size={card.size} first={card.first}>
                                 <FlipCard card={card} size={card.size} startInEditMode={addingCard} first={card.first}/>

@@ -2,8 +2,16 @@ import styled from 'styled-components';
 
 const StyledGridSorter = styled.main`
     position: relative;
-    top: 300px;
-    height: ${props => (props.y+3) * props.gridSize}px;
+    top: -100px;
+    height: ${props => (props.y+6) * props.gridSize}px;
+    max-width: 100vw;
+    overflow: hidden;
+
+    pointer-events: none;
+    
+    & > * {
+        pointer-events: auto;
+    }
 `
 
 export const StyledGridSquare = styled.div.attrs((props) => {
