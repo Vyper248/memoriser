@@ -29,11 +29,12 @@ const StyledPopupMenu = styled.div`
         border-radius: 5px;
         padding: 5px;
         width: ${props => props.width};
+        max-width: calc(100vw - 10px);
         top: calc(100% + 8px);
         left: 50%;
         display: flex;
         flex-direction: column;
-        transform: translateX(-50%);
+        transform: translateX(-50%) translateX(${props => props.menuAdjust}px);
         scale: ${props => props.open ? '1' : '0.01' };
         opacity: ${props => props.open ? '1' : '0'};
         transition: scale 0.3s, opacity 0.3s;
@@ -51,7 +52,7 @@ const StyledPopupMenu = styled.div`
             left: 50%;
             width: 8px;
             height: 8px;
-            transform: translateX(-50%) rotate(45deg);
+            transform: translateX(-50%) translateX(${props => -props.menuAdjust}px) rotate(45deg);
         }
     }
 `

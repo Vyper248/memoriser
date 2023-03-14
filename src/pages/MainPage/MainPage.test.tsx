@@ -36,7 +36,7 @@ it('Loads element without crashing', () => {
 it('Shows the heading', () => {
     render(<MainPage/>, mockState);
 
-    let heading = screen.getByRole('heading');
+    let heading = screen.getByRole('heading', {level: 1});
     expect(heading).toBeInTheDocument();
     expect(heading).toHaveTextContent('Learn with Cards');
 });
