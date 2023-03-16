@@ -88,7 +88,7 @@ describe('Testing useKeyboardControls hook', () => {
 
     it('Flips when first card and nothing else is flipped', () => {
         const MockComponent = () => {
-            useKeyboardControls(true, null, false, mockFlip, mockCorrect, mockIncorrect);
+            useKeyboardControls(true, null, false, false, mockFlip, mockCorrect, mockIncorrect);
             return <div>Component</div>;
         }
     
@@ -106,7 +106,7 @@ describe('Testing useKeyboardControls hook', () => {
 
     it('Doesnt flip when another card is already flipped', () => {
         const MockComponent = () => {
-            useKeyboardControls(true, {id: '1'} as Card, false, mockFlip, mockCorrect, mockIncorrect);
+            useKeyboardControls(true, {id: '1'} as Card, false, false, mockFlip, mockCorrect, mockIncorrect);
             return <div>Component</div>;
         }
     
@@ -120,7 +120,7 @@ describe('Testing useKeyboardControls hook', () => {
 
     it('Allows user to press Enter, y or c to mark as correct if card is flipped', () => {
         const MockComponent = () => {
-            useKeyboardControls(true, {id: '1'} as Card, true, mockFlip, mockCorrect, mockIncorrect);
+            useKeyboardControls(true, {id: '1'} as Card, true, false, mockFlip, mockCorrect, mockIncorrect);
             return <div>Component</div>;
         }
     
@@ -146,7 +146,7 @@ describe('Testing useKeyboardControls hook', () => {
 
     it('Allows user to press n or i to mark as incorrect if card is flipped', () => {
         const MockComponent = () => {
-            useKeyboardControls(true, {id: '1'} as Card, true, mockFlip, mockCorrect, mockIncorrect);
+            useKeyboardControls(true, {id: '1'} as Card, true, false, mockFlip, mockCorrect, mockIncorrect);
             return <div>Component</div>;
         }
     
@@ -165,5 +165,34 @@ describe('Testing useKeyboardControls hook', () => {
 
         expect(mockCorrect).not.toBeCalled();
         expect(mockFlip).not.toBeCalled();
+    });
+
+    it('Keys dont work if card is in edit mode', () => {
+        const MockComponent = () => {
+            useKeyboardControls(true, {id: '1'} as Card, true, true, mockFlip, mockCorrect, mockIncorrect);
+            return <div>Component</div>;
+        }
+    
+        render(<MockComponent/>);
+    
+        let component = screen.getByText('Component');
+    
+        fireEvent.keyPress(component, { key: 'n' });
+        expect(mockIncorrect).not.toBeCalled();
+
+        fireEvent.keyPress(component, { key: 'i' });
+        expect(mockIncorrect).not.toBeCalled();
+
+        fireEvent.keyPress(component, { key: 'b' });
+        expect(mockIncorrect).not.toBeCalled();
+
+        fireEvent.keyPress(component, { key: 'n' });
+        expect(mockCorrect).not.toBeCalled();
+
+        fireEvent.keyPress(component, { key: 'i' });
+        expect(mockCorrect).not.toBeCalled();
+
+        fireEvent.keyPress(component, { key: 'b' });
+        expect(mockCorrect).not.toBeCalled();
     });
 });

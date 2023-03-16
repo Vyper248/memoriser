@@ -160,7 +160,7 @@ const FlipCard = ({ speed=0.5, width='100%', height='100%', startInEditMode=fals
     }
 
     //enable user to use keyboard for flipping top card, or answering any flipped card
-    useKeyboardControls(first, flippedCard, flipped, flipCard, onClickCorrect, onClickIncorrect);
+    useKeyboardControls(first, flippedCard, flipped, editMode, flipCard, onClickCorrect, onClickIncorrect);
 
     const styledProps = {
         timeToPoint,

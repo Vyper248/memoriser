@@ -50,7 +50,7 @@ export const useScrollListener = (callback: ()=>void) => {
     }, [callback]);
 }
 
-export const useKeyboardControls = (first: boolean, flippedCard: Card | null, flipped: boolean, flipCard: ()=>void, onClickCorrect: ()=>void, onClickIncorrect: ()=>void) => {
+export const useKeyboardControls = (first: boolean, flippedCard: Card | null, flipped: boolean, editMode: boolean, flipCard: ()=>void, onClickCorrect: ()=>void, onClickIncorrect: ()=>void) => {
     useEffect(() => {
         if (first && flippedCard === null) {
             let listener = (e: KeyboardEvent) => {
@@ -67,9 +67,9 @@ export const useKeyboardControls = (first: boolean, flippedCard: Card | null, fl
         } else if (flipped) {
             let listener = (e: KeyboardEvent) => {
                 if ((e.key === 'Enter' || e.key === 'c' || e.key === 'y') && flipped === true) {
-                    onClickCorrect();
+                    if (!editMode) onClickCorrect();
                 } else if ((e.key === 'i' || e.key === 'n') && flipped === true) {
-                    onClickIncorrect();
+                    if (!editMode) onClickIncorrect();
                 }
             }
 
