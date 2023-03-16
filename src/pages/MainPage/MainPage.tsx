@@ -37,7 +37,7 @@ const MainPage = () => {
 
 	return (
 		<StyledMainPage>
-			<Header text='Learn with Cards'/>
+			<Header text='Practise with Cards'/>
 			{ viewingShared ? <ImportMenu/> : null }
 			<GroupSelect/>
 			{ viewingShared || !selectedGroup ? null : <Button value='New Card' onClick={onClickAddCard}/> }

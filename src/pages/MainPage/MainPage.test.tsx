@@ -38,7 +38,7 @@ it('Shows the heading', () => {
 
     let heading = screen.getByRole('heading', {level: 1});
     expect(heading).toBeInTheDocument();
-    expect(heading).toHaveTextContent('Learn with Cards');
+    expect(heading).toHaveTextContent('Practise with Cards');
 });
 
 it('Shows the GroupSelect component', () => {
