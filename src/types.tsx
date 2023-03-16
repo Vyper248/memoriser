@@ -13,6 +13,11 @@ export type Group = {
 	name: string;
 }
 
+export type ImportData = {
+	cards: Card[],
+	groups: Group[]
+}
+
 interface FilterObjectColor {
     type: 'color',
     color: 'red' | 'orange' | 'green'

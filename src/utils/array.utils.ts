@@ -1,3 +1,4 @@
+import { Card } from '../types';
 import { timeSinceLastChecked, getTimeTillNextPoint } from './date.utils';
 
 interface Obj {
@@ -60,4 +61,12 @@ export const getNextValue = (currentValue: string | undefined, arr: string[]): s
     let nextIndex = currentIndex + 1;
     if (nextIndex > arr.length-1) return arr[arr.length-1];
     else return arr[nextIndex];
+}
+
+export const removeExtraCardProperties = (cards: Card[]) => {
+    let newCards = cards.map(card => {
+        const { id, groupId, question, answer, points, lastChecked, lastCheckingPeriod } = card;
+        return { id, groupId, question, answer, points, lastChecked, lastCheckingPeriod } as Card;
+    });
+    return newCards;
 }

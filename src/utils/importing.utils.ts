@@ -1,5 +1,5 @@
 
-import type { Card, Group } from "../types";
+import type { Card, Group, ImportData } from "../types";
 import { getLocalData } from "./general.utils";
 
 export const getIDCheckObj = (arr: Card[] | Group[]) => {
@@ -136,3 +136,26 @@ export const mergeWithSelectedGroup = (cards: Card[], localGroupId: string) => {
         localStorage.setItem('memoriser-data-cards', JSON.stringify(newCardsArr));
     }
 }
+
+export const importFromBackup = (file: File, callback: (importObj: ImportData | null)=>void) => {
+    if (file.type.match('application/json')) {
+        const reader = new FileReader();
+
+        reader.onload = () => {
+            let text = reader.result as string;
+            let obj = JSON.parse(text);
+
+            let newObj = {cards: [], groups: []} as ImportData;
+
+            if (obj.cards !== undefined) newObj.cards = obj.cards;
+            if (obj.groups !== undefined) newObj.groups = obj.groups;
+            
+            callback(newObj);
+        }
+        
+        reader.readAsText(file);
+    } else {
+        callback(null);
+    }
+}
+

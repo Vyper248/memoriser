@@ -27,7 +27,7 @@ const StyledGroupSelect = styled.nav`
         cursor: pointer;
     }
 
-    & p#copyText {
+    & p#responseMessage {
         font-size: 0.6em;
     }
 

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import StyledGroupSelect from './GroupSelect.style';
-import { FaFilter } from 'react-icons/fa';
+import { FaFilter, FaShareAlt } from 'react-icons/fa';
 
 import type { Group } from '../../types';
 
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { addGroup, editGroup, deleteGroup, setSelectedGroup } from '../../redux/mainSlice';
-import { generateURL, onClearHash } from '../../utils/general.utils';
+import { onClearHash } from '../../utils/general.utils';
 
 import Modal from '../Modal/Modal';
 import Button from '../Button/Button';
@@ -17,6 +17,7 @@ import LinkedBorders from '../LinkedBorders/LinkedBorders';
 import Dropdown from '../Dropdown/Dropdown';
 import Label from '../Label/Label';
 import FilterMenu from '../FilterMenu/FilterMenu';
+import ShareMenu from '../ShareMenu/ShareMenu';
 
 type NewGroupMenuProps = {
     initialName?: string;
@@ -60,34 +61,11 @@ const GroupSelect = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [addingGroup, setAddingGroup] = useState(false);
     const [editingGroup, setEditingGroup] = useState(false);
-    const [copyText, setCopyText] = useState('');
     const viewingShared = useAppSelector(state => state.main.viewingShared);
     const selectedGroup = useAppSelector(state => state.main.selectedGroup);
-    const cards = useAppSelector(state => state.main.cards);
     const groups = useAppSelector(state => state.main.groups);
 
     let invalidShareLink = window.location.hash.length > 0 && !viewingShared;
-
-    const setCopiedText = () => {
-        //set message for user for 2 seconds
-        setCopyText('Copied link to clipboard!');
-        setTimeout(() => {
-            setCopyText('');
-        }, 2000);
-    }
-
-    const onClickShareAll = () => {
-        generateURL(cards, groups);
-        setCopiedText();
-	}
-
-    const onClickShareSelected = () => {
-        if (!selectedGroup) return;
-
-        let filteredCards = cards.filter(card => card.groupId === selectedGroup.id);
-        generateURL(filteredCards, [selectedGroup]);
-        setCopiedText();
-    }
 
     const onChangeGroup = (value: string) => {
         const newGroup = groups.find(group => group.id === value);
@@ -153,14 +131,9 @@ const GroupSelect = () => {
                     <Button value='New Group' onClick={onClickAddGroup}/>
                     <Button value='Edit Group' onClick={onClickEditGroup}/>
                     <ConfirmationButton value='Delete Group' onClick={onClickDeleteGroup}/>
-                    <hr/>
-                    <Button value='Share All' onClick={onClickShareAll}/>
-                    { selectedGroup ? <Button value='Share Selected Group' onClick={onClickShareSelected}/> : null }
-                    { copyText.length > 0 ? <p id='copyText'>{copyText}</p> : null }
                 </PopupMenu>) }
-                { viewingShared ? null : (<PopupMenu icon={<FaFilter/>} iconSize='1em'>
-                    <FilterMenu/>
-                </PopupMenu>) }
+                { viewingShared ? null : <PopupMenu width='180px' icon={<FaShareAlt/>} iconSize='1em'><ShareMenu/></PopupMenu> }
+                { viewingShared ? null : (<PopupMenu icon={<FaFilter/>} iconSize='1em'><FilterMenu/></PopupMenu>) }
             </LinkedBorders>
             { invalidShareLink ? <p id='warning' onClick={onClearHash}>Warning: Shared link is invalid, click here to clear.</p> : null }
             <Modal open={modalOpen}>

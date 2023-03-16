@@ -6,6 +6,7 @@ const StyledConfirmationButton = styled.div`
 
     & > div {
         width: 100%;
+        height: auto;
     }
 
     & #icon > button {

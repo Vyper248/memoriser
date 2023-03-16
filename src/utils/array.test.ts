@@ -1,4 +1,5 @@
-import { addToArray, editInArray, filterArrayByGroupId, removeFromArray, sortArray, getNextValue } from "./array.utils";
+import { Card } from "../types";
+import { addToArray, editInArray, filterArrayByGroupId, removeFromArray, sortArray, getNextValue, removeExtraCardProperties } from "./array.utils";
 
 it('Adds an object to the array and returns that array', () => {
     let array2 = [{id: '1'}, {id: '2'}, {id: '3'}];
@@ -54,4 +55,29 @@ it('Gets the next value from an array', () => {
     expect(getNextValue('3', array)).toEqual('4');
     expect(getNextValue('4', array)).toEqual('4');
     expect(getNextValue(undefined, array)).toEqual('1');
+});
+
+it('Removes values from card objects that arent needed', () => {
+    let mockCards = [
+        {id: '1', groupId: '1', question: 'hello', answer: 'world', x: 3, y: 5},
+        {id: '2', groupId: '1', question: 'again', answer: 'test', x: 3, test:false},
+    ];
+
+    let newCards = removeExtraCardProperties(mockCards);
+
+    expect(newCards[0]).not.toHaveProperty('x');
+    expect(newCards[0]).not.toHaveProperty('y');
+
+    expect(newCards[1]).not.toHaveProperty('test');
+    expect(newCards[1]).not.toHaveProperty('x');
+
+    expect(newCards[0]).toHaveProperty('id');
+    expect(newCards[0]).toHaveProperty('groupId');
+    expect(newCards[0]).toHaveProperty('question');
+    expect(newCards[0]).toHaveProperty('answer');
+
+    expect(newCards[1]).toHaveProperty('id');
+    expect(newCards[1]).toHaveProperty('groupId');
+    expect(newCards[1]).toHaveProperty('question');
+    expect(newCards[1]).toHaveProperty('answer');
 });

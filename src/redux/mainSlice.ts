@@ -4,7 +4,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { editInArray, removeFromArray } from "../utils/array.utils";
 import { correctCardAdjustment, createNewCard } from "../utils/general.utils";
 
-import type { Card, Group, FilterObject } from "../types";
+import type { Card, Group, FilterObject, ImportData } from "../types";
 
 export type MainSlice = {
     cards: Card[];
@@ -135,6 +135,15 @@ export const mainSlice = createSlice({
             state.cards = newCards;
             state.selectedCard = null;
             state.addingCard = false;
+        },
+        //Importing
+        importBackup: (state, action: PayloadAction<ImportData>) => {
+            state.cards = action.payload.cards;
+            state.groups = action.payload.groups;
+            state.selectedCard = null;
+            state.addingCard = false;
+            state.flippedCard = null;
+            state.selectedGroup = action.payload.groups[0];
         }
     }
 });
@@ -142,6 +151,7 @@ export const mainSlice = createSlice({
 export const {  setCards, setGroups, 
                 setViewingShared, setSelectedCard, setFlippedCard, setSelectedGroup, setAddingCard, setFilter, 
                 addGroup, editGroup, deleteGroup,
-                addCard, editCard, deleteCard, cardCorrect, cardIncorrect } = mainSlice.actions;
+                addCard, editCard, deleteCard, cardCorrect, cardIncorrect,
+                importBackup } = mainSlice.actions;
 
 export default mainSlice.reducer;

@@ -1,7 +1,9 @@
-import { getIDCheckObj, checkCardIDs, checkGroupIDs, importSharedData, filterOutSameCards, mergeSharedData, mergeWithSelectedGroup } from "./importing.utils";
+import { getIDCheckObj, checkCardIDs, checkGroupIDs, importSharedData, 
+         filterOutSameCards, mergeSharedData, mergeWithSelectedGroup, importFromBackup } from "./importing.utils";
 import { getLocalData } from "./general.utils";
 
 import { Card, Group } from "../types";
+import { waitFor } from "@testing-library/react";
 
 describe('Testing getIDCheckObj function', () => {
     it('Returns the correct obj', () => {
@@ -204,3 +206,28 @@ describe('Testing mergeWithSelectedGroup function', () => {
         expect(localDataCards[1].id).not.toEqual('2');
     });
 });
+
+describe('Testing importFromBackup function', () => {
+    it('Runs the callback with the correct data', async () => { 
+        const data = {cards: [], groups: []};
+        const file = new File([JSON.stringify(data)], 'test.json', {type: 'application/json'});
+    
+        const callback = jest.fn();
+        importFromBackup(file, callback);
+    
+        await waitFor(() => {
+            expect(callback).toBeCalledWith(data);
+        });
+    });
+
+    it('Runs callback with null if type isnt json', async () => {
+        const file = new File([''], 'test.json', {type: 'image/png'});
+    
+        const callback = jest.fn();
+        importFromBackup(file, callback);
+    
+        await waitFor(() => {
+            expect(callback).toBeCalledWith(null);
+        });
+    });
+}); 

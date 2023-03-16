@@ -1,10 +1,12 @@
 import { configureStore, createListenerMiddleware, isAnyOf } from "@reduxjs/toolkit";
 import mainReducer from './mainSlice';
-import { setCards, addCard, editCard, deleteCard, cardCorrect, cardIncorrect, setGroups, addGroup, editGroup, deleteGroup } from "./mainSlice";
+import { setCards, addCard, editCard, deleteCard, cardCorrect, cardIncorrect, 
+        setGroups, addGroup, editGroup, deleteGroup,
+        importBackup } from "./mainSlice";
 
 const cardListener = createListenerMiddleware();
 cardListener.startListening({
-    matcher: isAnyOf(setCards, addCard, editCard, deleteCard, deleteGroup, cardCorrect, cardIncorrect),
+    matcher: isAnyOf(setCards, addCard, editCard, deleteCard, deleteGroup, cardCorrect, cardIncorrect, importBackup),
     effect: (_, listenerApi) => {
         const state = listenerApi.getState() as RootState
         if (state.main.viewingShared === false) {
@@ -16,7 +18,7 @@ cardListener.startListening({
 
 const groupListener = createListenerMiddleware();
 groupListener.startListening({
-    matcher: isAnyOf(setGroups, addGroup, editGroup, deleteGroup),
+    matcher: isAnyOf(setGroups, addGroup, editGroup, deleteGroup, importBackup),
     effect: (_, listenerApi) => {
         const state = listenerApi.getState() as RootState
         if (state.main.viewingShared === false) {

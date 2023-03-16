@@ -40,7 +40,7 @@ const MainPage = () => {
 			<Header text='Learn with Cards'/>
 			{ viewingShared ? <ImportMenu/> : null }
 			<GroupSelect/>
-			{ viewingShared ? null : <Button value='New Card' onClick={onClickAddCard}/> }
+			{ viewingShared || !selectedGroup ? null : <Button value='New Card' onClick={onClickAddCard}/> }
 			<GridSorter cards={cardsInGroup}/>
 		</StyledMainPage>
 	);
