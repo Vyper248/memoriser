@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/memoriser/static/css/main.503e2b8a.css",
+    "main.js": "/memoriser/static/js/main.b4f61261.js",
+    "static/js/787.a27f7ad1.chunk.js": "/memoriser/static/js/787.a27f7ad1.chunk.js",
+    "index.html": "/memoriser/index.html",
+    "main.503e2b8a.css.map": "/memoriser/static/css/main.503e2b8a.css.map",
+    "main.b4f61261.js.map": "/memoriser/static/js/main.b4f61261.js.map",
+    "787.a27f7ad1.chunk.js.map": "/memoriser/static/js/787.a27f7ad1.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.503e2b8a.css",
+    "static/js/main.b4f61261.js"
+  ]
+}
