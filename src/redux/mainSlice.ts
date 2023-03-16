@@ -43,7 +43,7 @@ export const initialState: MainSlice = {
         {
             id: '2',
             groupId: '1',
-            question: 'You can use the dropdown menu above to add, edit or delete a group.',
+            question: 'You can use the menu above to add, edit or delete a group.',
             answer: 'So start creating some cards and learning!',
             points: 0,
         },
